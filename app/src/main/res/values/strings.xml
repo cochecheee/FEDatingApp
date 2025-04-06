@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Tinder Clone</string>
+
+    <string name="title_slider_1">TINDER GOLD SUBSCRIPTION</string>
+    <string name="description_slider_1">Find out who sent you Likes and more</string>
+
+    <string name="title_slider_2">Get more matches fast</string>
+    <string name="description_slider_2">Boost your profile once a month</string>
+
+    <string name="title_slider_3">Swipe worldwide</string>
+    <string name="description_slider_3">With Tinder Plus, get a passport to match worldwide</string>
+
+    <string name="title_slider_4">Stand out with Super Likes</string>
+    <string name="description_slider_4">Multiply your chances of Matches by 3</string>
+
+    <string name="title_slider_5">I wanted to swipe right</string>
+    <string name="description_slider_5">Enjoy unlimited Rewinds with Tinder Plus</string>
+
+    <string name="title_slider_6">Increase your chances of matches</string>
+    <string name="description_slider_6">Enjoy unlimited Likes with Tinder Plus</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
