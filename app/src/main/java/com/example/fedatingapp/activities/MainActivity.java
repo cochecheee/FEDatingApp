@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         int itemId = menuItem.getItemId();
-
         if (itemId == R.id.account) {
             viewPager.setCurrentItem(0);
         } else if (itemId == R.id.fire) {
