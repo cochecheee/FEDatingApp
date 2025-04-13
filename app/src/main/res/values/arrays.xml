@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Danh sách giới tính -->
+    <string-array name="gender_list">
+        <item>Nam</item>
+        <item>Nữ</item>
+        <item>Khác</item>
+    </string-array>
+
+    <!-- Danh sách xu hướng tính dục -->
+    <string-array name="sexual_orientation_list">
+        <item>Heterosexual</item>
+        <item>Homosexual</item>
+        <item>Bisexual</item>
+        <item>Khác</item>
+    </string-array>
+
+    <!-- Danh sách cung hoàng đạo -->
+    <string-array name="zodiac_sign_list">
+        <item>Bạch Dương</item>
+        <item>Kim Ngưu</item>
+        <item>Song Tử</item>
+        <item>Cự Giải</item>
+        <item>Sư Tử</item>
+        <item>Xử Nữ</item>
+        <item>Thiên Bình</item>
+        <item>Thần Nông</item>
+        <item>Nhân Mã</item>
+        <item>Ma Kết</item>
+        <item>Bảo Bình</item>
+        <item>Song Ngư</item>
+    </string-array>
+</resources>
