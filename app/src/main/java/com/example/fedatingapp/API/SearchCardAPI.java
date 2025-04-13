@@ -1,4 +1,6 @@
-package vn.iotstar.dating_fe.API;
+package com.example.fedatingapp.API;
+
+import com.example.fedatingapp.entities.Users;
 
 import java.util.List;
 
@@ -6,7 +8,7 @@ import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
-import vn.iotstar.dating_fe.entities.Users;
+
 
 public interface SearchCardAPI {
     // POST /searchCard/find/SexualOrientation - Tìm theo Sexual Orientation

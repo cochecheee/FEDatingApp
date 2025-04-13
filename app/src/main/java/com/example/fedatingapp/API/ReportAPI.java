@@ -1,9 +1,11 @@
-package vn.iotstar.dating_fe.API;
+package com.example.fedatingapp.API;
+
+import com.example.fedatingapp.entities.Reports;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
-import vn.iotstar.dating_fe.entities.Reports;
+
 
 public interface ReportAPI {
     @POST("/report/reportUser")

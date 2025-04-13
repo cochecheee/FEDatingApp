@@ -1,13 +1,13 @@
-package vn.iotstar.dating_fe.Service;
+package com.example.fedatingapp.Service;
 
 import android.util.Log;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import vn.iotstar.dating_fe.API.ReportAPI;
-import vn.iotstar.dating_fe.entities.Reports;
-import vn.iotstar.dating_fe.Retrofit.RetrofitClient;
+import com.example.fedatingapp.API.ReportAPI;
+import com.example.fedatingapp.Retrofit.RetrofitClient;
+import com.example.fedatingapp.entities.Reports;
 
 public class ReportService {
     private final ReportAPI reportAPI = RetrofitClient.getRetrofit().create(ReportAPI.class);

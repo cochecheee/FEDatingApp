@@ -1,4 +1,4 @@
-package vn.iotstar.dating_fe.entities;
+package com.example.fedatingapp.entities;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

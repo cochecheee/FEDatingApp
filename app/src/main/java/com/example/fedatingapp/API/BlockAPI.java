@@ -1,4 +1,6 @@
-package vn.iotstar.dating_fe.API;
+package com.example.fedatingapp.API;
+
+import com.example.fedatingapp.entities.MatchList;
 
 import java.util.List;
 
@@ -6,7 +8,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
-import vn.iotstar.dating_fe.entities.MatchList;
+
 
 public interface BlockAPI {
     // POST /block/ - Block user

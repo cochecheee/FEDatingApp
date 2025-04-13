@@ -48,6 +48,7 @@
 
 
                 <TextView
+                    android:id="@+id/userName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Damian, 6"
@@ -58,6 +59,7 @@
 
 
                 <TextView
+                    android:id="@+id/userJob"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Student"
@@ -66,6 +68,7 @@
                     android:layout_gravity="center"/>
 
                 <TextView
+                    android:id="@+id/userOld"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/md_black_1000"
@@ -91,6 +94,7 @@
 
 
                         <LinearLayout
+                            android:id="@+id/btn_setting"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
                             android:gravity="center"
@@ -127,6 +131,7 @@
                         android:orientation="vertical"
                         android:gravity="center">
                         <LinearLayout
+                            android:id="@+id/btn_addImage"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
                             android:gravity="center"
@@ -162,6 +167,7 @@
                         android:orientation="vertical"
                         android:gravity="center">
                         <LinearLayout
+                            android:id="@+id/btn_editProfile"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
                             android:gravity="center"

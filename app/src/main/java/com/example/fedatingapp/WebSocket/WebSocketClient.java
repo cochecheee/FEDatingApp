@@ -1,12 +1,13 @@
-package vn.iotstar.demochat;
+package com.example.fedatingapp.WebSocket;
 
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.example.fedatingapp.entities.Message;
+
 import org.json.JSONObject;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -15,7 +16,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
-import vn.iotstar.demochat.Model.Message;
+
 
 public class WebSocketClient {
     private static final String TAG = "WebSocketClient";
@@ -68,10 +69,7 @@ public class WebSocketClient {
                         JSONObject json = new JSONObject(jsonString);
                         Message message = new Message(
                                 json.getLong("fromUser"),
-                                json.getLong("toUser"),
-                                json.getString("messageContent"),
-                                new Date(),
-                                false
+                                json.getString("messageContent")
                         );
                         // Gọi listener trên main thread
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -85,8 +83,6 @@ public class WebSocketClient {
                     }
                 }
             }
-
-
             @Override
             public void onFailure(WebSocket webSocket, Throwable t, Response response) {
                 Log.e(TAG, "Lỗi: " + t.getMessage());

@@ -1,4 +1,4 @@
-package vn.iotstar.dating_fe.entities;
+package com.example.fedatingapp.entities;
 
 import java.util.Date;
 
@@ -19,6 +19,10 @@ public class Message {
         this.messageContent = messageContent;
         this.sentAt = sentAt;
         this.liked = liked;
+    }
+    public Message( Long fromUser, String messageContent) {
+        this.fromUser = fromUser;
+        this.messageContent = messageContent;
     }
 
     public Message() {

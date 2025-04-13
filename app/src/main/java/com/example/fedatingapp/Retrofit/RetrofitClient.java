@@ -1,4 +1,7 @@
-package vn.iotstar.dating_fe.Retrofit;
+package com.example.fedatingapp.Retrofit;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -6,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClient {
     private static Retrofit retrofit = null;
     private static final String Base_URL = "http://10.0.2.2:8080/";
-
+    static Gson gson = new GsonBuilder().setDateFormat("yyyy MM dd").create();
     public static Retrofit getRetrofit()
     {
         if (retrofit == null)
@@ -14,7 +17,7 @@ public class RetrofitClient {
 
             retrofit = new Retrofit.Builder()
                     .baseUrl(Base_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
         }
         return retrofit;

@@ -1,4 +1,4 @@
-package vn.iotstar.dating_fe.Service;
+package com.example.fedatingapp.Service;
 
 import android.util.Log;
 
@@ -7,9 +7,9 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import vn.iotstar.dating_fe.API.BlockAPI;
-import vn.iotstar.dating_fe.entities.MatchList;
-import vn.iotstar.dating_fe.Retrofit.RetrofitClient;
+import com.example.fedatingapp.API.BlockAPI;
+import com.example.fedatingapp.Retrofit.RetrofitClient;
+import com.example.fedatingapp.entities.MatchList;
 
 public class BlockService {
     private final BlockAPI blockAPI = RetrofitClient.getRetrofit().create(BlockAPI.class);

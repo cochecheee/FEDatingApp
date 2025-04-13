@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.fedatingapp"
-        minSdk = 21
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -37,7 +37,8 @@ android {
 }
 
 dependencies {
-
+    implementation ("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)

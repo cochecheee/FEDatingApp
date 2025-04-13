@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     private Context mContext;
     private ViewPager viewPager;
-
+    private long userId = 1L;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         BottomNavigationView bnv = findViewById(R.id.bottom_navigation);
 
         ArrayList<Fragment> fragList = new ArrayList<>();
-        fragList.add(new AccountFragment());
+        fragList.add(AccountFragment.newInstance(userId));
         fragList.add(new SwipeViewFragment());
         fragList.add(new ActivityFragment());
         ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(fragList, getSupportFragmentManager());

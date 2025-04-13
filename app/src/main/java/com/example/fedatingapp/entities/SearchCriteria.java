@@ -1,4 +1,4 @@
-package vn.iotstar.dating_fe.entities;
+package com.example.fedatingapp.entities;
 
 
 public class SearchCriteria {
