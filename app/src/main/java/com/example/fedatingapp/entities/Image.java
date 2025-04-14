@@ -19,6 +19,11 @@ public class Image {
     public Image() {
     }
 
+    public Image(String image, Long userId) {
+        this.image = image;
+        this.userId = userId;
+    }
+
     public Long getId() {
         return id;
     }

@@ -17,12 +17,14 @@
     <!-- Nút xóa ở góc dưới bên phải -->
     <ImageButton
         android:id="@+id/btnDelete"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="46dp"
+        android:layout_height="43dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp"
         android:background="@android:color/transparent"
-        android:src="@drawable/ic_edit_gray_24dp"
         android:contentDescription="Delete image"
-        app:layout_constraintEnd_toEndOf="@id/imageView"
-        app:layout_constraintBottom_toBottomOf="@id/imageView" />
+        android:src="@drawable/icon_delete"
+        app:layout_constraintBottom_toBottomOf="@id/imageView"
+        app:layout_constraintEnd_toEndOf="@id/imageView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

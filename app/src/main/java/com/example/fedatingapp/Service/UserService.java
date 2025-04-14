@@ -2,17 +2,39 @@ package com.example.fedatingapp.Service;
 
 import android.util.Log;
 
+import java.io.File;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import com.example.fedatingapp.API.ImgurAPI;
 import com.example.fedatingapp.API.UsersAPI;
 import com.example.fedatingapp.Retrofit.RetrofitClient;
 import com.example.fedatingapp.entities.Image;
 import com.example.fedatingapp.entities.Users;
+import com.example.fedatingapp.models.ImgurResponse;
 
 public class UserService {
+
+    private final ImgurAPI imgurApi;
+    private static final String IMGUR_CLIENT_ID = "fe58d6b537069ae";
+
+    public UserService() {
+        // Tạo Retrofit instance cho Imgur
+        Retrofit imgurRetrofit = new Retrofit.Builder()
+                .baseUrl("https://api.imgur.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        imgurApi = imgurRetrofit.create(ImgurAPI.class);
+    }
+
     private final UsersAPI userAPI = RetrofitClient.getRetrofit().create(UsersAPI.class);
 
     public void getUserInfo(Long userId, Callback<Users> callback) {
@@ -126,5 +148,39 @@ public class UserService {
         });
     }
 
+    public void uploadImageToImgur(File imageFile, Callback<ImgurResponse> callback) {
+        RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), imageFile);
+        MultipartBody.Part imagePart = MultipartBody.Part.createFormData("image", imageFile.getName(), requestFile);
+        RequestBody type = RequestBody.create(MediaType.parse("text/plain"), "image");
+        RequestBody title = RequestBody.create(MediaType.parse("text/plain"), "Simple upload");
+        RequestBody description = RequestBody.create(MediaType.parse("text/plain"), "This is a simple image upload in Imgur");
+
+        Call<ImgurResponse> call = imgurApi.uploadImage(
+                "Client-ID " + IMGUR_CLIENT_ID,
+                imagePart,
+                type,
+                title,
+                description
+        );
+
+        call.enqueue(new Callback<ImgurResponse>() {
+            @Override
+            public void onResponse(Call<ImgurResponse> call, Response<ImgurResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d("UserService", "Imgur upload success: " + response.body().data.link);
+                    callback.onResponse(call, Response.success(response.body()));
+                } else {
+                    Log.e("UserService", "Imgur upload failed: " + response.message());
+                    callback.onResponse(call, response);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ImgurResponse> call, Throwable t) {
+                Log.e("UserService", "Imgur upload error: " + t.getMessage());
+                callback.onFailure(call, t);
+            }
+        });
+    }
 
 }

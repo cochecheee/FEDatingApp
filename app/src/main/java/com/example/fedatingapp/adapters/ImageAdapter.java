@@ -20,10 +20,19 @@ import java.util.List;
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
     private Context context;
     private List<Image> imageList;
+    private OnImageDeleteListener deleteListener; // Interface để gọi hàm xóa
 
-    public ImageAdapter(Context context, List<Image> imageList) {
+
+    // Interface định nghĩa callback
+    public interface OnImageDeleteListener {
+        void onImageDelete(Image image);
+    }
+
+    // Constructor với thêm listener
+    public ImageAdapter(Context context, List<Image> imageList, OnImageDeleteListener listener) {
         this.context = context;
         this.imageList = imageList;
+        this.deleteListener = listener;
     }
 
     @NonNull
@@ -36,9 +45,15 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
         Image image = imageList.get(position);
-        Glide.with(holder.itemView.getContext())
+        Glide.with(context)
                 .load(image.getImage())
                 .into(holder.imageView);
+
+        holder.imageButton.setOnClickListener(v -> {
+            if (deleteListener != null && image != null) {
+                deleteListener.onImageDelete(image);
+            }
+        });
     }
 
     @Override
@@ -54,6 +69,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
             super(itemView);
             imageView = itemView.findViewById(R.id.imageView);
             imageButton = itemView.findViewById(R.id.btnDelete);
+
         }
     }
 }

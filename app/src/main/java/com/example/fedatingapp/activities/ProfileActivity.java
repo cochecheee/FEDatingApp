@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.fedatingapp.R;
 import com.example.fedatingapp.Service.UserService;
 import com.example.fedatingapp.adapters.ImageAdapter;
@@ -31,12 +32,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity implements ImageAdapter.OnImageDeleteListener{
 
     private UserService userService = new UserService();
     private Long userId;
     private Users user;
-    private List<Image> userImages;
+    private List<Image> userImages = new ArrayList<>();
 
     private RecyclerView recyclerViewImages;
     private EditText editTextHoten, editTextPhone, editTextBirthday, editTextBiography;
@@ -53,8 +54,10 @@ public class ProfileActivity extends AppCompatActivity {
 
         binding();
 
-        getUserInfo();
+
         getUserImages();
+        getUserInfo();
+
 
         btnSave.setOnClickListener(v -> saveUserInfo());
         editTextBirthday.setOnClickListener(v -> {
@@ -141,10 +144,10 @@ public class ProfileActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     userImages.clear();
                     userImages.addAll(response.body());
-                    ImageAdapter imageAdapter = new ImageAdapter(ProfileActivity.this,userImages);
+                    ImageAdapter imageAdapter = new ImageAdapter(ProfileActivity.this,userImages, ProfileActivity.this);
                     Log.d("anh", "onResponse: "+userImages.size());
                     recyclerViewImages.setAdapter(imageAdapter);
-                    //imageAdapter.notifyDataSetChanged();
+                    imageAdapter.notifyDataSetChanged();
                     // Thiết lập RecyclerView
                     recyclerViewImages.setLayoutManager(new GridLayoutManager(ProfileActivity.this, 3));
                 } else {
@@ -203,5 +206,29 @@ public class ProfileActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         finish();
         return true;
+    }
+    @Override
+    protected void onPause() {
+        Glide.with(this).pauseRequests();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        Glide.with(this).resumeRequests();
+        super.onResume();
+    }
+
+    @Override
+    public void onImageDelete(Image image) {
+        userService.delUserImage(image);
+        Toast.makeText(this, "Xoa thanh cong", Toast.LENGTH_SHORT).show();
+        userImages.remove(image);
+        ImageAdapter imageAdapter = new ImageAdapter(ProfileActivity.this,userImages, ProfileActivity.this);
+        Log.d("anh", "onResponse: "+userImages.size());
+        recyclerViewImages.setAdapter(imageAdapter);
+        imageAdapter.notifyDataSetChanged();
+        // Thiết lập RecyclerView
+        recyclerViewImages.setLayoutManager(new GridLayoutManager(ProfileActivity.this, 3));
     }
 }

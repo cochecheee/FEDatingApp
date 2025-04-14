@@ -1,17 +1,35 @@
 package com.example.fedatingapp.fragments;
 
+import static android.app.Activity.RESULT_OK;
+
+
+import static androidx.core.content.ContextCompat.checkSelfPermission;
+
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -21,16 +39,24 @@ import com.example.fedatingapp.activities.ProfileActivity;
 import com.example.fedatingapp.adapters.SliderAdapter;
 import com.example.fedatingapp.entities.Image;
 import com.example.fedatingapp.entities.Users;
+import com.example.fedatingapp.models.ImgurResponse;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -45,8 +71,12 @@ public class AccountFragment extends Fragment {
     private List<Image> userImage;
     private Long userId;
     private CircleImageView circleImageView;
+    private Uri mUri;
+    public static final int MY_REQUEST_CODE = 100;
+    public static final String TAG = AccountFragment.class.getName();
+
     public AccountFragment() {
-        // Required empty public constructor
+
     }
 
     // Factory method để truyền userId (nếu cần)
@@ -66,6 +96,8 @@ public class AccountFragment extends Fragment {
         } else {
             userId = 1L;
         }
+
+
     }
 
     @Override
@@ -86,6 +118,8 @@ public class AccountFragment extends Fragment {
         binding();
         getUser();
 
+        checkCountImage();
+
         setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -96,6 +130,7 @@ public class AccountFragment extends Fragment {
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                CheckPermission();
 
             }
         });
@@ -105,10 +140,161 @@ public class AccountFragment extends Fragment {
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), ProfileActivity.class);
                 startActivity(intent);
+
             }
         });
 
         return rootLayout;
+    }
+    public static String[] storge_permissions = {
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            android.Manifest.permission.READ_EXTERNAL_STORAGE
+    };
+
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    public static String[] storge_permissions_33 = {
+            android.Manifest.permission.READ_MEDIA_IMAGES,
+            android.Manifest.permission.READ_MEDIA_AUDIO,
+            android.Manifest.permission.READ_MEDIA_VIDEO
+    };
+
+    // Viết hàm CheckPermission()
+    public static String[] permissions() {
+        String[] p;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            p = storge_permissions_33;
+        } else {
+            p = storge_permissions;
+        }
+        return p;
+    }
+
+    private void CheckPermission() {
+        ActivityCompat.requestPermissions(requireActivity(),
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                MY_REQUEST_CODE);
+        openGallery();
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openGallery();
+            }
+        }
+    }
+
+    private ActivityResultLauncher<Intent> mActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    Log.e(TAG, "onActivityResult");
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data == null) {
+                            return;
+                        }
+                        Uri uri = data.getData();
+                        mUri = uri;
+                        UploadImage();
+                    }
+                }
+            }
+    );
+
+    private void openGallery() {
+        Log.d("open gallerry", "CheckPermission: ");
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        mActivityResultLauncher.launch(Intent.createChooser(intent, "Select Picture"));
+    }
+    public void UploadImage() {
+        if (mUri != null) {
+            try {
+                // Convert URI to File
+                File file = new File(getRealPathFromURI(mUri));
+
+                // Upload to Imgur
+                userService.uploadImageToImgur(file, new Callback<ImgurResponse>() {
+                    @Override
+                    public void onResponse(Call<ImgurResponse> call, Response<ImgurResponse> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            String imageUrl = response.body().data.link;
+
+                            // Create new Image object
+                            Image newImage = new Image();
+                            newImage.setImage(imageUrl);
+                            newImage.setUserId(userId);
+
+                            // Save to backend
+                            userService.addUserImage(newImage);
+
+                            Toast.makeText(getContext(), "Image uploaded thanh cong", Toast.LENGTH_SHORT).show();
+                            // Refresh images
+                            getUserImage();
+                            checkCountImage();
+                        } else {
+                            Toast.makeText(getContext(), "Upload image that bai", Toast.LENGTH_SHORT).show();
+                            Log.e(TAG, "Upload failed: " + response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ImgurResponse> call, Throwable t) {
+                        Toast.makeText(getContext(), "Error uploading image", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Upload error: " + t.getMessage());
+                    }
+                });
+
+            } catch (Exception e) {
+                Log.e(TAG, "Error preparing file: " + e.getMessage());
+                Toast.makeText(getContext(), "Error preparing image", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(getContext(), "Please select an image first", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // Helper method to get real path from URI
+    private String getRealPathFromURI(Uri uri) {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = requireActivity().getContentResolver().query(uri, projection, null, null, null);
+        if (cursor != null) {
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            String path = cursor.getString(column_index);
+            cursor.close();
+            return path;
+        }
+        return uri.getPath();
+    }
+
+
+    private void checkCountImage()
+    {
+        userService.getAllUserImage(userId, new Callback<List<Image>>() {
+            @Override
+            public void onResponse(Call<List<Image>> call, Response<List<Image>> response) {
+                List<Image> images = new ArrayList<>();
+                if (response.isSuccessful())
+                {
+                    images = response.body();
+                }
+                if (images.size() >= 6)
+                {
+                    image.setOnClickListener(null);
+                    image.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Image>> call, Throwable throwable) {
+
+            }
+        });
     }
 
     private void binding() {
