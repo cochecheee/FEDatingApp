@@ -25,6 +25,15 @@ public class SearchCriteria {
         this.zodiacSign = zodiacSign;
         this.personalityType = personalityType;
     }
+    public SearchCriteria( String datingPurpose, int minAge, int maxAge, int distance, String interests, String zodiacSign, String personalityType) {
+        this.datingPurpose = datingPurpose;
+        this.minAge = minAge;
+        this.maxAge = maxAge;
+        this.distance = distance;
+        this.interests = interests;
+        this.zodiacSign = zodiacSign;
+        this.personalityType = personalityType;
+    }
 
     public Long getId() {
         return id;

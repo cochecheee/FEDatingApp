@@ -23,8 +23,8 @@
         android:layout_marginBottom="4dp"
         android:background="@android:color/transparent"
         android:contentDescription="Delete image"
-        android:src="@drawable/icon_delete"
+        android:src="@drawable/ic_edit_gray_24dp"
         app:layout_constraintBottom_toBottomOf="@id/imageView"
-        app:layout_constraintEnd_toEndOf="@id/imageView" />
+        app:layout_constraintEnd_toEndOf="@id/btnDelete" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

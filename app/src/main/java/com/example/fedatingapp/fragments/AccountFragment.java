@@ -5,7 +5,10 @@ import static android.app.Activity.RESULT_OK;
 
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 
+import static com.google.gson.internal.$Gson$Types.arrayOf;
+
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -18,7 +21,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,8 +45,10 @@ import com.example.fedatingapp.Service.UserService;
 import com.example.fedatingapp.activities.ProfileActivity;
 import com.example.fedatingapp.adapters.SliderAdapter;
 import com.example.fedatingapp.entities.Image;
+import com.example.fedatingapp.entities.SearchCriteria;
 import com.example.fedatingapp.entities.Users;
 import com.example.fedatingapp.models.ImgurResponse;
+import com.google.android.material.slider.RangeSlider;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
@@ -123,7 +132,7 @@ public class AccountFragment extends Fragment {
         setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                showDatingInfoPopup();
             }
         });
 
@@ -146,6 +155,67 @@ public class AccountFragment extends Fragment {
 
         return rootLayout;
     }
+
+    private void showDatingInfoPopup() {
+        // Tạo dialog
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.setting_search);
+
+        // Ánh xạ các view
+        EditText etDatingPurpose = dialog.findViewById(R.id.et_dating_purpose);
+        RangeSlider rangeSliderAge = dialog.findViewById(R.id.range_slider_age);
+        TextView tvAgeRange = dialog.findViewById(R.id.tv_age_range);
+        EditText etDistance = dialog.findViewById(R.id.et_distance);
+        EditText etInterests = dialog.findViewById(R.id.et_interests);
+        Spinner spinnerZodiac = dialog.findViewById(R.id.spinner_zodiac);
+        EditText etPersonalityType = dialog.findViewById(R.id.et_personality_type);
+        Button btnCancel = dialog.findViewById(R.id.btn_cancel);
+        Button btnSave = dialog.findViewById(R.id.btn_save);
+
+
+
+        // Xử lý nút Save
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Thu thập dữ liệu
+                String datingPurpose = etDatingPurpose.getText().toString();
+                int minAge = Math.round(rangeSliderAge.getValues().get(0));
+                int maxAge = Math.round(rangeSliderAge.getValues().get(1));
+                int distance;
+                try {
+                    distance = Integer.parseInt(etDistance.getText().toString());
+                } catch (NumberFormatException e) {
+                    distance = 0;
+                }
+                String interests = etInterests.getText().toString();
+                String zodiacSign = spinnerZodiac.getSelectedItem().toString();
+                String personalityType = etPersonalityType.getText().toString();
+
+                // Tạo đối tượng DatingInfo
+                SearchCriteria datingInfo = new SearchCriteria(datingPurpose, minAge, maxAge,
+                        distance, interests, zodiacSign, personalityType);
+
+
+
+                // Đóng dialog
+                dialog.dismiss();
+            }
+        });
+
+        // Xử lý nút Cancel
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        // Hiển thị dialog
+        dialog.show();
+    }
+
+
     public static String[] storge_permissions = {
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
             android.Manifest.permission.READ_EXTERNAL_STORAGE
@@ -283,7 +353,7 @@ public class AccountFragment extends Fragment {
                 {
                     images = response.body();
                 }
-                if (images.size() >= 6)
+                if (images.size() >= 5)
                 {
                     image.setOnClickListener(null);
                     image.setEnabled(false);
