@@ -11,32 +11,27 @@ import retrofit2.Response;
 import com.example.fedatingapp.API.MessageAPI;
 import com.example.fedatingapp.Retrofit.RetrofitClient;
 import com.example.fedatingapp.entities.Message;
+import com.example.fedatingapp.models.MessageItem;
 
 public class MessageService {
     private final MessageAPI messageAPI = RetrofitClient.getRetrofit().create(MessageAPI.class);
 
     // Lấy tin nhắn cuối cùng giữa 2 user
-    public void getLastMessage(Long user1, Long user2, Callback<Optional<Message>> callback) {
-        Call<Optional<Message>> call = messageAPI.getLastMessage(user1, user2);
-        call.enqueue(new Callback<Optional<Message>>() {
+    public void getListMatch (Long user1, Callback<List<MessageItem>> callback) {
+        Call<List<MessageItem>> call = messageAPI.getListMatch(user1);
+        call.enqueue(new Callback<List<MessageItem>>() {
             @Override
-            public void onResponse(Call<Optional<Message>> call, Response<Optional<Message>> response) {
+            public void onResponse(Call<List<MessageItem>> call, Response<List<MessageItem>> response) {
                 if (response.isSuccessful()) {
-                    Optional<Message> message = response.body();
-                    if (message != null && message.isPresent()) {
-                        Log.d("MessageService", "Lấy tin nhắn cuối cùng thành công: " + message.get().toString());
-                    } else {
-                        Log.d("MessageService", "Không có tin nhắn nào giữa 2 user");
-                    }
+                    List<MessageItem> message = response.body();
                     callback.onResponse(call, Response.success(response.body()));
                 } else {
                     Log.e("MessageService", "Lấy tin nhắn thất bại: " + response.code());
                     callback.onResponse(call, response);
                 }
             }
-
             @Override
-            public void onFailure(Call<Optional<Message>> call, Throwable t) {
+            public void onFailure(Call<List<MessageItem>> call, Throwable t) {
                 Log.e("MessageService", "Error: " + t.getMessage());
                 callback.onFailure(call, t);
             }

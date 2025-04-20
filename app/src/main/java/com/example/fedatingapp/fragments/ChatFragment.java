@@ -7,39 +7,35 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.fedatingapp.R;
+import com.example.fedatingapp.Service.MessageService;
 import com.example.fedatingapp.activities.MainActivity;
 import com.example.fedatingapp.adapters.LikeAdapter;
 import com.example.fedatingapp.adapters.MessageListAdapter;
-import com.example.fedatingapp.models.Like;
 import com.example.fedatingapp.models.MessageItem;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ChatFragment extends Fragment {
-
+    MessageService messageService = new MessageService();
 
     View rootLayout;
     private static final String TAG = MainActivity.class.getSimpleName();
     private List<MessageItem> messageList;
-    private List<Like> likeList;
     private MessageListAdapter mAdapter;
-    private String[] messages = {"Ah d'accord", "Juste par habitude en tout cas", "Hey!", "6946743263", "Give me your number, I will call you"};
-    private int[] counts = {0, 3, 0, 0, 1};
-    private int[] messagePictures = {R.drawable.user_woman_3, R.drawable.user_woman_4, R.drawable.user_woman_5, R.drawable.user_woman_6 , R.drawable.user_woman_7};
-    private int[] likePictures = {R.drawable.user_woman_1, R.drawable.user_woman_2};
-    private String[] messageNames = {"Fanelle", "Chloe", "Cynthia", "Kate", "Angele"};
-    private String[] likeNames = {"Sophie", "Clara"};
-
     public ChatFragment() {
         // Required empty public constructor
     }
@@ -53,8 +49,9 @@ public class ChatFragment extends Fragment {
 
         RecyclerView recyclerView = rootLayout.findViewById(R.id.recycler_view_messages);
         messageList = new ArrayList<>();
-        mAdapter = new MessageListAdapter(getContext(), messageList);
 
+
+        mAdapter = new MessageListAdapter(getContext(), messageList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -63,10 +60,7 @@ public class ChatFragment extends Fragment {
 
         prepareMessageList();
 
-
-        prepareContactList();
-        LikeAdapter contactAdapter = new LikeAdapter(getContext(), likeList);
-
+        LikeAdapter contactAdapter = new LikeAdapter(getContext(), messageList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         RecyclerView recyclerViewContact =  rootLayout.findViewById(R.id.recycler_view_likes);
         recyclerViewContact.setLayoutManager(layoutManager);
@@ -79,25 +73,24 @@ public class ChatFragment extends Fragment {
 
 
     private void prepareMessageList(){
+        messageService.getListMatch(1L, new Callback<List<MessageItem>>() {
+            @Override
+            public void onResponse(Call<List<MessageItem>> call, Response<List<MessageItem>> response) {
+                if (response.isSuccessful())
+                {
+                    messageList.clear(); // Xóa dữ liệu cũ (tùy chọn)
+                    messageList.addAll(response.body());
+                    mAdapter.notifyDataSetChanged(); // Thông báo adapter cập nhật
+                    Log.d("ChatFragment", "onFailure: "+ messageList.get(0).getPicture());
 
-        Random rand = new Random();
-        int id = rand.nextInt(100);
-        int i;
-        for(i=0; i<5; i++) {
-            MessageItem message = new MessageItem(id, messageNames[i], messages[i], counts[i], messagePictures[i]);
-            messageList.add(message);
-        }
-    }
+                }
+            }
 
-    private void prepareContactList(){
-        likeList = new ArrayList<>();
-        Random rand = new Random();
-        int id = rand.nextInt(100);
-        int i;
-        for(i=0; i<2; i++) {
-            Like like = new Like(id, likeNames[i], likePictures[i]);
-            likeList.add(like);
-        }
+            @Override
+            public void onFailure(Call<List<MessageItem>> call, Throwable throwable) {
+                Log.d("ChatFragment", "onFailure: "+ throwable.getMessage());
+            }
+        });
     }
 
 

@@ -12,17 +12,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.fedatingapp.R;
-import com.example.fedatingapp.models.Like;
+import com.example.fedatingapp.models.MessageItem;
 
 import java.util.List;
 
 public class LikeAdapter extends RecyclerView.Adapter<LikeAdapter.ContactViewHolder>{
 
     private Context context;
-    private List<Like> likeList;
+    private List<MessageItem> likeList;
 
 
-    public LikeAdapter(Context context, List<Like> likeList) {
+    public LikeAdapter(Context context, List<MessageItem> likeList) {
         this.context = context;
         this.likeList = likeList;
     }
@@ -62,7 +62,7 @@ public class LikeAdapter extends RecyclerView.Adapter<LikeAdapter.ContactViewHol
 
     @Override
     public void onBindViewHolder(LikeAdapter.ContactViewHolder holder, final int position) {
-        final Like item = likeList.get(position);
+        final MessageItem item = likeList.get(position);
         holder.likeName.setText(item.getName());
 
         Glide.with(context)

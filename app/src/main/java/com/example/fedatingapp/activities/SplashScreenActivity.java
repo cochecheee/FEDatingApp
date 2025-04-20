@@ -25,5 +25,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 Log.e("SplashScreen", "Error starting MainActivity", e);
             }
         }, 2000);
+
+
     }
 }
