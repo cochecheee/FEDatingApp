@@ -37,7 +37,7 @@ public class WebSocketClient {
 
     public void connect() {
         Request request = new Request.Builder()
-                .url("ws://10.0.2.2:8080/chat") // Thay bằng IP thực tế nếu cần
+                .url("ws://192.168.1.156:8080/chat") // Thay bằng IP thực tế nếu cần
                 .build();
 
         webSocket = client.newWebSocket(request, new WebSocketListener() {
@@ -45,7 +45,7 @@ public class WebSocketClient {
             public void onOpen(WebSocket webSocket, Response response) {
                 Log.d(TAG, "Kết nối thành công");
                 // Gửi CONNECT frame
-                String connectFrame = "CONNECT\naccept-version:1.2\nhost:10.0.2.2\n\n\0";
+                String connectFrame = "CONNECT\naccept-version:1.2\nhost:192.168.1.156\n\n\0";
                 webSocket.send(connectFrame);
                 Log.d(TAG, "Đã gửi CONNECT frame: " + connectFrame);
             }
@@ -96,8 +96,10 @@ public class WebSocketClient {
             message.put("fromUser", currentUserId);
             message.put("toUser", receiverId);
             message.put("messageContent", content);
-            webSocket.send("SEND\ndestination:/app/sendPrivateMessage\n\n" + message.toString() + "\0");
-            Log.d(TAG, "sendMessage: "+message.toString());
+
+            // Thêm header content-type để server biết đây là JSON
+            webSocket.send("SEND\ndestination:/app/sendPrivateMessage\ncontent-type:application/json\n\n" + message.toString() + "\0");
+            Log.d(TAG, "sendMessage: " + message.toString());
         } catch (Exception e) {
             Log.e(TAG, "Lỗi gửi tin nhắn: " + e.getMessage());
         }

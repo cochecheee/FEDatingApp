@@ -12,6 +12,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.fedatingapp.R;
 import com.example.fedatingapp.WebSocket.WebSocketClient;
+import com.example.fedatingapp.WebSocket.WebSocketManager;
 import com.example.fedatingapp.adapters.ViewPagerAdapter;
 import com.example.fedatingapp.entities.Message;
 import com.example.fedatingapp.fragments.AccountFragment;
@@ -26,15 +27,15 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     private Context mContext;
     private ViewPager viewPager;
-    WebSocketClient webSocketClient;
+    WebSocketManager webSocketManager;
     private long userId = 1L;
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        webSocketClient = new WebSocketClient(userId, this);
-        webSocketClient.connect();
+        webSocketManager = WebSocketManager.getInstance();
+        webSocketManager.initialize(userId, this);
         mContext = this;
 
         BottomNavigationView bnv = findViewById(R.id.bottom_navigation);
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         ArrayList<Fragment> fragList = new ArrayList<>();
         fragList.add(AccountFragment.newInstance(userId));
         fragList.add(new SwipeViewFragment());
-        fragList.add(new ActivityFragment());
+        fragList.add(new ActivityFragment(userId));
         fragList.add(new ExploreFragment());
         ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(fragList, getSupportFragmentManager());
         viewPager = findViewById(R.id.view_pager);

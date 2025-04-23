@@ -1,5 +1,6 @@
 package com.example.fedatingapp.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.example.fedatingapp.R;
 import com.example.fedatingapp.Service.MessageService;
+import com.example.fedatingapp.activities.ChatActivity;
 import com.example.fedatingapp.activities.MainActivity;
 import com.example.fedatingapp.adapters.LikeAdapter;
 import com.example.fedatingapp.adapters.MessageListAdapter;
@@ -29,15 +31,16 @@ import retrofit2.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ChatFragment extends Fragment {
+public class MessageFragment extends Fragment implements MessageListAdapter.OnItemClickListener{
     MessageService messageService = new MessageService();
 
     View rootLayout;
     private static final String TAG = MainActivity.class.getSimpleName();
     private List<MessageItem> messageList;
     private MessageListAdapter mAdapter;
-    public ChatFragment() {
-        // Required empty public constructor
+    private Long curentUserId;
+    public MessageFragment(Long currentUserid) {
+        this.curentUserId = currentUserid;
     }
 
 
@@ -51,7 +54,7 @@ public class ChatFragment extends Fragment {
         messageList = new ArrayList<>();
 
 
-        mAdapter = new MessageListAdapter(getContext(), messageList);
+        mAdapter = new MessageListAdapter(getContext(), messageList,this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -94,4 +97,13 @@ public class ChatFragment extends Fragment {
     }
 
 
+    @Override
+    public void onItemClick(Long receiverId, String reveiverName, String receiverPicture) {
+        Intent intent = new Intent(getActivity(), ChatActivity.class);
+        intent.putExtra("RECEIVER_USER_ID",receiverId);
+        intent.putExtra("RECEIVER_NAME",reveiverName);
+        intent.putExtra("RECEIVER_IMAGE",receiverPicture);
+        intent.putExtra("CURRENT_USER_ID", curentUserId);
+        startActivity(intent);
+    }
 }

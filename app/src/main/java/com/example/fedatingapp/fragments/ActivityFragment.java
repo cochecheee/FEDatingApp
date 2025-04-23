@@ -3,20 +3,17 @@ package com.example.fedatingapp.fragments;
 import android.content.Context;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.fedatingapp.adapters.ViewPagerAdapter;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 import com.example.fedatingapp.R;
@@ -32,9 +29,9 @@ public class ActivityFragment extends Fragment implements View.OnClickListener, 
     private View rootLayout;
     private TextView chatText, feedText;
     private LinearLayout chatLayout, feedLayout;
-
-    public ActivityFragment() {
-        // Required empty public constructor
+    Long currentuserId;
+    public ActivityFragment(Long currentUserId) {
+        this.currentuserId = currentUserId;
     }
 
 
@@ -50,7 +47,7 @@ public class ActivityFragment extends Fragment implements View.OnClickListener, 
         feedText = rootLayout.findViewById(R.id.text_feed);
 
         ArrayList<Fragment> fragList = new ArrayList<>();
-        fragList.add(new ChatFragment());
+        fragList.add(new MessageFragment(currentuserId));
         fragList.add(new FeedFragment());
         ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(fragList, getActivity().getSupportFragmentManager());
         viewPager = rootLayout.findViewById(R.id.view_pager_frag);
