@@ -198,7 +198,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void attachFiles() {
-
+        CheckPermission();
     }
 
     private void showEmojiPicker() {

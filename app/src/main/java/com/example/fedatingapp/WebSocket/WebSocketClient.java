@@ -37,7 +37,7 @@ public class WebSocketClient {
 
     public void connect() {
         Request request = new Request.Builder()
-                .url("ws://192.168.1.156:8080/chat") // Thay bằng IP thực tế nếu cần
+                .url("ws://192.168.1.111:8080/chat") // Thay bằng IP thực tế nếu cần
                 .build();
 
         webSocket = client.newWebSocket(request, new WebSocketListener() {
@@ -45,7 +45,7 @@ public class WebSocketClient {
             public void onOpen(WebSocket webSocket, Response response) {
                 Log.d(TAG, "Kết nối thành công");
                 // Gửi CONNECT frame
-                String connectFrame = "CONNECT\naccept-version:1.2\nhost:192.168.1.156\n\n\0";
+                String connectFrame = "CONNECT\naccept-version:1.2\nhost:192.168.1.111\n\n\0";
                 webSocket.send(connectFrame);
                 Log.d(TAG, "Đã gửi CONNECT frame: " + connectFrame);
             }

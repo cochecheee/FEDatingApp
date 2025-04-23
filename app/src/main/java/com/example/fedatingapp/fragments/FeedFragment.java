@@ -1,5 +1,6 @@
 package com.example.fedatingapp.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,36 +8,41 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.fedatingapp.R;
+import com.example.fedatingapp.Service.MessageService;
+import com.example.fedatingapp.activities.ChatActivity;
 import com.example.fedatingapp.activities.MainActivity;
 import com.example.fedatingapp.adapters.MatchListAdapter;
 import com.example.fedatingapp.models.Match;
+import com.example.fedatingapp.models.MessageItem;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FeedFragment extends Fragment {
-
+public class FeedFragment extends Fragment implements MatchListAdapter.onclickinterface {
+    MessageService messageService = new MessageService();
     View rootLayout;
     private static final String TAG = MainActivity.class.getSimpleName();
-    private List<Match> matchList;
+    private List<MessageItem> messageList;
     private MatchListAdapter mAdapter;
-    private String[] matchDates = {"11 Jan. 2020", "26 Dec. 2019", "12 Dec. 2019", "17 Nov. 2019", "06 Oct. 2019"};
-    private int[] matchPictures = {R.drawable.user_woman_3, R.drawable.user_woman_4, R.drawable.user_woman_5, R.drawable.user_woman_6 , R.drawable.user_woman_7};
-    private String[] matchNames = {"Fanelle", "Chloe", "Cynthia", "Kate", "Angele"};
-    private String[] matchLocations = {"à 3 km", "à 18 km", "à moins d'un kilometre", "à 4 km", "à 6 km"};
+    private final long userId;
 
 
-    public FeedFragment() {
-        // Required empty public constructor
+    public FeedFragment(Long userId) {
+        this.userId = userId;
     }
 
 
@@ -48,8 +54,8 @@ public class FeedFragment extends Fragment {
 
 
         RecyclerView recyclerView = rootLayout.findViewById(R.id.recycler_view_matchs);
-        matchList = new ArrayList<>();
-        mAdapter = new MatchListAdapter(getContext(), matchList);
+        messageList = new ArrayList<>();
+        mAdapter = new MatchListAdapter(getContext(), messageList, this);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
@@ -65,14 +71,34 @@ public class FeedFragment extends Fragment {
 
     private void prepareMatchList(){
 
-        Random rand = new Random();
-        int id = rand.nextInt(100);
-        int i;
-        for(i=0; i<5; i++) {
-            Match match = new Match(id, matchNames[i], matchPictures[i], matchLocations[i], matchDates[i]);
-            matchList.add(match);
-        }
+        messageService.getListMatch(userId, new Callback<List<MessageItem>>() {
+            @Override
+            public void onResponse(Call<List<MessageItem>> call, Response<List<MessageItem>> response) {
+                if (response.isSuccessful())
+                {
+                    messageList.clear();
+                    messageList.addAll(response.body());
+                    mAdapter.notifyDataSetChanged();
+                    Log.d("ChatFragment", "onFailure: "+ messageList.get(0).getPicture());
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<MessageItem>> call, Throwable throwable) {
+                Log.d("ChatFragment", "onFailure: "+ throwable.getMessage());
+            }
+        });
     }
 
 
+    @Override
+    public void onclicklistener(Long receiverId, String reveiverName, String receiverPicture) {
+        Intent intent = new Intent(getActivity(), ChatActivity.class);
+        intent.putExtra("RECEIVER_USER_ID",receiverId);
+        intent.putExtra("RECEIVER_NAME",reveiverName);
+        intent.putExtra("RECEIVER_IMAGE",receiverPicture);
+        intent.putExtra("CURRENT_USER_ID", userId);
+        startActivity(intent);
+    }
 }

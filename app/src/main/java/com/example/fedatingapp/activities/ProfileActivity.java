@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -40,10 +41,11 @@ public class ProfileActivity extends AppCompatActivity implements ImageAdapter.O
     private List<Image> userImages = new ArrayList<>();
 
     private RecyclerView recyclerViewImages;
-    private EditText editTextHoten, editTextPhone, editTextBirthday, editTextBiography;
+    private EditText editTextHoten, editTextPhone,  editTextBiography;
     private EditText editTextHeight, editTextWeight, editTextPersonalityType, editTextInterests, editTextAddress, editTextJob;
     private Spinner spinnerGender, spinnerSexualOrientation, spinnerZodiacSign;
     private Button btnSave;
+    private TextView editTextBirthday;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

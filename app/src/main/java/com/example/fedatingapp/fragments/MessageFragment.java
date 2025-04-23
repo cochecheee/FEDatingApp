@@ -31,7 +31,7 @@ import retrofit2.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MessageFragment extends Fragment implements MessageListAdapter.OnItemClickListener{
+public class MessageFragment extends Fragment implements MessageListAdapter.OnItemClickListener, LikeAdapter.onclickinterface{
     MessageService messageService = new MessageService();
 
     View rootLayout;
@@ -63,7 +63,7 @@ public class MessageFragment extends Fragment implements MessageListAdapter.OnIt
 
         prepareMessageList();
 
-        LikeAdapter contactAdapter = new LikeAdapter(getContext(), messageList);
+        LikeAdapter contactAdapter = new LikeAdapter(getContext(), messageList,this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         RecyclerView recyclerViewContact =  rootLayout.findViewById(R.id.recycler_view_likes);
         recyclerViewContact.setLayoutManager(layoutManager);
@@ -81,9 +81,9 @@ public class MessageFragment extends Fragment implements MessageListAdapter.OnIt
             public void onResponse(Call<List<MessageItem>> call, Response<List<MessageItem>> response) {
                 if (response.isSuccessful())
                 {
-                    messageList.clear(); // Xóa dữ liệu cũ (tùy chọn)
+                    messageList.clear();
                     messageList.addAll(response.body());
-                    mAdapter.notifyDataSetChanged(); // Thông báo adapter cập nhật
+                    mAdapter.notifyDataSetChanged();
                     Log.d("ChatFragment", "onFailure: "+ messageList.get(0).getPicture());
 
                 }
@@ -99,6 +99,16 @@ public class MessageFragment extends Fragment implements MessageListAdapter.OnIt
 
     @Override
     public void onItemClick(Long receiverId, String reveiverName, String receiverPicture) {
+        Intent intent = new Intent(getActivity(), ChatActivity.class);
+        intent.putExtra("RECEIVER_USER_ID",receiverId);
+        intent.putExtra("RECEIVER_NAME",reveiverName);
+        intent.putExtra("RECEIVER_IMAGE",receiverPicture);
+        intent.putExtra("CURRENT_USER_ID", curentUserId);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onclicklistener(Long receiverId, String reveiverName, String receiverPicture) {
         Intent intent = new Intent(getActivity(), ChatActivity.class);
         intent.putExtra("RECEIVER_USER_ID",receiverId);
         intent.putExtra("RECEIVER_NAME",reveiverName);

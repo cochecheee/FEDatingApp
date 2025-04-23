@@ -20,11 +20,16 @@ public class LikeAdapter extends RecyclerView.Adapter<LikeAdapter.ContactViewHol
 
     private Context context;
     private List<MessageItem> likeList;
+    private onclickinterface listener;
 
+    public interface onclickinterface{
+        void onclicklistener(Long receiverId, String reveiverName,String receiverPicture);
+    }
 
-    public LikeAdapter(Context context, List<MessageItem> likeList) {
+    public LikeAdapter(Context context, List<MessageItem> likeList, onclickinterface listener) {
         this.context = context;
         this.likeList = likeList;
+        this.listener = listener;
     }
 
     @Override
@@ -68,5 +73,12 @@ public class LikeAdapter extends RecyclerView.Adapter<LikeAdapter.ContactViewHol
         Glide.with(context)
                 .load(item.getPicture())
                 .into(holder.likeImage);
+
+        holder.likeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onclicklistener((long) item.getId(),item.getName(),item.getPicture());
+            }
+        });
     }
 }
