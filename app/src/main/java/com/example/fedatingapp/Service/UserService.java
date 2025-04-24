@@ -24,7 +24,7 @@ import com.example.fedatingapp.models.ImgurResponse;
 public class UserService {
 
     private final ImgurAPI imgurApi;
-    private static final String IMGUR_CLIENT_ID = "fe58d6b537069ae";
+    private static final String IMGUR_CLIENT_ID = "b79cf480c808337";
 
     public UserService() {
         // Tạo Retrofit instance cho Imgur

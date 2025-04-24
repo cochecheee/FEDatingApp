@@ -54,7 +54,9 @@ import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -284,44 +286,65 @@ public class AccountFragment extends Fragment {
     public void UploadImage() {
         if (mUri != null) {
             try {
-                // Convert URI to File
-                File file = new File(getRealPathFromURI(mUri));
+                // Tạo file tạm trong bộ nhớ cache
+                File tempFile = new File(getContext().getCacheDir(), "temp_image_" + System.currentTimeMillis() + ".jpg");
 
-                // Upload to Imgur
-                userService.uploadImageToImgur(file, new Callback<ImgurResponse>() {
-                    @Override
-                    public void onResponse(Call<ImgurResponse> call, Response<ImgurResponse> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            String imageUrl = response.body().data.link;
+                // Lấy InputStream từ Uri
+                InputStream inputStream = getContext().getContentResolver().openInputStream(mUri);
+                if (inputStream != null) {
+                    // Ghi InputStream vào file tạm
+                    FileOutputStream outputStream = new FileOutputStream(tempFile);
+                    byte[] buffer = new byte[1024];
+                    int bytesRead;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
+                    inputStream.close();
+                    outputStream.close();
 
-                            // Create new Image object
-                            Image newImage = new Image();
-                            newImage.setImage(imageUrl);
-                            newImage.setUserId(userId);
+                    // Upload file tạm lên Imgur
+                    userService.uploadImageToImgur(tempFile, new Callback<ImgurResponse>() {
+                        @Override
+                        public void onResponse(Call<ImgurResponse> call, Response<ImgurResponse> response) {
+                            if (response.isSuccessful() && response.body() != null) {
+                                String imageUrl = response.body().data.link;
 
-                            // Save to backend
-                            userService.addUserImage(newImage);
+                                // Tạo đối tượng Image
+                                Image newImage = new Image();
+                                newImage.setImage(imageUrl);
+                                newImage.setUserId(userId);
 
-                            Toast.makeText(getContext(), "Image uploaded thanh cong", Toast.LENGTH_SHORT).show();
-                            // Refresh images
-                            getUserImage();
-                            checkCountImage();
-                        } else {
-                            Toast.makeText(getContext(), "Upload image that bai", Toast.LENGTH_SHORT).show();
-                            Log.e(TAG, "Upload failed: " + response.message());
+                                // Lưu vào backend
+                                userService.addUserImage(newImage);
+
+                                Toast.makeText(getContext(), "Image uploaded thành công", Toast.LENGTH_SHORT).show();
+                                // Refresh images
+                                getUserImage();
+                                checkCountImage();
+                            } else {
+                                Toast.makeText(getContext(), "Upload image thất bại", Toast.LENGTH_SHORT).show();
+                                Log.e(TAG, "Upload failed: " + response.message());
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<ImgurResponse> call, Throwable t) {
-                        Toast.makeText(getContext(), "Error uploading image", Toast.LENGTH_SHORT).show();
-                        Log.e(TAG, "Upload error: " + t.getMessage());
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<ImgurResponse> call, Throwable t) {
+                            Toast.makeText(getContext(), "Error uploading image", Toast.LENGTH_SHORT).show();
+                            Log.e(TAG, "Upload error: " + t.getMessage());
+                        }
+                    });
 
+                    // Xóa file tạm sau khi dùng xong (tùy chọn)
+                    tempFile.deleteOnExit();
+                } else {
+                    throw new IOException("Không thể mở InputStream từ Uri");
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "Error preparing file: " + e.getMessage(), e);
+                Toast.makeText(getContext(), "Error preparing image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
-                Log.e(TAG, "Error preparing file: " + e.getMessage());
-                Toast.makeText(getContext(), "Error preparing image", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Unexpected error: " + e.getMessage(), e);
+                Toast.makeText(getContext(), "Unexpected error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         } else {
             Toast.makeText(getContext(), "Please select an image first", Toast.LENGTH_SHORT).show();

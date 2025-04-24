@@ -37,6 +37,9 @@ import com.example.fedatingapp.entities.Message;
 import com.example.fedatingapp.models.ImgurResponse;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -272,58 +275,78 @@ public class ChatActivity extends AppCompatActivity {
                 }
             }
     );
-
     public void UploadImage() {
         if (mUri != null) {
             try {
-                // Convert URI to File
-                File file = new File(getRealPathFromURI(mUri));
+                // Tạo file tạm trong bộ nhớ cache
+                File tempFile = new File(getApplicationContext().getCacheDir(), "temp_image_" + System.currentTimeMillis() + ".jpg");
 
-                // Upload to Imgur
-                userService.uploadImageToImgur(file, new Callback<ImgurResponse>() {
-                    @Override
-                    public void onResponse(Call<ImgurResponse> call, Response<ImgurResponse> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            String imageUrl = response.body().data.link;
-                            // Tạo đối tượng tin nhắn mới
-                            Message message = new Message();
-                            message.setFromUser(currentUserId);
-                            message.setToUser(receiverUserId);
-                            message.setMessageContent(imageUrl);
-                            message.setSentAt(new Date());
-                            message.setLiked(false);
+                // Lấy InputStream từ Uri
+                InputStream inputStream = getApplicationContext().getContentResolver().openInputStream(mUri);
+                if (inputStream != null) {
+                    // Ghi InputStream vào file tạm
+                    FileOutputStream outputStream = new FileOutputStream(tempFile);
+                    byte[] buffer = new byte[1024];
+                    int bytesRead;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
+                    inputStream.close();
+                    outputStream.close();
 
-                            // Thêm vào danh sách và cập nhật hiển thị
-                            messageList.add(message);
-                            messageAdapter.notifyItemInserted(messageList.size() - 1);
-                            binding.recyclerMessages.smoothScrollToPosition(messageList.size() - 1);
+                    // Upload file tạm lên Imgur
+                    userService.uploadImageToImgur(tempFile, new Callback<ImgurResponse>() {
+                        @Override
+                        public void onResponse(Call<ImgurResponse> call, Response<ImgurResponse> response) {
+                            if (response.isSuccessful() && response.body() != null) {
+                                String imageUrl = response.body().data.link;
+                                // Tạo đối tượng tin nhắn mới
+                                Message message = new Message();
+                                message.setFromUser(currentUserId);
+                                message.setToUser(receiverUserId);
+                                message.setMessageContent(imageUrl);
+                                message.setSentAt(new Date());
+                                message.setLiked(false);
 
-                            // Xóa nội dung trong ô nhập
-                            binding.etMessage.setText("");
+                                // Thêm vào danh sách và cập nhật hiển thị
+                                messageList.add(message);
+                                messageAdapter.notifyItemInserted(messageList.size() - 1);
+                                binding.recyclerMessages.smoothScrollToPosition(messageList.size() - 1);
 
-                            webSocketManager.sendMessage(message.getMessageContent(),message.getToUser());
+                                // Xóa nội dung trong ô nhập
+                                binding.etMessage.setText("");
 
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Upload image that bai", Toast.LENGTH_SHORT).show();
-                            Log.e(TAG, "Upload failed: " + response.message());
+                                webSocketManager.sendMessage(message.getMessageContent(),message.getToUser());
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Upload image thất bại", Toast.LENGTH_SHORT).show();
+                                Log.e(TAG, "Upload failed: " + response.message());
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<ImgurResponse> call, Throwable t) {
-                        Toast.makeText(getApplicationContext(), "Error uploading image", Toast.LENGTH_SHORT).show();
-                        Log.e(TAG, "Upload error: " + t.getMessage());
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<ImgurResponse> call, Throwable t) {
+                            Toast.makeText(getApplicationContext(), "Error uploading image", Toast.LENGTH_SHORT).show();
+                            Log.e(TAG, "Upload error: " + t.getMessage());
+                        }
+                    });
 
+                    // Xóa file tạm sau khi dùng xong (tùy chọn)
+                    tempFile.deleteOnExit();
+                } else {
+                    throw new IOException("Không thể mở InputStream từ Uri");
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "Error preparing file: " + e.getMessage(), e);
+                Toast.makeText(getApplicationContext(), "Error preparing image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
-                Log.e(TAG, "Error preparing file: " + e.getMessage());
-                Toast.makeText(getApplicationContext(), "Error preparing image", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Unexpected error: " + e.getMessage(), e);
+                Toast.makeText(getApplicationContext(), "Unexpected error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         } else {
             Toast.makeText(getApplicationContext(), "Please select an image first", Toast.LENGTH_SHORT).show();
         }
     }
+
     // Helper method to get real path from URI
     private String getRealPathFromURI(Uri uri) {
         String[] projection = { MediaStore.Images.Media.DATA };
