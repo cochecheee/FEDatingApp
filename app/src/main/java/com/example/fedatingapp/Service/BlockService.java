@@ -10,9 +10,10 @@ import retrofit2.Response;
 import com.example.fedatingapp.API.BlockAPI;
 import com.example.fedatingapp.Retrofit.RetrofitClient;
 import com.example.fedatingapp.entities.MatchList;
+import com.example.fedatingapp.utils.Token;
 
 public class BlockService {
-    private final BlockAPI blockAPI = RetrofitClient.getRetrofit().create(BlockAPI.class);
+    private final BlockAPI blockAPI = RetrofitClient.getRetrofit(new Token().getToken()).create(BlockAPI.class);
 
     // Block a user
     public void blockUser(MatchList blockUser, Callback<Void> callback) {

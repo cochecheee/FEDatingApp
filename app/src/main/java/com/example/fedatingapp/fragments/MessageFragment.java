@@ -46,6 +46,7 @@ public class MessageFragment extends Fragment implements MessageListAdapter.OnIt
     View rootLayout;
     private static final String TAG = MainActivity.class.getSimpleName();
     private List<MessageItem> messageList;
+    private List<MessageItem> message2List;
     private MessageListAdapter mAdapter;
     private Long curentUserId;
     private boolean isLoading = false;
@@ -63,7 +64,7 @@ public class MessageFragment extends Fragment implements MessageListAdapter.OnIt
         RecyclerView recyclerView = rootLayout.findViewById(R.id.recycler_view_messages);
 
         messageList = new ArrayList<>();
-
+        message2List = new ArrayList<>();
 
         mAdapter = new MessageListAdapter(getContext(), messageList,this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
@@ -73,8 +74,9 @@ public class MessageFragment extends Fragment implements MessageListAdapter.OnIt
         recyclerView.setAdapter(mAdapter);
 
         prepareMessageList();
+        prepareMessageList2();
 
-        LikeAdapter contactAdapter = new LikeAdapter(getContext(), messageList,this);
+        LikeAdapter contactAdapter = new LikeAdapter(getContext(), message2List,this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         RecyclerView recyclerViewContact =  rootLayout.findViewById(R.id.recycler_view_likes);
         recyclerViewContact.setLayoutManager(layoutManager);
@@ -95,6 +97,26 @@ public class MessageFragment extends Fragment implements MessageListAdapter.OnIt
                 {
                     messageList.clear();
                     messageList.addAll(response.body());
+                    mAdapter.notifyDataSetChanged();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<MessageItem>> call, Throwable throwable) {
+                Log.d("ChatFragment", "onFailure: "+ throwable.getMessage());
+            }
+        });
+    }
+
+    private void prepareMessageList2(){
+        messageService.getListMatch(curentUserId, new Callback<List<MessageItem>>() {
+            @Override
+            public void onResponse(Call<List<MessageItem>> call, Response<List<MessageItem>> response) {
+                if (response.isSuccessful() && !response.body().isEmpty())
+                {
+                    message2List.clear();
+                    message2List.addAll(response.body());
                     mAdapter.notifyDataSetChanged();
 
                 }

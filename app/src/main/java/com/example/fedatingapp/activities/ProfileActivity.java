@@ -52,7 +52,7 @@ public class ProfileActivity extends AppCompatActivity implements ImageAdapter.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.update_profile);
 
-        userId = getIntent().getLongExtra("userId", 1L);
+        userId = getIntent().getLongExtra("userId", 2L);
 
         binding();
 

@@ -12,9 +12,10 @@ import com.example.fedatingapp.API.MessageAPI;
 import com.example.fedatingapp.Retrofit.RetrofitClient;
 import com.example.fedatingapp.entities.Message;
 import com.example.fedatingapp.models.MessageItem;
+import com.example.fedatingapp.utils.Token;
 
 public class MessageService {
-    private final MessageAPI messageAPI = RetrofitClient.getRetrofit().create(MessageAPI.class);
+    private final MessageAPI messageAPI = RetrofitClient.getRetrofit(new Token().getToken()).create(MessageAPI.class);
 
     // Lấy tin nhắn cuối cùng giữa 2 user
     public void getListMatch (Long user1, Callback<List<MessageItem>> callback) {

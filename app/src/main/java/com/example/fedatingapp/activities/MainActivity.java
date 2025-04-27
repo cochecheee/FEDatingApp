@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private Context mContext;
     private ViewPager viewPager;
     WebSocketManager webSocketManager;
-    private long userId = 6L;
+    private long userId = 2L;
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {

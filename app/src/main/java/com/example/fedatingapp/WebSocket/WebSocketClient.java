@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.example.fedatingapp.entities.Message;
 import com.example.fedatingapp.models.Notification;
+import com.example.fedatingapp.utils.Token;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,7 +46,8 @@ public class WebSocketClient {
 
     public void connect() {
         Request request = new Request.Builder()
-                .url("ws://192.168.0.139:8080/chat") // Thay bằng IP thực tế nếu cần
+                .url("ws://192.168.0.139:8080/chat")
+                .addHeader("Authorization", "Bearer " + new Token().getToken())
                 .build();
 
         webSocket = client.newWebSocket(request, new WebSocketListener() {

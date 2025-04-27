@@ -61,9 +61,14 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
+
         final MessageItem item = messageList.get(position);
         holder.name.setText(item.getName());
-        if (item.getContent().contains("http"))
+        if (item.getCount() <= 0)
+        {
+            holder.content.setText("Bat dau tro chuyen ngay");
+        }
+        else if (item.getContent().contains("http"))
         {
             holder.content.setText("Ảnh");
         }

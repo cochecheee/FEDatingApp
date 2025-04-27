@@ -10,9 +10,10 @@ import retrofit2.Response;
 import com.example.fedatingapp.API.SearchCardAPI;
 import com.example.fedatingapp.Retrofit.RetrofitClient;
 import com.example.fedatingapp.entities.Users;
+import com.example.fedatingapp.utils.Token;
 
 public class SearchCardService {
-    private final SearchCardAPI searchCardAPI = RetrofitClient.getRetrofit().create(SearchCardAPI.class);
+    private final SearchCardAPI searchCardAPI = RetrofitClient.getRetrofit(new Token().getToken()).create(SearchCardAPI.class);
 
     // Tìm user theo Sexual Orientation
     public void findBySexualOrientation(String sexualOrientation, Callback<List<Users>> callback) {

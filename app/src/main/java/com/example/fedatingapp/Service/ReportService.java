@@ -8,9 +8,10 @@ import retrofit2.Response;
 import com.example.fedatingapp.API.ReportAPI;
 import com.example.fedatingapp.Retrofit.RetrofitClient;
 import com.example.fedatingapp.entities.Reports;
+import com.example.fedatingapp.utils.Token;
 
 public class ReportService {
-    private final ReportAPI reportAPI = RetrofitClient.getRetrofit().create(ReportAPI.class);
+    private final ReportAPI reportAPI = RetrofitClient.getRetrofit(new Token().getToken()).create(ReportAPI.class);
 
     // Report a user
     public void reportUser(Reports report, Callback<Void> callback) {

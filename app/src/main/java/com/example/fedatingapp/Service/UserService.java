@@ -21,6 +21,7 @@ import com.example.fedatingapp.entities.Image;
 import com.example.fedatingapp.entities.SearchCriteria;
 import com.example.fedatingapp.entities.Users;
 import com.example.fedatingapp.models.ImgurResponse;
+import com.example.fedatingapp.utils.Token;
 
 public class UserService {
 
@@ -36,7 +37,7 @@ public class UserService {
         imgurApi = imgurRetrofit.create(ImgurAPI.class);
     }
 
-    private final UsersAPI userAPI = RetrofitClient.getRetrofit().create(UsersAPI.class);
+    private final UsersAPI userAPI = RetrofitClient.getRetrofit(new Token().getToken()).create(UsersAPI.class);
 
     public void getUserInfo(Long userId, Callback<Users> callback) {
 
