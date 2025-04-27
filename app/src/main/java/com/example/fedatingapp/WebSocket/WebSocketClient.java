@@ -5,7 +5,9 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.example.fedatingapp.entities.Message;
+import com.example.fedatingapp.models.Notification;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
@@ -24,12 +26,18 @@ public class WebSocketClient {
     private WebSocket webSocket;
     private OkHttpClient client;
     private MessageListener listener;
+    private Listener listenerNotification;
     public interface MessageListener {
         void onMessageReceived(Message message);
     }
-    public WebSocketClient(Long currentUserId, MessageListener listener) {
+    public interface Listener {
+        void onNotifyReceived(Notification notification);
+    }
+
+    public WebSocketClient(Long currentUserId, MessageListener listener, Listener listenerNotification) {
         this.currentUserId = currentUserId;
         this.listener = listener;
+        this.listenerNotification = listenerNotification;
         this.client = new OkHttpClient.Builder()
                 .readTimeout(0, TimeUnit.MILLISECONDS)
                 .build();
@@ -37,7 +45,7 @@ public class WebSocketClient {
 
     public void connect() {
         Request request = new Request.Builder()
-                .url("ws://192.168.1.111:8080/chat") // Thay bằng IP thực tế nếu cần
+                .url("ws://192.168.0.139:8080/chat") // Thay bằng IP thực tế nếu cần
                 .build();
 
         webSocket = client.newWebSocket(request, new WebSocketListener() {
@@ -45,7 +53,7 @@ public class WebSocketClient {
             public void onOpen(WebSocket webSocket, Response response) {
                 Log.d(TAG, "Kết nối thành công");
                 // Gửi CONNECT frame
-                String connectFrame = "CONNECT\naccept-version:1.2\nhost:192.168.1.111\n\n\0";
+                String connectFrame = "CONNECT\naccept-version:1.2\nhost:192.168.0.139\n\n\0";
                 webSocket.send(connectFrame);
                 Log.d(TAG, "Đã gửi CONNECT frame: " + connectFrame);
             }
@@ -80,6 +88,33 @@ public class WebSocketClient {
                         });
                     } catch (Exception e) {
                         Log.e(TAG, "Lỗi parsing JSON: " + e.getMessage());
+                    }
+                }
+
+                if (text.contains("NOTIFY")) {
+                    int notifyIndex = text.indexOf("NOTIFY\n\n");
+                    if (notifyIndex != -1) {
+                        String jsonString = text.substring(notifyIndex + "NOTIFY\n\n".length()).trim();
+                        // Loại bỏ ký tự null terminator và ký tự thừa
+                        jsonString = jsonString.replace("\0", "").replaceAll("[^\\x20-\\x7E\\n\\r\\t]*", "");
+                        Log.d(TAG, "Extracted NOTIFY JSON: " + jsonString);
+
+                        JSONObject json = null;
+                        try {
+                            json = new JSONObject(jsonString);
+                            Notification notification = new Notification(
+                                    json.getString("notifyContent"),
+                                    json.getString("notifyType")
+                            );
+                            new Handler(Looper.getMainLooper()).post(() -> {
+                                if (listenerNotification != null) {
+                                    listenerNotification.onNotifyReceived(notification);
+                                }
+                            });
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+
                     }
                 }
             }

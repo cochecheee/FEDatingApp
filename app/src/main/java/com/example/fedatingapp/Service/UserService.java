@@ -18,6 +18,7 @@ import com.example.fedatingapp.API.ImgurAPI;
 import com.example.fedatingapp.API.UsersAPI;
 import com.example.fedatingapp.Retrofit.RetrofitClient;
 import com.example.fedatingapp.entities.Image;
+import com.example.fedatingapp.entities.SearchCriteria;
 import com.example.fedatingapp.entities.Users;
 import com.example.fedatingapp.models.ImgurResponse;
 
@@ -179,6 +180,25 @@ public class UserService {
             public void onFailure(Call<ImgurResponse> call, Throwable t) {
                 Log.e("UserService", "Imgur upload error: " + t.getMessage());
                 callback.onFailure(call, t);
+            }
+        });
+    }
+
+    public void getSearch(Long userid, Callback<SearchCriteria> callback){
+        Call<SearchCriteria> call = userAPI.getSearch(userid);
+        call.enqueue(new Callback<SearchCriteria>() {
+            @Override
+            public void onResponse(Call<SearchCriteria> call, Response<SearchCriteria> response) {
+                if (response.isSuccessful()) {
+                    callback.onResponse(call, Response.success(response.body()));
+                } else {
+                    callback.onResponse(call, response);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SearchCriteria> call, Throwable throwable) {
+                callback.onFailure(call, throwable);
             }
         });
     }

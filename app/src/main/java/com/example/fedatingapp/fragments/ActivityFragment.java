@@ -12,16 +12,19 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.fedatingapp.WebSocket.WebSocketClient;
 import com.example.fedatingapp.adapters.ViewPagerAdapter;
 
 import java.util.ArrayList;
 
 import com.example.fedatingapp.R;
+import com.example.fedatingapp.models.Notification;
+import com.example.fedatingapp.utils.NotificationUtils;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ActivityFragment extends Fragment implements View.OnClickListener, ViewPager.OnPageChangeListener {
+public class ActivityFragment extends Fragment implements View.OnClickListener, ViewPager.OnPageChangeListener, WebSocketClient.Listener {
 
 
     private Context mContext;
@@ -96,5 +99,10 @@ public class ActivityFragment extends Fragment implements View.OnClickListener, 
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+
+    @Override
+    public void onNotifyReceived(Notification notification) {
+        NotificationUtils.showPushNotification(getContext(),notification);
     }
 }

@@ -8,7 +8,7 @@ public class WebSocketManager {
     private WebSocketClient client;
     private Long currentUserId;
     private WebSocketClient.MessageListener messageListener;
-
+    private WebSocketClient.Listener listener;
     // Private constructor
     private WebSocketManager() {
         // Khởi tạo rỗng
@@ -23,7 +23,7 @@ public class WebSocketManager {
     }
 
     // Khởi tạo WebSocketClient
-    public void initialize(Long currentUserId, WebSocketClient.MessageListener listener) {
+    public void initialize(Long currentUserId, WebSocketClient.MessageListener listener, WebSocketClient.Listener listenerNotify) {
         this.currentUserId = currentUserId;
         this.messageListener = listener;
 
@@ -31,7 +31,7 @@ public class WebSocketManager {
             client.disconnect(); // Ngắt kết nối cũ nếu có
         }
 
-        client = new WebSocketClient(currentUserId, listener);
+        client = new WebSocketClient(currentUserId, listener, listenerNotify);
         client.connect();
         Log.d(TAG, "WebSocketClient đã được khởi tạo với userId: " + currentUserId);
     }
@@ -46,13 +46,13 @@ public class WebSocketManager {
     }
 
     // Cập nhật listener (nếu cần thay đổi listener, ví dụ khi chuyển activity)
-    public void updateMessageListener(WebSocketClient.MessageListener listener) {
+    public void updateMessageListener(WebSocketClient.MessageListener listener, WebSocketClient.Listener listenerNotify) {
         this.messageListener = listener;
         if (client != null) {
             // Tạo client mới với listener mới
             Long id = this.currentUserId;
             client.disconnect();
-            client = new WebSocketClient(id, listener);
+            client = new WebSocketClient(id, listener,listenerNotify );
             client.connect();
         }
     }

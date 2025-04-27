@@ -145,36 +145,25 @@
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/et_message"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="282dp"
+            android:layout_height="48dp"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
             android:background="@drawable/bg_edit_text_rounded"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:hint="Nhập tin nhắn..."
             android:inputType="text"
-            android:singleLine="false"
             android:maxLines="4"
             android:minHeight="40dp"
             android:padding="8dp"
+            android:singleLine="false"
             android:textColor="#000000"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btn_emoji"
+
             app:layout_constraintStart_toEndOf="@id/btn_attachment"
             app:layout_constraintTop_toTopOf="parent" />
 
 
-        <ImageButton
-            android:id="@+id/btn_emoji"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Biểu tượng cảm xúc"
-            android:src="@drawable/ic_emoji"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btn_send"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/btn_send"

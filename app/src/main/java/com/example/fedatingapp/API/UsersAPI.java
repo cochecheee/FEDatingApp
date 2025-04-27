@@ -1,12 +1,14 @@
 package com.example.fedatingapp.API;
 
 import com.example.fedatingapp.entities.Image;
+import com.example.fedatingapp.entities.SearchCriteria;
 import com.example.fedatingapp.entities.Users;
 
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
@@ -26,4 +28,7 @@ public interface UsersAPI {
 
     @POST("profile/getAllImage")
     Call<List<Image>> getAllImageProfile(@Query("userId") Long userId);
+
+    @GET("profile/getSearch")
+    Call<SearchCriteria> getSearch(@Query("userId") Long userId);
 }

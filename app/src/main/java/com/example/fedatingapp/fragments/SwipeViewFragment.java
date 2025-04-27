@@ -15,8 +15,11 @@ import android.view.ViewGroup;
 
 import com.example.fedatingapp.R;
 import com.example.fedatingapp.Utils;
+import com.example.fedatingapp.WebSocket.WebSocketClient;
+import com.example.fedatingapp.models.Notification;
 import com.example.fedatingapp.models.Profile;
 import com.example.fedatingapp.models.TinderCard;
+import com.example.fedatingapp.utils.NotificationUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mindorks.placeholderview.SwipeDecor;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
@@ -24,7 +27,7 @@ import com.mindorks.placeholderview.SwipePlaceHolderView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SwipeViewFragment extends Fragment {
+public class SwipeViewFragment extends Fragment implements WebSocketClient.Listener {
 
 
     private View rootLayout;
@@ -99,4 +102,8 @@ public class SwipeViewFragment extends Fragment {
         fab.animate().scaleX(0.7f).setDuration(100).withEndAction(() -> fab.animate().scaleX(1f).scaleY(1f));
     }
 
+    @Override
+    public void onNotifyReceived(Notification notification) {
+        NotificationUtils.showPushNotification(getContext(),notification);
+    }
 }

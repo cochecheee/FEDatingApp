@@ -12,14 +12,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ScrollView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.fedatingapp.R;
 import com.example.fedatingapp.Service.MessageService;
+import com.example.fedatingapp.WebSocket.WebSocketClient;
 import com.example.fedatingapp.activities.ChatActivity;
 import com.example.fedatingapp.activities.MainActivity;
 import com.example.fedatingapp.adapters.LikeAdapter;
 import com.example.fedatingapp.adapters.MessageListAdapter;
 import com.example.fedatingapp.models.MessageItem;
+import com.example.fedatingapp.models.Notification;
+import com.example.fedatingapp.utils.NotificationUtils;
+import com.example.fedatingapp.widgets.BounceScrollView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +39,8 @@ import retrofit2.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MessageFragment extends Fragment implements MessageListAdapter.OnItemClickListener, LikeAdapter.onclickinterface{
+public class MessageFragment extends Fragment implements MessageListAdapter.OnItemClickListener, LikeAdapter.onclickinterface
+, WebSocketClient.Listener {
     MessageService messageService = new MessageService();
 
     View rootLayout;
@@ -39,6 +48,7 @@ public class MessageFragment extends Fragment implements MessageListAdapter.OnIt
     private List<MessageItem> messageList;
     private MessageListAdapter mAdapter;
     private Long curentUserId;
+    private boolean isLoading = false;
     public MessageFragment(Long currentUserid) {
         this.curentUserId = currentUserid;
     }
@@ -51,6 +61,7 @@ public class MessageFragment extends Fragment implements MessageListAdapter.OnIt
         rootLayout = inflater.inflate(R.layout.fragment_chat, container, false);
 
         RecyclerView recyclerView = rootLayout.findViewById(R.id.recycler_view_messages);
+
         messageList = new ArrayList<>();
 
 
@@ -71,12 +82,13 @@ public class MessageFragment extends Fragment implements MessageListAdapter.OnIt
         //new HorizontalOverScrollBounceEffectDecorator(new RecyclerViewOverScrollDecorAdapter(recyclerViewContact));
 
 
+
         return rootLayout;
     }
 
 
     private void prepareMessageList(){
-        messageService.getListMatch(1L, new Callback<List<MessageItem>>() {
+        messageService.getListMatch(curentUserId, new Callback<List<MessageItem>>() {
             @Override
             public void onResponse(Call<List<MessageItem>> call, Response<List<MessageItem>> response) {
                 if (response.isSuccessful())
@@ -84,7 +96,6 @@ public class MessageFragment extends Fragment implements MessageListAdapter.OnIt
                     messageList.clear();
                     messageList.addAll(response.body());
                     mAdapter.notifyDataSetChanged();
-                    Log.d("ChatFragment", "onFailure: "+ messageList.get(0).getPicture());
 
                 }
             }
@@ -115,5 +126,10 @@ public class MessageFragment extends Fragment implements MessageListAdapter.OnIt
         intent.putExtra("RECEIVER_IMAGE",receiverPicture);
         intent.putExtra("CURRENT_USER_ID", curentUserId);
         startActivity(intent);
+    }
+
+    @Override
+    public void onNotifyReceived(Notification notification) {
+        NotificationUtils.showPushNotification(getContext(),notification);
     }
 }

@@ -9,14 +9,7 @@
     android:paddingEnd="64dp"
     android:paddingBottom="4dp">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profile_image"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:src="@drawable/ic_launcher_foreground"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@id/message_container"
-        app:layout_constraintStart_toStartOf="parent" />
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/message_container"
@@ -25,7 +18,7 @@
         android:layout_marginStart="8dp"
         android:background="@drawable/bg_message_sent"
         android:maxWidth="260dp"
-        app:layout_constraintStart_toEndOf="@id/profile_image"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView

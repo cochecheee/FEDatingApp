@@ -15,11 +15,14 @@ import android.view.ViewGroup;
 
 import com.example.fedatingapp.R;
 import com.example.fedatingapp.Service.MessageService;
+import com.example.fedatingapp.WebSocket.WebSocketClient;
 import com.example.fedatingapp.activities.ChatActivity;
 import com.example.fedatingapp.activities.MainActivity;
 import com.example.fedatingapp.adapters.MatchListAdapter;
 import com.example.fedatingapp.models.Match;
 import com.example.fedatingapp.models.MessageItem;
+import com.example.fedatingapp.models.Notification;
+import com.example.fedatingapp.utils.NotificationUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +35,7 @@ import retrofit2.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FeedFragment extends Fragment implements MatchListAdapter.onclickinterface {
+public class FeedFragment extends Fragment implements MatchListAdapter.onclickinterface, WebSocketClient.Listener {
     MessageService messageService = new MessageService();
     View rootLayout;
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -79,7 +82,6 @@ public class FeedFragment extends Fragment implements MatchListAdapter.onclickin
                     messageList.clear();
                     messageList.addAll(response.body());
                     mAdapter.notifyDataSetChanged();
-                    Log.d("ChatFragment", "onFailure: "+ messageList.get(0).getPicture());
 
                 }
             }
@@ -100,5 +102,10 @@ public class FeedFragment extends Fragment implements MatchListAdapter.onclickin
         intent.putExtra("RECEIVER_IMAGE",receiverPicture);
         intent.putExtra("CURRENT_USER_ID", userId);
         startActivity(intent);
+    }
+
+    @Override
+    public void onNotifyReceived(Notification notification) {
+        NotificationUtils.showPushNotification(getContext(),notification);
     }
 }

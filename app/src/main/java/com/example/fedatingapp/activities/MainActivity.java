@@ -19,23 +19,25 @@ import com.example.fedatingapp.fragments.AccountFragment;
 import com.example.fedatingapp.fragments.ActivityFragment;
 import com.example.fedatingapp.fragments.ExploreFragment;
 import com.example.fedatingapp.fragments.SwipeViewFragment;
+import com.example.fedatingapp.models.Notification;
+import com.example.fedatingapp.utils.NotificationUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, WebSocketClient.MessageListener{
+public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, WebSocketClient.Listener, WebSocketClient.MessageListener{
 
     private Context mContext;
     private ViewPager viewPager;
     WebSocketManager webSocketManager;
-    private long userId = 1L;
+    private long userId = 6L;
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         webSocketManager = WebSocketManager.getInstance();
-        webSocketManager.initialize(userId, this);
+        webSocketManager.initialize(userId, this,this);
         mContext = this;
 
         BottomNavigationView bnv = findViewById(R.id.bottom_navigation);
@@ -44,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         fragList.add(AccountFragment.newInstance(userId));
         fragList.add(new SwipeViewFragment());
         fragList.add(new ActivityFragment(userId));
-        fragList.add(new ExploreFragment());
+        fragList.add(new ExploreFragment(userId));
         ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(fragList, getSupportFragmentManager());
         viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(pagerAdapter);
@@ -72,8 +74,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         super.onPointerCaptureChanged(hasCapture);
     }
 
+
+    @Override
+    public void onNotifyReceived(Notification notification) {
+
+    }
+
     @Override
     public void onMessageReceived(Message message) {
-        Toast.makeText(mContext, "Co tin nhan gui den", Toast.LENGTH_SHORT).show();
+
     }
 }

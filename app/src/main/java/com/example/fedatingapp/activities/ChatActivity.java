@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -25,14 +26,17 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.fedatingapp.R;
 import com.example.fedatingapp.Service.MessageService;
 import com.example.fedatingapp.Service.UserService;
+import com.example.fedatingapp.WebSocket.WebSocketClient;
 import com.example.fedatingapp.WebSocket.WebSocketManager;
 import com.example.fedatingapp.adapters.ChatAdapter;
 import com.example.fedatingapp.databinding.BoxChatBinding;
+import com.example.fedatingapp.databinding.ChatItemRecieveBinding;
 import com.example.fedatingapp.entities.Message;
 import com.example.fedatingapp.models.ImgurResponse;
 
@@ -49,7 +53,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity implements WebSocketClient.MessageListener {
     private MessageService messageService = new MessageService();
     private WebSocketManager webSocketManager;
     private BoxChatBinding binding;
@@ -61,7 +65,8 @@ public class ChatActivity extends AppCompatActivity {
     private Long receiverUserId;
     private String receiverName;
     private String receiverImage;
-
+    private boolean isLoading = false;
+    private int offset = 0;
     private UserService userService = new UserService();
     private Uri mUri;
     public static final int MY_REQUEST_CODE = 100;
@@ -78,6 +83,9 @@ public class ChatActivity extends AppCompatActivity {
         receiverUserId = getIntent().getLongExtra("RECEIVER_USER_ID", 0L);
         receiverName = getIntent().getStringExtra("RECEIVER_NAME");
         receiverImage = getIntent().getStringExtra("RECEIVER_IMAGE");
+
+
+
 
         // Khởi tạo danh sách tin nhắn và adapter
         messageList = new ArrayList<>();
@@ -97,6 +105,57 @@ public class ChatActivity extends AppCompatActivity {
 
         // Tải các tin nhắn
         loadMessages();
+
+        binding.recyclerMessages.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (!isLoading) {
+                    int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
+                    if (firstVisibleItem <= 1) { // Gần đầu danh sách
+                        isLoading = true;
+                        loadMoreMessages();
+                        isLoading = false;
+                    }
+                }
+            }
+        });
+    }
+    private void loadMoreMessages()
+    {
+        List<Message> dummyMessages = new ArrayList<>();
+        offset += 1;
+        messageService.getMessages(currentUserId, receiverUserId, 20, offset, new Callback<List<Message>>() {
+            @Override
+            public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
+                if (response.isSuccessful() && response.body() != null)
+                {
+                    if (response.body().isEmpty())
+                    {
+                        offset -= 1;
+                        return;
+                    }
+                    dummyMessages.addAll(response.body());
+                    Collections.reverse(dummyMessages);
+                    dummyMessages.addAll(messageList);
+                    // Cập nhật lên UI
+                    messageList.clear();
+                    messageList.addAll(dummyMessages);
+                    messageAdapter.notifyDataSetChanged();
+                    binding.recyclerMessages.scrollToPosition(20 - 1);
+                    Log.d("ChatActivity", "ok: "+dummyMessages.get(0).getMessageContent());
+                }
+                else
+                {
+                    Log.d("ChatActivity", "onFailure: "+response.toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Message>> call, Throwable throwable) {
+                Log.d("ChatActivity", "onFailure: "+throwable.getMessage());
+            }
+        });
     }
 
     private void setupUserInfo() {
@@ -117,7 +176,7 @@ public class ChatActivity extends AppCompatActivity {
         binding.btnVideoCall.setOnClickListener(v -> makeVideoCall());
         binding.btnMore.setOnClickListener(v -> showMoreOptions());
         binding.btnAttachment.setOnClickListener(v -> attachFiles());
-        binding.btnEmoji.setOnClickListener(v -> showEmojiPicker());
+
         binding.etMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -155,7 +214,7 @@ public class ChatActivity extends AppCompatActivity {
     private void loadMessages() {
         List<Message> dummyMessages = new ArrayList<>();
 
-        messageService.getMessages(currentUserId, receiverUserId, 20, 0, new Callback<List<Message>>() {
+        messageService.getMessages(currentUserId, receiverUserId, 20, offset, new Callback<List<Message>>() {
             @Override
             public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
                 if (response.isSuccessful())
@@ -167,7 +226,6 @@ public class ChatActivity extends AppCompatActivity {
                     messageList.addAll(dummyMessages);
                     messageAdapter.notifyDataSetChanged();
                     binding.recyclerMessages.scrollToPosition(messageList.size() - 1);
-                    Log.d("ChatActivity", "ok: "+dummyMessages.get(0).getMessageContent());
                 }
                 else
                 {
@@ -204,10 +262,7 @@ public class ChatActivity extends AppCompatActivity {
         CheckPermission();
     }
 
-    private void showEmojiPicker() {
-        // TODO: Hiển thị bộ chọn emoji
-        Toast.makeText(this, "Chọn emoji", Toast.LENGTH_SHORT).show();
-    }
+
 
     public static String[] storge_permissions = {
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -347,21 +402,23 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    // Helper method to get real path from URI
-    private String getRealPathFromURI(Uri uri) {
-        String[] projection = { MediaStore.Images.Media.DATA };
-        Cursor cursor = requireActivity().getContentResolver().query(uri, projection, null, null, null);
-        if (cursor != null) {
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            String path = cursor.getString(column_index);
-            cursor.close();
-            return path;
-        }
-        return uri.getPath();
-    }
 
     private Activity requireActivity() {
         return ChatActivity.this;
+    }
+
+    @Override
+    public void onMessageReceived(Message message) {
+        if (message.getFromUser() == receiverUserId)
+        {
+            Toast.makeText(this, "co nhan duoc roi", Toast.LENGTH_SHORT).show();
+            // Thêm vào danh sách và cập nhật hiển thị
+            messageList.add(message);
+            messageAdapter.notifyItemInserted(messageList.size() - 1);
+            binding.recyclerMessages.smoothScrollToPosition(messageList.size() - 1);
+        }
+        else {
+
+        }
     }
 }

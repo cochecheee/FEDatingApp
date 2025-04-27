@@ -63,7 +63,14 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final MessageItem item = messageList.get(position);
         holder.name.setText(item.getName());
-        holder.content.setText(item.getContent());
+        if (item.getContent().contains("http"))
+        {
+            holder.content.setText("Ảnh");
+        }
+        else {
+            holder.content.setText(item.getContent());
+        }
+
 
         if(item.getCount() <= 0){
             holder.viewIndicator.setVisibility(View.INVISIBLE);
@@ -78,6 +85,8 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
                 listener.onItemClick((long) item.getId(),item.getName(),item.getPicture());
             }
         });
+
+
     }
 
     @Override

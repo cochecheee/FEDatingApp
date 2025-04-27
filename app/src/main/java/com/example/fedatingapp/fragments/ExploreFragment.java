@@ -15,19 +15,33 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.fedatingapp.R;
+import com.example.fedatingapp.Service.UserService;
+import com.example.fedatingapp.WebSocket.WebSocketClient;
 import com.example.fedatingapp.adapters.ExploreCardAdapter;
 import com.example.fedatingapp.databinding.ExploreBinding;
+import com.example.fedatingapp.entities.Users;
 import com.example.fedatingapp.models.ExploreViewModel;
 import com.example.fedatingapp.models.GridSpacingItemDecoration;
+import com.example.fedatingapp.models.Notification;
+import com.example.fedatingapp.utils.NotificationUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExploreFragment extends Fragment {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
+public class ExploreFragment extends Fragment implements WebSocketClient.Listener {
+    private UserService userService = new UserService();
     private ExploreBinding binding;
     private ExploreViewModel viewModel;
     private ExploreCardAdapter exploreAdapter;
+    private final Long userId;
+    public ExploreFragment(Long userId)
+    {
+        this.userId = userId;
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -78,8 +92,28 @@ public class ExploreFragment extends Fragment {
 
     private void setupMainBanner() {
         // Load ảnh cho banner chính
+
+        userService.getUserInfo(userId, new Callback<Users>() {
+            @Override
+            public void onResponse(Call<Users> call, Response<Users> response) {
+                if (response.isSuccessful())
+                {
+                    Users user = response.body();
+                    binding.textView9.setText(user.getSexualOrientation());
+                    if (user.getSexualOrientation().equals("Bisex"))
+                    {
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Users> call, Throwable throwable) {
+
+            }
+        });
         Glide.with(requireContext())
-                .load("https://example.com/featured_banner.jpg")
+                .load("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPv4Qp1LoG0y_f7_OAP8rmWJkkb1wdQEzCoQ&s")
                 .centerCrop()
                 .into(binding.imageView5);
     }
@@ -116,5 +150,10 @@ public class ExploreFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onNotifyReceived(Notification notification) {
+        NotificationUtils.showPushNotification(getContext(),notification);
     }
 }

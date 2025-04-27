@@ -74,7 +74,7 @@ public class ExploreViewModel extends ViewModel {
                 1,
                 "Du lịch",
                 "Những người thích du lịch khám phá",
-                "https://example.com/travel.jpg",
+                "https://vr360.com.vn/uploads/images/5-cach-quang-ba-du-lich.jpg",
                 true
         ));
 
@@ -82,7 +82,7 @@ public class ExploreViewModel extends ViewModel {
                 2,
                 "Âm nhạc",
                 "Kết nối qua âm nhạc yêu thích",
-                "https://example.com/music.jpg",
+                "https://cdn.nhathuoclongchau.com.vn/unsafe/800x0/https://cms-prod.s3-sgn09.fptcloud.com/am_nhac_la_gi_nhung_loi_ich_cua_am_nhac_trong_cuoc_song_1_049dffc6ba.png",
                 false
         ));
 
@@ -90,7 +90,7 @@ public class ExploreViewModel extends ViewModel {
                 3,
                 "Thể thao",
                 "Tìm bạn đồng hành luyện tập",
-                "https://example.com/sports.jpg",
+                "https://katatech.net/uploaded/tin-tuc/mon-the-thao-dot-calo-nhieu-nhat-1.webp",
                 true
         ));
 
@@ -98,7 +98,7 @@ public class ExploreViewModel extends ViewModel {
                 4,
                 "Nấu ăn",
                 "Cùng khám phá ẩm thực",
-                "https://example.com/cooking.jpg",
+                "https://media-cdn-v2.laodong.vn/Storage/NewsPortal/2021/10/17/964726/Nau-An.jpg",
                 false
         ));
 
@@ -106,7 +106,7 @@ public class ExploreViewModel extends ViewModel {
                 5,
                 "Sách",
                 "Tìm người cùng sở thích đọc sách",
-                "https://example.com/books.jpg",
+                "https://kenh14cdn.com/203336854389633024/2021/1/3/photo-1-16096337476961612322578.jpg",
                 false
         ));
 
@@ -114,7 +114,7 @@ public class ExploreViewModel extends ViewModel {
                 6,
                 "Thú cưng",
                 "Dành cho người yêu thú cưng",
-                "https://example.com/pets.jpg",
+                "https://bestcargo.vn/wp-content/uploads/2022/07/Hinh-anh-van-chuyen-thu-cung-bang-may-bay.jpg",
                 true
         ));
 
@@ -122,7 +122,7 @@ public class ExploreViewModel extends ViewModel {
                 7,
                 "Công nghệ",
                 "Kết nối với người đam mê công nghệ",
-                "https://example.com/tech.jpg",
+                "https://blog.topcv.vn/wp-content/uploads/2020/09/cong-nghe-thong-tin-la-gi-tn.jpg",
                 false
         ));
 
@@ -130,7 +130,7 @@ public class ExploreViewModel extends ViewModel {
                 8,
                 "Yoga & Thiền",
                 "Tìm bạn cùng tập luyện",
-                "https://example.com/yoga.jpg",
+                "https://www.saigondance.vn/wp-content/uploads/2018/08/hinh-anh-tap-yoga.jpg",
                 false
         ));
 

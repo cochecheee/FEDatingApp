@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -42,13 +43,15 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.fedatingapp.R;
 import com.example.fedatingapp.Service.UserService;
+import com.example.fedatingapp.WebSocket.WebSocketClient;
 import com.example.fedatingapp.activities.ProfileActivity;
 import com.example.fedatingapp.adapters.SliderAdapter;
 import com.example.fedatingapp.entities.Image;
 import com.example.fedatingapp.entities.SearchCriteria;
 import com.example.fedatingapp.entities.Users;
 import com.example.fedatingapp.models.ImgurResponse;
-import com.google.android.material.slider.RangeSlider;
+import com.example.fedatingapp.models.Notification;
+import com.example.fedatingapp.utils.NotificationUtils;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
@@ -72,7 +75,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AccountFragment extends Fragment {
+public class AccountFragment extends Fragment implements WebSocketClient.Listener {
 
     private View rootLayout;
     private TextView username, userJob, userOld;
@@ -162,50 +165,59 @@ public class AccountFragment extends Fragment {
         // Tạo dialog
         final Dialog dialog = new Dialog(getActivity());
         dialog.setContentView(R.layout.setting_search);
-
-        // Ánh xạ các view
+        // Find UI elements
         EditText etDatingPurpose = dialog.findViewById(R.id.et_dating_purpose);
-        RangeSlider rangeSliderAge = dialog.findViewById(R.id.range_slider_age);
-        TextView tvAgeRange = dialog.findViewById(R.id.tv_age_range);
+        EditText etMinAge = dialog.findViewById(R.id.min_age);
+        EditText etMaxAge = dialog.findViewById(R.id.max_age);
         EditText etDistance = dialog.findViewById(R.id.et_distance);
         EditText etInterests = dialog.findViewById(R.id.et_interests);
-        Spinner spinnerZodiac = dialog.findViewById(R.id.spinner_zodiac);
+        AutoCompleteTextView spinnerZodiac = dialog.findViewById(R.id.spinner_zodiac);
         EditText etPersonalityType = dialog.findViewById(R.id.et_personality_type);
         Button btnCancel = dialog.findViewById(R.id.btn_cancel);
         Button btnSave = dialog.findViewById(R.id.btn_save);
 
+        // Call getSearch API to populate the UI
+        userService.getSearch(userId, new Callback<SearchCriteria>() {
+            @Override
+            public void onResponse(Call<SearchCriteria> call, Response<SearchCriteria> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    SearchCriteria criteria = response.body();
 
+                    // Populate UI fields with API data
+                    etDatingPurpose.setText(criteria.getDatingPurpose());
+                    etMinAge.setText(String.valueOf(criteria.getMinAge()));
+                    etMaxAge.setText(String.valueOf(criteria.getMaxAge()));
+                    etDistance.setText(String.valueOf(criteria.getDistance()));
+                    etInterests.setText(criteria.getInterests());
+                    etPersonalityType.setText(criteria.getPersonalityType());
 
-        // Xử lý nút Save
+                    // Set zodiac sign in AutoCompleteTextView
+                    if (criteria.getZodiacSign() != null) {
+                        spinnerZodiac.setText(criteria.getZodiacSign(), false);
+                    }
+                } else {
+                    // Handle unsuccessful response (e.g., show error message)
+                    Toast.makeText(getActivity(), "Failed to load preferences", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SearchCriteria> call, Throwable throwable) {
+                // Handle API failure (e.g., network error)
+                Toast.makeText(getActivity(), "Error: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Handle Save button
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Thu thập dữ liệu
-                String datingPurpose = etDatingPurpose.getText().toString();
-                int minAge = Math.round(rangeSliderAge.getValues().get(0));
-                int maxAge = Math.round(rangeSliderAge.getValues().get(1));
-                int distance;
-                try {
-                    distance = Integer.parseInt(etDistance.getText().toString());
-                } catch (NumberFormatException e) {
-                    distance = 0;
-                }
-                String interests = etInterests.getText().toString();
-                String zodiacSign = spinnerZodiac.getSelectedItem().toString();
-                String personalityType = etPersonalityType.getText().toString();
-
-                // Tạo đối tượng DatingInfo
-                SearchCriteria datingInfo = new SearchCriteria(datingPurpose, minAge, maxAge,
-                        distance, interests, zodiacSign, personalityType);
-
-
-
-                // Đóng dialog
+                // TODO: Implement saving the updated preferences (e.g., call a save API)
                 dialog.dismiss();
             }
         });
 
-        // Xử lý nút Cancel
+        // Handle Cancel button
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -213,7 +225,7 @@ public class AccountFragment extends Fragment {
             }
         });
 
-        // Hiển thị dialog
+        // Show dialog
         dialog.show();
     }
 
@@ -468,5 +480,10 @@ public class AccountFragment extends Fragment {
         LocalDate birthday = LocalDate.of(namSinh, thangSinh, ngaySinh);
         Period old = Period.between(birthday, currentDay);
         return old.getYears();
+    }
+
+    @Override
+    public void onNotifyReceived(Notification notification) {
+        NotificationUtils.showPushNotification(getContext(),notification);
     }
 }
