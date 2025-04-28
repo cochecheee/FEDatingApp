@@ -97,7 +97,7 @@
     <!-- Distance with icon -->
 
     <EditText
-        android:id="@+id/min_age"
+        android:id="@+id/max_age"
         android:layout_width="101dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="220dp"
@@ -107,7 +107,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_age_label" />
 
     <EditText
-        android:id="@+id/max_age"
+        android:id="@+id/min_age"
         android:layout_width="101dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="56dp"
@@ -204,11 +204,12 @@
         app:layout_constraintTop_toTopOf="@+id/iv_zodiac"
         app:layout_constraintBottom_toBottomOf="@+id/iv_zodiac">
 
-        <AutoCompleteTextView
+        <Spinner
             android:id="@+id/spinner_zodiac"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="none"
+            android:entries="@array/zodiac_sign_list"
             android:paddingTop="16dp"
             android:paddingBottom="16dp" />
     </com.google.android.material.textfield.TextInputLayout>

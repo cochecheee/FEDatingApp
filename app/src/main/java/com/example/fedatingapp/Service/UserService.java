@@ -204,4 +204,27 @@ public class UserService {
         });
     }
 
+    public void updateSearch(SearchCriteria searchCriteria)
+    {
+        Call<Void> call = userAPI.updateSearch(searchCriteria);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful())
+                {
+                    Log.d("updateSearch", "onResponse: updatesearch thanh cong");
+                }
+                else
+                {
+                    Log.d("updateSearch", "onResponse: updatesearch that bai");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable throwable) {
+                Log.d("updateSearch", "onResponse: updatesearch that bai");
+            }
+        });
+    }
+
 }

@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -42,6 +43,7 @@ public class ExploreCardAdapter extends RecyclerView.Adapter<ExploreCardAdapter.
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
         ExploreCategory category = categories.get(position);
         holder.bind(category, listener);
+
     }
 
     @Override
@@ -55,12 +57,14 @@ public class ExploreCardAdapter extends RecyclerView.Adapter<ExploreCardAdapter.
         private TextView textDescription;
         private TextView textBadge;
 
+
         public CardViewHolder(@NonNull View itemView) {
             super(itemView);
             imageBackground = itemView.findViewById(R.id.imageBackground);
             textTitle = itemView.findViewById(R.id.textTitle);
             textDescription = itemView.findViewById(R.id.textDescription);
             textBadge = itemView.findViewById(R.id.textBadge);
+
         }
 
         public void bind(final ExploreCategory category, final OnItemClickListener listener) {
@@ -85,6 +89,8 @@ public class ExploreCardAdapter extends RecyclerView.Adapter<ExploreCardAdapter.
             itemView.setOnClickListener(v -> {
                 listener.onItemClick(category);
             });
+
+
         }
     }
 }

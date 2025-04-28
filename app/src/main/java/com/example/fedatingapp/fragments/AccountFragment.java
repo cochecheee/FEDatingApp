@@ -171,7 +171,7 @@ public class AccountFragment extends Fragment implements WebSocketClient.Listene
         EditText etMaxAge = dialog.findViewById(R.id.max_age);
         EditText etDistance = dialog.findViewById(R.id.et_distance);
         EditText etInterests = dialog.findViewById(R.id.et_interests);
-        AutoCompleteTextView spinnerZodiac = dialog.findViewById(R.id.spinner_zodiac);
+        Spinner spinnerZodiac = dialog.findViewById(R.id.spinner_zodiac);
         EditText etPersonalityType = dialog.findViewById(R.id.et_personality_type);
         Button btnCancel = dialog.findViewById(R.id.btn_cancel);
         Button btnSave = dialog.findViewById(R.id.btn_save);
@@ -191,10 +191,7 @@ public class AccountFragment extends Fragment implements WebSocketClient.Listene
                     etInterests.setText(criteria.getInterests());
                     etPersonalityType.setText(criteria.getPersonalityType());
 
-                    // Set zodiac sign in AutoCompleteTextView
-                    if (criteria.getZodiacSign() != null) {
-                        spinnerZodiac.setText(criteria.getZodiacSign(), false);
-                    }
+                    setSpinnerSelection(spinnerZodiac, getResources().getStringArray(R.array.zodiac_sign_list), criteria.getZodiacSign());
                 } else {
                     // Handle unsuccessful response (e.g., show error message)
                     Toast.makeText(getActivity(), "Failed to load preferences", Toast.LENGTH_SHORT).show();
@@ -212,7 +209,20 @@ public class AccountFragment extends Fragment implements WebSocketClient.Listene
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Implement saving the updated preferences (e.g., call a save API)
+                String datingPurpose = etDatingPurpose.getText().toString();
+                int minAge = etMinAge.getText().toString().isEmpty() ? 0 : Integer.parseInt(etMinAge.getText().toString());
+                int maxAge = etMaxAge.getText().toString().isEmpty() ? 0 : Integer.parseInt(etMaxAge.getText().toString());
+                int distance = etDistance.getText().toString().isEmpty() ? 0 : Integer.parseInt(etDistance.getText().toString());
+                String interests = etInterests.getText().toString();
+                String personalityType = etPersonalityType.getText().toString();
+                String zodiacSign = spinnerZodiac.getSelectedItem().toString();
+
+                // Tạo đối tượng Criteria
+                SearchCriteria newCriteria = new SearchCriteria(datingPurpose, minAge, maxAge, distance,
+                        interests,zodiacSign, personalityType);
+
+                newCriteria.setId(userId);
+                userService.updateSearch(newCriteria);
                 dialog.dismiss();
             }
         });
@@ -229,7 +239,16 @@ public class AccountFragment extends Fragment implements WebSocketClient.Listene
         dialog.show();
     }
 
-
+    private void setSpinnerSelection(Spinner spinner, String[] items, String value) {
+        if (value != null) {
+            for (int i = 0; i < items.length; i++) {
+                if (items[i].equals(value)) {
+                    spinner.setSelection(i);
+                    break;
+                }
+            }
+        }
+    }
     public static String[] storge_permissions = {
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
             android.Manifest.permission.READ_EXTERNAL_STORAGE
@@ -362,21 +381,6 @@ public class AccountFragment extends Fragment implements WebSocketClient.Listene
             Toast.makeText(getContext(), "Please select an image first", Toast.LENGTH_SHORT).show();
         }
     }
-
-    // Helper method to get real path from URI
-    private String getRealPathFromURI(Uri uri) {
-        String[] projection = { MediaStore.Images.Media.DATA };
-        Cursor cursor = requireActivity().getContentResolver().query(uri, projection, null, null, null);
-        if (cursor != null) {
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            String path = cursor.getString(column_index);
-            cursor.close();
-            return path;
-        }
-        return uri.getPath();
-    }
-
 
     private void checkCountImage()
     {

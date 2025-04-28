@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.fedatingapp.R;
+import com.example.fedatingapp.Service.SearchCardService;
 import com.example.fedatingapp.Service.UserService;
 import com.example.fedatingapp.WebSocket.WebSocketClient;
 import com.example.fedatingapp.adapters.ExploreCardAdapter;
@@ -33,6 +34,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ExploreFragment extends Fragment implements WebSocketClient.Listener {
+    private SearchCardService searchCardService = new SearchCardService();
     private UserService userService = new UserService();
     private ExploreBinding binding;
     private ExploreViewModel viewModel;
@@ -66,10 +68,7 @@ public class ExploreFragment extends Fragment implements WebSocketClient.Listene
     private void setupRecyclerView() {
         // Khởi tạo adapter với dữ liệu rỗng ban đầu
         exploreAdapter = new ExploreCardAdapter(new ArrayList<>(), category -> {
-            // Xử lý khi người dùng click vào một thẻ tìm kiếm
-            Toast.makeText(requireContext(), "Đã chọn: " + category.getTitle(), Toast.LENGTH_SHORT).show();
-            // Có thể điều hướng đến màn hình chi tiết của danh mục
-            // navigateToCategoryDetail(category);
+
         });
 
         // Cấu hình RecyclerView
@@ -122,8 +121,17 @@ public class ExploreFragment extends Fragment implements WebSocketClient.Listene
         // Quan sát dữ liệu danh mục
         viewModel.getCategories().observe(getViewLifecycleOwner(), categories -> {
             exploreAdapter = new ExploreCardAdapter(categories, category -> {
-                Toast.makeText(requireContext(), "Đã chọn: " + category.getTitle(), Toast.LENGTH_SHORT).show();
-                // navigateToCategoryDetail(category);
+                searchCardService.findByInterests(category.getTitle(), new Callback<List<Users>>() {
+                    @Override
+                    public void onResponse(Call<List<Users>> call, Response<List<Users>> response) {
+                        Toast.makeText(getContext(), "oke" + response.body().size(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Users>> call, Throwable throwable) {
+                        Toast.makeText(getContext(), "fail" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             });
             binding.recyclerView.setAdapter(exploreAdapter);
         });

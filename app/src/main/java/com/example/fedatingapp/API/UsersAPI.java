@@ -31,4 +31,7 @@ public interface UsersAPI {
 
     @GET("profile/getSearch")
     Call<SearchCriteria> getSearch(@Query("userId") Long userId);
+
+    @POST("profile/updateSearch")
+    Call<Void> updateSearch(@Body SearchCriteria searchCriteria);
 }

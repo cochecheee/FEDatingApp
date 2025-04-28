@@ -104,7 +104,7 @@ public class ExploreViewModel extends ViewModel {
 
         data.add(new ExploreCategory(
                 5,
-                "Sách",
+                "Book",
                 "Tìm người cùng sở thích đọc sách",
                 "https://kenh14cdn.com/203336854389633024/2021/1/3/photo-1-16096337476961612322578.jpg",
                 false

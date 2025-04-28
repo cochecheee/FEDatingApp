@@ -1,7 +1,7 @@
 package com.example.fedatingapp.utils;
 
 public class Token {
-    private static String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJleGFtcGxlQGVtYWlsLmNvbSIsImlhdCI6MTc0NTgyNTQ1MywiZXhwIjoxNzQ1ODI5MDUzfQ.FRUmMZoLaaUgYoB0K85OsT9KFHY8pI9lmJDMWO8q2ac";
+    private static String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJleGFtcGxlQGVtYWlsLmNvbSIsImlhdCI6MTc0NTg1NDAxMywiZXhwIjoxNzQ1ODU3NjEzfQ.6JvWkOVbdT8YsYQIYrMvgdnXCs6DUjA-PjxyOY9tqOg";
     public String getToken()
     {
         return token;
