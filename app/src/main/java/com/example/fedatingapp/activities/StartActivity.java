@@ -28,11 +28,11 @@ public class StartActivity extends AppCompatActivity {
         btnFacebook = findViewById(R.id.btn_facebook_connect);
         btnPhoneValidation = findViewById(R.id.btn_number_connect);
 
-        btnPhoneValidation.setOnClickListener(view -> {
-            Intent intent = new Intent(mContext, PhoneVerificationActivity.class);
-            startActivity(intent);
-            finish();
-        });
+//        btnPhoneValidation.setOnClickListener(view -> {
+//            Intent intent = new Intent(mContext, PhoneVerificationActivity.class);
+//            startActivity(intent);
+//            finish();
+//        });
 
 
 

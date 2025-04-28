@@ -317,4 +317,6 @@
     <color name="md_blue_grey_800">#37474F</color>
     <color name="md_blue_grey_900">#263238</color>
 
+    <!-- other -->
+    <color name="tinder_red">#FD5068</color>
 </resources>

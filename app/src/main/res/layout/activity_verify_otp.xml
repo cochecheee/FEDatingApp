@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:padding="32dp"
+    tools:context=".activities.VerifyOtpActivity"> <!-- Thay bằng tên Activity của bạn -->
+
+    <TextView
+        android:id="@+id/textViewVerifyTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:text="@string/verify_otp_title"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/md_black_1000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewVerifyInstruction"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text="@string/verify_otp_instruction_placeholder"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewVerifyTitle"
+        tools:text="Nhập mã gồm 6 chữ số đã được gửi đến email của bạn"/>
+    <!-- tools:text dùng để xem trước trong layout editor -->
+
+    <!-- Trường nhập mã OTP -->
+    <!-- Cách 1: Dùng TextInputEditText đơn giản -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayoutOtp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:hint="@string/hint_otp_code"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewVerifyInstruction">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextOtp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:maxLength="6"
+            android:gravity="center"
+            android:letterSpacing="0.5"
+            android:textSize="20sp"
+            android:maxLines="1"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Cách 2: Dùng thư viện PinView (ví dụ: com.chaos.view.PinView) -->
+    <!-- Bạn cần thêm dependency: implementation 'io.github.chaosleung:pinview:1.4.4' -->
+    <!--
+    <com.chaos.view.PinView
+        android:id="@+id/pinViewOtp"
+        style="@style/PinWidget.PinView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:cursorVisible="true"
+        android:inputType="number"
+        android:itemBackground="@drawable/bg_pin_item" // Cần tạo drawable này
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:cursorColor="@color/tinder_red"
+        app:hideLineWhenFilled="true"
+        app:itemCount="6"
+        app:itemHeight="48dp"
+        app:itemRadius="4dp"
+        app:itemSpacing="8dp"
+        app:itemWidth="48dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewVerifyInstruction"
+        app:lineColor="@android:color/darker_gray"
+        app:lineWidth="1dp"
+        app:viewType="rectangle" />
+    -->
+
+    <!-- Nút Xác thực -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonVerifyOtp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:paddingVertical="12dp"
+        android:text="@string/button_verify"
+        android:textColor="@android:color/white"
+        app:backgroundTint="@color/tinder_red"
+        app:cornerRadius="25dp"
+        app:layout_constraintEnd_toEndOf="@+id/textInputLayoutOtp"
+        app:layout_constraintStart_toStartOf="@+id/textInputLayoutOtp"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutOtp" />
+    <!-- Nếu dùng PinView thì constraint vào pinViewOtp -->
+
+    <!-- Link Gửi lại mã OTP -->
+    <TextView
+        android:id="@+id/textViewResendOtp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/resend_otp_link"
+        android:textColor="@color/tinder_red"
+        android:textSize="14sp"
+        android:clickable="true"
+        android:focusable="true"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonVerifyOtp" />
+
+    <!-- (Tùy chọn) Link thay đổi số điện thoại/email -->
+    <TextView
+        android:id="@+id/textViewChangeIdentifier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:text="@string/change_email_link"
+        android:textColor="@color/md_black_1000"
+        android:textSize="14sp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

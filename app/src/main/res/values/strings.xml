@@ -21,4 +21,49 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Login String -->
+    <string name="app_logo_description">Logo ứng dụng</string>
+    <string name="login_terms_notice">Bằng việc nhấn vào Đăng nhập, bạn đồng ý với Điều khoản Sử dụng của chúng tôi. Tìm hiểu cách chúng tôi xử lý dữ liệu của bạn trong Chính sách Quyền riêng tư và Chính sách Cookie.</string>
+    <string name="login_with_google">ĐĂNG NHẬP BẰNG GOOGLE</string>
+    <string name="login_with_facebook">ĐĂNG NHẬP BẰNG FACEBOOK</string>
+    <string name="login_with_phone">ĐĂNG NHẬP BẰNG SỐ ĐIỆN THOẠI</string>
+    <string name="trouble_signing_in">Quên mật khẩu?</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Mật khẩu</string>
+    <string name="or_divider_text">HOẶC</string>
+    <string name="login_button_text">ĐĂNG NHẬP</string>
+
+    <string name="register_title">Tạo tài khoản</string>
+    <string name="register_subtitle_email">Nhập email của bạn để bắt đầu</string>
+    <string name="button_send_otp">Gửi mã</string>
+    <string name="register_terms_notice">Bằng việc tiếp tục, bạn đồng ý với Điều khoản Sử dụng và Chính sách Quyền riêng tư của chúng tôi.</string>
+    <string name="back_to_login_link">Đã có tài khoản? Đăng nhập</string>
+
+    <string name="verify_otp_title">Xác thực OTP</string>
+    <string name="verify_otp_instruction_placeholder">Nhập mã gồm 6 chữ số đã được gửi đến %s</string> <!-- %s sẽ được thay bằng SĐT/Email -->
+    <string name="hint_otp_code">Mã OTP</string>
+    <string name="button_verify">Xác thực</string>
+    <string name="resend_otp_link">Gửi lại mã?</string>
+    <string name="change_email_link">Thay đổi email?</string> <!-- Dùng nếu xác thực qua email -->
+
+    <string name="forgot_password_title">Quên mật khẩu?</string>
+    <string name="forgot_password_instruction">Nhập email hoặc số điện thoại đã đăng ký để nhận mã đặt lại mật khẩu.</string>
+    <string name="hint_email_or_phone">Email hoặc Số điện thoại</string>
+    <string name="button_send_reset_code">Gửi mã đặt lại</string>
+
+    <string name="reset_password_title">Đặt lại mật khẩu</string>
+    <string name="reset_password_instruction">Nhập mã OTP và đặt mật khẩu mới cho tài khoản của bạn.</string>
+    <string name="hint_new_password">Mật khẩu mới</string>
+    <string name="hint_confirm_password">Xác nhận mật khẩu mới</string>
+    <string name="button_reset_password">Đặt lại mật khẩu</string>
+
+    <string name="back_button_description">Quay lại</string>
+
+    <!-- Strings for Set Password Activity -->
+    <string name="set_password_title">Đặt mật khẩu</string>
+    <string name="set_password_instruction">Tạo mật khẩu an toàn cho tài khoản của bạn.</string>
+    <!-- -->
+    <string name="button_complete_registration">Hoàn tất Đăng ký</string>
+
 </resources>
