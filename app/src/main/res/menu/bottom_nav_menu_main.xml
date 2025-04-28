@@ -6,7 +6,7 @@
         android:title="Profile" />
     <item
         android:id="@+id/explore"
-        android:icon="@drawable/fire"
+        android:icon="@drawable/ic_explore"
         android:title="Explore"/>
     <item
         android:id="@+id/fire"

@@ -3,6 +3,7 @@ package com.example.fedatingapp.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,10 +21,12 @@ import com.bumptech.glide.Glide;
 import com.example.fedatingapp.R;
 import com.example.fedatingapp.Service.MessageService;
 import com.example.fedatingapp.WebSocket.WebSocketClient;
+import com.example.fedatingapp.WebSocket.WebSocketManager;
 import com.example.fedatingapp.activities.ChatActivity;
 import com.example.fedatingapp.activities.MainActivity;
 import com.example.fedatingapp.adapters.LikeAdapter;
 import com.example.fedatingapp.adapters.MessageListAdapter;
+import com.example.fedatingapp.entities.Message;
 import com.example.fedatingapp.models.MessageItem;
 import com.example.fedatingapp.models.Notification;
 import com.example.fedatingapp.utils.NotificationUtils;
@@ -40,9 +43,10 @@ import retrofit2.Response;
  * A simple {@link Fragment} subclass.
  */
 public class MessageFragment extends Fragment implements MessageListAdapter.OnItemClickListener, LikeAdapter.onclickinterface
-, WebSocketClient.Listener {
+, WebSocketClient.MessageListener {
+    private static final String CHANNEL_ID = "notify_channel";
     MessageService messageService = new MessageService();
-
+    WebSocketManager webSocketManager;
     View rootLayout;
     private static final String TAG = MainActivity.class.getSimpleName();
     private List<MessageItem> messageList;
@@ -62,7 +66,8 @@ public class MessageFragment extends Fragment implements MessageListAdapter.OnIt
         rootLayout = inflater.inflate(R.layout.fragment_chat, container, false);
 
         RecyclerView recyclerView = rootLayout.findViewById(R.id.recycler_view_messages);
-
+        webSocketManager = WebSocketManager.getInstance();
+        webSocketManager.setMessageListener(this);
         messageList = new ArrayList<>();
         message2List = new ArrayList<>();
 
@@ -118,10 +123,8 @@ public class MessageFragment extends Fragment implements MessageListAdapter.OnIt
                     message2List.clear();
                     message2List.addAll(response.body());
                     mAdapter.notifyDataSetChanged();
-
                 }
             }
-
             @Override
             public void onFailure(Call<List<MessageItem>> call, Throwable throwable) {
                 Log.d("ChatFragment", "onFailure: "+ throwable.getMessage());
@@ -151,7 +154,13 @@ public class MessageFragment extends Fragment implements MessageListAdapter.OnIt
     }
 
     @Override
-    public void onNotifyReceived(Notification notification) {
-        NotificationUtils.showPushNotification(getContext(),notification);
+    public void onMessageReceived(Message message) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle("Tin nhan moi")
+                .setContentText(message.getMessageContent())
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        builder.build();
+        prepareMessageList();
     }
 }

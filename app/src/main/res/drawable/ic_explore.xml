@@ -1,0 +1,45 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+
+    <!-- Background square with rounded corners -->
+    <path
+        android:fillColor="#f44336"
+        android:pathData="M8,8 L40,8 A4,4 0 0 1 44,12 L44,40 A4,4 0 0 1 40,44 L8,44 A4,4 0 0 1 4,40 L4,12 A4,4 0 0 1 8,8 z" />
+
+    <!-- Window frame -->
+    <path
+        android:fillColor="#d32f2f"
+        android:pathData="M10,10 L38,10 A2,2 0 0 1 40,12 L40,36 A2,2 0 0 1 38,38 L10,38 A2,2 0 0 1 8,36 L8,12 A2,2 0 0 1 10,10 z" />
+
+    <!-- Window frame stroke -->
+    <path
+        android:strokeColor="#ffffff"
+        android:strokeWidth="2"
+        android:pathData="M10,10 L38,10 A2,2 0 0 1 40,12 L40,36 A2,2 0 0 1 38,38 L10,38 A2,2 0 0 1 8,36 L8,12 A2,2 0 0 1 10,10 z" />
+
+    <!-- Window panes (vertical) -->
+    <path
+        android:strokeColor="#ffffff"
+        android:strokeWidth="2"
+        android:pathData="M24,8 L24,40" />
+
+    <!-- Window panes (horizontal) -->
+    <path
+        android:strokeColor="#ffffff"
+        android:strokeWidth="2"
+        android:pathData="M8,24 L40,24" />
+
+    <!-- Shadow effects -->
+    <path
+        android:fillColor="#b71c1c"
+        android:pathData="M8,8 L40,8 L40,12 L8,12 z"
+        android:fillAlpha="0.3" />
+
+    <path
+        android:fillColor="#b71c1c"
+        android:pathData="M8,8 L12,8 L12,40 L8,40 z"
+        android:fillAlpha="0.3" />
+</vector>

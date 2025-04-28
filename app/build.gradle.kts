@@ -48,7 +48,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-
+    implementation ("androidx.core:core-ktx:1.16.0")
     implementation("androidx.core:core:1.13.0")
 
     // SliderView library

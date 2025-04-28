@@ -1,5 +1,7 @@
 package com.example.fedatingapp.activities;
 
+
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
@@ -25,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,6 +42,8 @@ import com.example.fedatingapp.databinding.BoxChatBinding;
 import com.example.fedatingapp.databinding.ChatItemRecieveBinding;
 import com.example.fedatingapp.entities.Message;
 import com.example.fedatingapp.models.ImgurResponse;
+import com.example.fedatingapp.models.Notification;
+import com.example.fedatingapp.utils.NotificationUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -54,6 +59,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ChatActivity extends AppCompatActivity implements WebSocketClient.MessageListener {
+    private static final String CHANNEL_ID = "notify_channel";
     private MessageService messageService = new MessageService();
     private WebSocketManager webSocketManager;
     private BoxChatBinding binding;
@@ -78,6 +84,7 @@ public class ChatActivity extends AppCompatActivity implements WebSocketClient.M
         binding = BoxChatBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         webSocketManager = WebSocketManager.getInstance();
+        webSocketManager.setMessageListener(this::onMessageReceived);
         // Lấy dữ liệu từ Intent
         currentUserId = getIntent().getLongExtra("CURRENT_USER_ID", 0L);
         receiverUserId = getIntent().getLongExtra("RECEIVER_USER_ID", 0L);
@@ -411,14 +418,23 @@ public class ChatActivity extends AppCompatActivity implements WebSocketClient.M
     public void onMessageReceived(Message message) {
         if (message.getFromUser() == receiverUserId)
         {
-            Toast.makeText(this, "co nhan duoc roi", Toast.LENGTH_SHORT).show();
-            // Thêm vào danh sách và cập nhật hiển thị
             messageList.add(message);
             messageAdapter.notifyItemInserted(messageList.size() - 1);
             binding.recyclerMessages.smoothScrollToPosition(messageList.size() - 1);
         }
         else {
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setSmallIcon(R.drawable.ic_notification)
+                    .setContentTitle("Tin nhan moi")
+                    .setContentText(message.getMessageContent())
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        webSocketManager.removeMessageListener();
     }
 }

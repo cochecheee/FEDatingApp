@@ -35,18 +35,33 @@ public class WebSocketClient {
         void onNotifyReceived(Notification notification);
     }
 
-    public WebSocketClient(Long currentUserId, MessageListener listener, Listener listenerNotification) {
+    public WebSocketClient(Long currentUserId) {
         this.currentUserId = currentUserId;
-        this.listener = listener;
-        this.listenerNotification = listenerNotification;
         this.client = new OkHttpClient.Builder()
                 .readTimeout(0, TimeUnit.MILLISECONDS)
                 .build();
     }
 
+    public void setMessageListener(MessageListener listener)
+    {
+        this.listener = listener;
+    }
+    public void setListenerNotification(Listener listenerNotification)
+    {
+        this.listenerNotification = listenerNotification;
+    }
+
+    public MessageListener getMessageListener() {
+        return this.listener;
+    }
+
+    public Listener getNotificationListener() {
+        return this.listenerNotification;
+    }
+
     public void connect() {
         Request request = new Request.Builder()
-                .url("ws://192.168.0.139:8080/chat")
+                .url("ws://196.169.7.96:8080/chat")
                 .addHeader("Authorization", "Bearer " + new Token().getToken())
                 .build();
 
@@ -55,7 +70,7 @@ public class WebSocketClient {
             public void onOpen(WebSocket webSocket, Response response) {
                 Log.d(TAG, "Kết nối thành công");
                 // Gửi CONNECT frame
-                String connectFrame = "CONNECT\naccept-version:1.2\nhost:192.168.0.139\n\n\0";
+                String connectFrame = "CONNECT\naccept-version:1.2\nhost:196.169.7.96\n\n\0";
                 webSocket.send(connectFrame);
                 Log.d(TAG, "Đã gửi CONNECT frame: " + connectFrame);
             }
@@ -73,7 +88,7 @@ public class WebSocketClient {
                 }
 
                 // Nếu là MESSAGE frame, xử lý tin nhắn
-                if (text.contains("MESSAGE")) {
+                if (text.contains("MESSAGE") ) {
                     try {
                         String jsonString = text.split("\n\n")[1].trim().replace("\0", "");
                         JSONObject json = new JSONObject(jsonString);
@@ -94,29 +109,35 @@ public class WebSocketClient {
                 }
 
                 if (text.contains("NOTIFY")) {
-                    int notifyIndex = text.indexOf("NOTIFY\n\n");
-                    if (notifyIndex != -1) {
-                        String jsonString = text.substring(notifyIndex + "NOTIFY\n\n".length()).trim();
-                        // Loại bỏ ký tự null terminator và ký tự thừa
-                        jsonString = jsonString.replace("\0", "").replaceAll("[^\\x20-\\x7E\\n\\r\\t]*", "");
-                        Log.d(TAG, "Extracted NOTIFY JSON: " + jsonString);
+                    try {
+                        // Tìm và phân tích phần JSON sau NOTIFY
+                        int notifyIndex = text.indexOf("NOTIFY\n\n");
+                        if (notifyIndex != -1) {
+                            String jsonString = text.substring(notifyIndex + "NOTIFY\n\n".length()).trim();
+                            // Loại bỏ ký tự null terminator và ký tự thừa
+                            jsonString = jsonString.replace("\0", "").replaceAll("[^\\x20-\\x7E\\n\\r\\t]*", "");
+                            Log.d(TAG, "Extracted NOTIFY JSON: " + jsonString);
 
-                        JSONObject json = null;
-                        try {
-                            json = new JSONObject(jsonString);
-                            Notification notification = new Notification(
-                                    json.getString("notifyContent"),
-                                    json.getString("notifyType")
-                            );
-                            new Handler(Looper.getMainLooper()).post(() -> {
-                                if (listenerNotification != null) {
-                                    listenerNotification.onNotifyReceived(notification);
-                                }
-                            });
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
+                            try {
+                                JSONObject json = new JSONObject(jsonString);
+                                Notification notification = new Notification(
+                                        json.getString("notifyContent"),
+                                        json.getString("notifyType")
+                                );
+                                new Handler(Looper.getMainLooper()).post(() -> {
+                                    if (listenerNotification != null) {
+                                        listenerNotification.onNotifyReceived(notification);
+                                    } else {
+                                        Log.w(TAG, "NotificationListener là null");
+                                    }
+                                });
+                            } catch (JSONException e) {
+                                Log.e(TAG, "Lỗi phân tích JSON thông báo: " + e.getMessage());
+                            }
                         }
-
+                        return; // Đã xử lý tin nhắn NOTIFY, thoát phương thức
+                    } catch (Exception e) {
+                        Log.e(TAG, "Lỗi xử lý thông báo NOTIFY: " + e.getMessage());
                     }
                 }
             }
