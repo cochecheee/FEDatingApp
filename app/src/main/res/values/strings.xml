@@ -66,4 +66,16 @@
     <!-- -->
     <string name="button_complete_registration">Hoàn tất Đăng ký</string>
 
+
+    <string name="verify_otp_instruction_dynamic">Nhập mã gồm 6 chữ số đã gửi đến %s</string>
+    <!-- Lỗi validation -->
+    <string name="error_otp_required">Vui lòng nhập mã OTP</string>
+    <string name="error_otp_length">Mã OTP phải có 6 chữ số</string>
+
+    <!-- Lỗi validation -->
+    <string name="error_password_required">Vui lòng nhập mật khẩu</string>
+    <string name="error_password_length">Mật khẩu phải có ít nhất 6 ký tự</string>
+    <string name="error_confirm_password_required">Vui lòng nhập lại mật khẩu</string>
+    <string name="error_password_mismatch">Mật khẩu không khớp</string>
+
 </resources>

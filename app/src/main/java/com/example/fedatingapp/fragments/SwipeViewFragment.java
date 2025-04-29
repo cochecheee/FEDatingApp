@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.fedatingapp.R;
-import com.example.fedatingapp.Utils;
+import com.example.fedatingapp.utils.Utils;
 import com.example.fedatingapp.models.Profile;
 import com.example.fedatingapp.models.TinderCard;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;

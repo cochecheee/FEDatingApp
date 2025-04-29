@@ -1,4 +1,4 @@
-package com.example.fedatingapp;
+package com.example.fedatingapp.utils;
 
 import android.content.Context;
 import android.content.res.AssetManager;

@@ -4,8 +4,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    private static Retrofit retrofit;
-    private static final String BASE_URL = "http://app.iotstar.vn:8081/appfoods/";
+    private static Retrofit retrofit = null;
+    private static ApiService apiService = null;
+    private static final String BASE_URL = "http://192.168.100.225:8080/api/";
 
     public static Retrofit getRetrofit() {
         if(retrofit == null) {
@@ -16,5 +17,12 @@ public class RetrofitClient {
                     .build();
         }
         return retrofit;
+    }
+
+    public static ApiService getApiService() {
+        if (apiService == null) {
+            apiService = getRetrofit().create(ApiService.class);
+        }
+        return apiService;
     }
 }
