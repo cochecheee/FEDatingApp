@@ -9,10 +9,13 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.Toast;
@@ -54,6 +57,7 @@ public class MessageFragment extends Fragment implements MessageListAdapter.OnIt
     private MessageListAdapter mAdapter;
     private Long curentUserId;
     private boolean isLoading = false;
+    private EditText findName ;
     public MessageFragment(Long currentUserid) {
         this.curentUserId = currentUserid;
     }
@@ -88,12 +92,46 @@ public class MessageFragment extends Fragment implements MessageListAdapter.OnIt
         recyclerViewContact.setAdapter(contactAdapter);
         //new HorizontalOverScrollBounceEffectDecorator(new RecyclerViewOverScrollDecorAdapter(recyclerViewContact));
 
+        findName = rootLayout.findViewById(R.id.find_name);
+        findName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                filterMessageList(charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
 
         return rootLayout;
     }
 
-
+    private void filterMessageList(String text)
+    {
+        List<MessageItem> filteredList = new ArrayList<>();
+        if (text.isEmpty()) {
+            prepareMessageList2();
+        } else {
+            // Filter the list based on search text
+            String searchQuery = text.toLowerCase().trim();
+            for (MessageItem item : messageList) {
+                if (item.getName().toLowerCase().contains(searchQuery)) {
+                    filteredList.add(item);
+                }
+            }
+        }
+        message2List.clear();
+        message2List.addAll(filteredList);
+        mAdapter.notifyDataSetChanged();
+    }
     private void prepareMessageList(){
         messageService.getListMatch(curentUserId, new Callback<List<MessageItem>>() {
             @Override
