@@ -1,5 +1,7 @@
 package com.example.fedatingapp.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -10,15 +12,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.fedatingapp.R;
 import com.example.fedatingapp.activities.MainActivity;
 import com.example.fedatingapp.adapters.MatchListAdapter;
+import com.example.fedatingapp.api.ApiService;
+import com.example.fedatingapp.api.RetrofitClient;
+import com.example.fedatingapp.api.response.ApiResponse;
 import com.example.fedatingapp.models.Match;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,7 +40,7 @@ public class FeedFragment extends Fragment {
     private List<Match> matchList;
     private MatchListAdapter mAdapter;
     private String[] matchDates = {"11 Jan. 2020", "26 Dec. 2019", "12 Dec. 2019", "17 Nov. 2019", "06 Oct. 2019"};
-    private int[] matchPictures = {R.drawable.user_woman_3, R.drawable.user_woman_4, R.drawable.user_woman_5, R.drawable.user_woman_6 , R.drawable.user_woman_7};
+    private int[] matchPictures = {R.drawable.user_woman_3, R.drawable.user_woman_4, R.drawable.user_woman_5, R.drawable.user_woman_6, R.drawable.user_woman_7};
     private String[] matchNames = {"Fanelle", "Chloe", "Cynthia", "Kate", "Angele"};
     private String[] matchLocations = {"à 3 km", "à 18 km", "à moins d'un kilometre", "à 4 km", "à 6 km"};
 
@@ -63,16 +73,14 @@ public class FeedFragment extends Fragment {
     }
 
 
-    private void prepareMatchList(){
+    private void prepareMatchList() {
 
         Random rand = new Random();
         int id = rand.nextInt(100);
         int i;
-        for(i=0; i<5; i++) {
+        for (i = 0; i < 5; i++) {
             Match match = new Match(id, matchNames[i], matchPictures[i], matchLocations[i], matchDates[i]);
             matchList.add(match);
         }
     }
-
-
 }
