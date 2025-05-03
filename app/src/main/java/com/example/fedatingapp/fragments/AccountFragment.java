@@ -17,6 +17,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +47,7 @@ import com.example.fedatingapp.R;
 import com.example.fedatingapp.Service.UserService;
 import com.example.fedatingapp.WebSocket.WebSocketClient;
 import com.example.fedatingapp.activities.ProfileActivity;
+import com.example.fedatingapp.activities.SettingSearchActivity;
 import com.example.fedatingapp.adapters.SliderAdapter;
 import com.example.fedatingapp.entities.Image;
 import com.example.fedatingapp.entities.SearchCriteria;
@@ -52,6 +55,12 @@ import com.example.fedatingapp.entities.Users;
 import com.example.fedatingapp.models.ImgurResponse;
 import com.example.fedatingapp.models.Notification;
 import com.example.fedatingapp.utils.NotificationUtils;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.slider.RangeSlider;
+import com.google.android.material.slider.Slider;
+import com.google.android.material.textfield.TextInputEditText;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
@@ -162,93 +171,12 @@ public class AccountFragment extends Fragment implements WebSocketClient.Listene
     }
 
     private void showDatingInfoPopup() {
-        // Tạo dialog
-        final Dialog dialog = new Dialog(getActivity());
-        dialog.setContentView(R.layout.setting_search);
-        // Find UI elements
-        EditText etDatingPurpose = dialog.findViewById(R.id.et_dating_purpose);
-        EditText etMinAge = dialog.findViewById(R.id.min_age);
-        EditText etMaxAge = dialog.findViewById(R.id.max_age);
-        EditText etDistance = dialog.findViewById(R.id.et_distance);
-        EditText etInterests = dialog.findViewById(R.id.et_interests);
-        Spinner spinnerZodiac = dialog.findViewById(R.id.spinner_zodiac);
-        EditText etPersonalityType = dialog.findViewById(R.id.et_personality_type);
-        Button btnCancel = dialog.findViewById(R.id.btn_cancel);
-        Button btnSave = dialog.findViewById(R.id.btn_save);
-
-        // Call getSearch API to populate the UI
-        userService.getSearch(userId, new Callback<SearchCriteria>() {
-            @Override
-            public void onResponse(Call<SearchCriteria> call, Response<SearchCriteria> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    SearchCriteria criteria = response.body();
-
-                    // Populate UI fields with API data
-                    etDatingPurpose.setText(criteria.getDatingPurpose());
-                    etMinAge.setText(String.valueOf(criteria.getMinAge()));
-                    etMaxAge.setText(String.valueOf(criteria.getMaxAge()));
-                    etDistance.setText(String.valueOf(criteria.getDistance()));
-                    etInterests.setText(criteria.getInterests());
-                    etPersonalityType.setText(criteria.getPersonalityType());
-
-                    setSpinnerSelection(spinnerZodiac, getResources().getStringArray(R.array.zodiac_sign_list), criteria.getZodiacSign());
-                } else {
-                    // Handle unsuccessful response (e.g., show error message)
-                    Toast.makeText(getActivity(), "Failed to load preferences", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<SearchCriteria> call, Throwable throwable) {
-                // Handle API failure (e.g., network error)
-                Toast.makeText(getActivity(), "Error: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // Handle Save button
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String datingPurpose = etDatingPurpose.getText().toString();
-                int minAge = etMinAge.getText().toString().isEmpty() ? 0 : Integer.parseInt(etMinAge.getText().toString());
-                int maxAge = etMaxAge.getText().toString().isEmpty() ? 0 : Integer.parseInt(etMaxAge.getText().toString());
-                int distance = etDistance.getText().toString().isEmpty() ? 0 : Integer.parseInt(etDistance.getText().toString());
-                String interests = etInterests.getText().toString();
-                String personalityType = etPersonalityType.getText().toString();
-                String zodiacSign = spinnerZodiac.getSelectedItem().toString();
-
-                // Tạo đối tượng Criteria
-                SearchCriteria newCriteria = new SearchCriteria(datingPurpose, minAge, maxAge, distance,
-                        interests,zodiacSign, personalityType);
-
-                newCriteria.setId(userId);
-                userService.updateSearch(newCriteria);
-                dialog.dismiss();
-            }
-        });
-
-        // Handle Cancel button
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        // Show dialog
-        dialog.show();
+        Intent intent = new Intent(getActivity(), SettingSearchActivity.class);
+        intent.putExtra("userId",userId);
+        startActivity(intent);
     }
 
-    private void setSpinnerSelection(Spinner spinner, String[] items, String value) {
-        if (value != null) {
-            for (int i = 0; i < items.length; i++) {
-                if (items[i].equals(value)) {
-                    spinner.setSelection(i);
-                    break;
-                }
-            }
-        }
-    }
+
     public static String[] storge_permissions = {
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
             android.Manifest.permission.READ_EXTERNAL_STORAGE

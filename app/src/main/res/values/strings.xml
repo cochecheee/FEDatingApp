@@ -21,4 +21,47 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Dating Preferences Strings -->
+    <string name="preferences_title">Dating Preferences</string>
+    <string name="preferences_subtitle">Tell us what you\'re looking for</string>
+
+    <!-- Dating Purpose -->
+    <string name="dating_purpose_label">What are you looking for?</string>
+    <string name="dating_purpose_hint">E.g., Serious relationship, Casual dating</string>
+
+    <!-- Age Range -->
+    <string name="age_range_label">Age Range</string>
+    <string name="min_age_label">Min</string>
+    <string name="max_age_label">Max</string>
+
+    <!-- Distance -->
+    <string name="distance_label">Maximum Distance</string>
+    <string name="distance_hint">Max distance (km)</string>
+
+    <!-- Interests -->
+    <string name="interests_label">Your Interests</string>
+    <string name="interests_hint">Add your interests (separate with commas)</string>
+    <string name="add_more_interests">+ Add more</string>
+
+    <!-- Zodiac Sign -->
+    <string name="zodiac_label">Zodiac Sign</string>
+    <string name="zodiac_hint">Select your zodiac sign</string>
+
+    <!-- Personality Type -->
+    <string name="personality_label">Personality Type</string>
+    <string name="personality_hint">Custom personality type</string>
+    <string name="personality_custom">Custom</string>
+
+    <!-- Buttons -->
+    <string name="cancel_button">Cancel</string>
+    <string name="save_button">Save Preferences</string>
+
+    <!-- Content Descriptions -->
+    <string name="dating_purpose_icon">Dating Purpose Icon</string>
+    <string name="age_range_icon">Age Range Icon</string>
+    <string name="distance_icon">Distance Icon</string>
+    <string name="interests_icon">Interests Icon</string>
+    <string name="zodiac_icon">Zodiac Sign Icon</string>
+    <string name="personality_icon">Personality Type Icon</string>
 </resources>
