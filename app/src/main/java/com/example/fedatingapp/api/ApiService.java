@@ -2,14 +2,11 @@ package com.example.fedatingapp.api;
 
 import com.example.fedatingapp.api.response.ApiResponse;
 import com.example.fedatingapp.api.response.AuthResponse;
-import com.example.fedatingapp.models.Match;
+import com.example.fedatingapp.models.MatchFeed;
 import com.example.fedatingapp.models.Profile;
 import com.example.fedatingapp.models.UserSettings;
 
 import java.util.List;
-import java.util.Map;
-
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
@@ -17,15 +14,13 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
-import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
-import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ApiService {
-    //GET
+    //--------------------------GET
     /**
      * Lấy danh sách thẻ khám phá người dùng.
      * GET /api/users/me/cards
@@ -37,10 +32,26 @@ public interface ApiService {
     Call<ApiResponse<List<Profile>>> getDiscoveryCards(
             @Header("Authorization") String authToken
     );
-    @GET("users/me/settings") // Corresponds to /api/settings
-    Call<ApiResponse<UserSettings>> getSettings(@Header("Authorization") String authToken);
 
-    //POST
+    /**
+     * Lấy cài đặt người dùng.
+     * GET /api/users/me/settings
+     *
+     * @param authToken Token xác thực người dùng.
+     */
+    @GET("users/me/settings")
+    Call<ApiResponse<UserSettings>> getSettings(@Header("Authorization") String authToken);
+    /**
+     * Lấy người dùng match thành công.
+     * GET /api/users/matches
+     *
+     * @param authToken Token xác thực người dùng.
+     */
+    @Headers({"Accept: application/json"})
+    @GET("users/matches")
+    Call<ApiResponse<List<MatchFeed>>> getMatches(@Header("Authorization") String authToken);
+
+    //----------------------------POST
     /**
      * Đăng nhập bằng email và mật khẩu.
      * POST /api/auth/login/email
@@ -117,18 +128,21 @@ public interface ApiService {
     @POST("users/{id}/dislike")
     Call<ApiResponse<String>> dislikeUser(@Path("id") Long userId,
                                           @Header("Authorization") String authToken);
-//    @Multipart
-//    @POST("users/me/settings") // Corresponds to /api/settings
-//    Call<ApiResponse<Void>> saveSettings(@Body UserSettings settings,
-//                                         @Header("Authorization") String authToken);
-    //PUT
+
+    //----------------------------------PUT
+    /**
+     * Lưu cài đặt người dùng.
+     * PUT /api/users/me/settings
+     *
+     * @param settings Đối tượng cài đặt cần lưu.
+     * @param authToken Token xác thực người dùng.
+     */
     @Headers({"Accept: application/json"})
     @PUT("users/me/settings")
     Call<ApiResponse<Void>> saveSettings(
             @Body UserSettings settings,
             @Header("Authorization") String authToken
     );
-
 
     //DELETE
 }

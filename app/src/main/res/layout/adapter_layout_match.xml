@@ -37,9 +37,10 @@
 
 
             <TextView
+                android:id="@+id/text_new_match"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nouveau Match !"
+                android:text="New Match !"
                 android:textColor="@color/md_grey_400"
                 android:textSize="14sp"
                 android:layout_toEndOf="@id/img_profile"
@@ -52,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/dots_horizontal"
-            android:tint="@color/md_grey_400"
+            app:tint="@color/md_grey_400"
             android:textSize="10sp"
             android:layout_marginTop="35dp"
             android:layout_marginEnd="20dp"
@@ -97,7 +98,7 @@
                 android:layout_width="56dp"
                 android:layout_height="56dp"
                 android:src="@drawable/ic_like_24dp"
-                android:tint="@color/white"
+                app:tint="@color/white"
                 android:padding="10dp"
                 android:background="@drawable/circle_green_background"
                 android:layout_marginEnd="20dp"/>
@@ -126,7 +127,7 @@
             <ImageView
                 android:id="@+id/img_location"
                 android:src="@drawable/ic_location_on_blue_24dp"
-                android:tint="#C0C0C0"
+                app:tint="#C0C0C0"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginEnd="5dp"/>
@@ -135,7 +136,7 @@
                 android:id="@+id/text_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="à 8 km"
+                android:text="About 8 km"
                 android:textSize="16sp"
                 android:layout_toEndOf="@id/img_location"
                 android:layout_marginBottom="10dp"/>
