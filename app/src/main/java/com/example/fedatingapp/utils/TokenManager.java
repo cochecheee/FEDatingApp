@@ -38,4 +38,5 @@ public class TokenManager {
     public boolean hasTokens() {
         return getAccessToken() != null && getRefreshToken() != null;
     }
+
 }

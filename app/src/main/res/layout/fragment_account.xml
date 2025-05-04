@@ -14,7 +14,6 @@
         android:orientation="vertical"
         android:gravity="center_horizontal">
 
-
         <io.github.florent37.shapeofview.shapes.ArcView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -48,6 +47,7 @@
 
 
                 <TextView
+                    android:id="@+id/tvProfileNameAge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Damian, 6"
@@ -58,6 +58,7 @@
 
 
                 <TextView
+                    android:id="@+id/tvProfileJob"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Student"
@@ -66,6 +67,7 @@
                     android:layout_gravity="center"/>
 
                 <TextView
+                    android:id="@+id/tvProfileSchool"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/md_black_1000"
@@ -88,8 +90,6 @@
                         android:layout_alignParentStart="true"
                         android:orientation="vertical"
                         android:gravity="center">
-
-
                         <LinearLayout
                             android:layout_width="60dp"
                             android:layout_height="60dp"
@@ -100,13 +100,11 @@
                             android:background="@drawable/circle_gray_selector"
                             android:layout_marginBottom="5dp">
                             <ImageView
+                                android:id="@+id/buttonSettingsContainer"
                                 android:layout_width="35dp"
                                 android:layout_height="35dp"
                                 android:src="@drawable/ic_settings_gray_24dp"/>
                         </LinearLayout>
-
-
-
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -114,10 +112,7 @@
                             android:textColor="@color/md_grey_400"
                             android:textAllCaps="true"
                             android:textSize="12sp" />
-
                     </LinearLayout>
-
-
 
                     <LinearLayout
                         android:layout_width="100dp"
@@ -137,13 +132,11 @@
                             android:background="@drawable/circle_pink_bg"
                             android:layout_marginBottom="5dp">
                             <ImageView
+                                android:id="@+id/buttonAddPhotoContainer"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
                                 android:src="@drawable/ic_add_a_photo_white_24dp"/>
                         </LinearLayout>
-
-
-
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -171,12 +164,11 @@
                             android:background="@drawable/circle_gray_selector"
                             android:layout_marginBottom="5dp">
                             <ImageView
+                                android:id="@+id/buttonEditProfileContainer"
                                 android:layout_width="35dp"
                                 android:layout_height="35dp"
                                 android:src="@drawable/ic_edit_gray_24dp"/>
                         </LinearLayout>
-
-
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -187,19 +179,10 @@
                             android:textAllCaps="true"
                             android:maxLines="2"
                             android:textSize="12sp" />
-
                     </LinearLayout>
-
-
                 </RelativeLayout>
-
-
-
             </LinearLayout>
-
-
         </io.github.florent37.shapeofview.shapes.ArcView>
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -229,6 +212,7 @@
                 app:sliderStartAutoCycle="true" />
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/cardTinderPlus"
                 android:layout_width="250dp"
                 android:layout_height="50dp"
                 app:cardCornerRadius="20dp"
@@ -249,13 +233,7 @@
                         android:textAllCaps="true"
                         android:textColor="@color/colorPrimary" />
                 </LinearLayout>
-
             </androidx.cardview.widget.CardView>
-
         </LinearLayout>
-
-
-
     </LinearLayout>
-
 </com.example.fedatingapp.widgets.BounceScrollView>

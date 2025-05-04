@@ -4,16 +4,23 @@ import com.example.fedatingapp.api.response.ApiResponse;
 import com.example.fedatingapp.api.response.AuthResponse;
 import com.example.fedatingapp.models.Match;
 import com.example.fedatingapp.models.Profile;
+import com.example.fedatingapp.models.UserSettings;
 
 import java.util.List;
+import java.util.Map;
 
+import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -30,7 +37,8 @@ public interface ApiService {
     Call<ApiResponse<List<Profile>>> getDiscoveryCards(
             @Header("Authorization") String authToken
     );
-
+    @GET("users/me/settings") // Corresponds to /api/settings
+    Call<ApiResponse<UserSettings>> getSettings(@Header("Authorization") String authToken);
 
     //POST
     /**
@@ -109,7 +117,17 @@ public interface ApiService {
     @POST("users/{id}/dislike")
     Call<ApiResponse<String>> dislikeUser(@Path("id") Long userId,
                                           @Header("Authorization") String authToken);
+//    @Multipart
+//    @POST("users/me/settings") // Corresponds to /api/settings
+//    Call<ApiResponse<Void>> saveSettings(@Body UserSettings settings,
+//                                         @Header("Authorization") String authToken);
     //PUT
+    @Headers({"Accept: application/json"})
+    @PUT("users/me/settings")
+    Call<ApiResponse<Void>> saveSettings(
+            @Body UserSettings settings,
+            @Header("Authorization") String authToken
+    );
 
 
     //DELETE
