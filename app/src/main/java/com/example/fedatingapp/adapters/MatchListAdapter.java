@@ -13,7 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.fedatingapp.R;
-import com.example.fedatingapp.models.MatchFeed;
+import com.example.fedatingapp.models.Match;
+import com.example.fedatingapp.models.MessageItem;
 
 import java.util.List;
 
@@ -21,34 +22,33 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MatchListAdapter extends RecyclerView.Adapter<MatchListAdapter.MyViewHolder> {
     private Context context;
-//    private List<Match> matchList;
-    private List<MatchFeed> matchList;
+    private List<MessageItem> messageList;
+
+    private onclickinterface listener;
+
+    public interface onclickinterface{
+        void onclicklistener(Long receiverId, String reveiverName,String receiverPicture);
+    }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
-//        TextView name, date, location;
-////        ImageView imgProfile, imgContent;
-        TextView name, date, location, tvNewMatch; // Thêm tvNewMatch
-        ImageView imgContent; // Ảnh lớn
-        CircleImageView imgProfile; // Ảnh profile tròn
+        TextView name, date, location;
+        ImageView imgProfile, imgContent, imgChat;
 
         MyViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.text_name);
-            date = view.findViewById(R.id.text_date);
             location = view.findViewById(R.id.text_location);
-            imgProfile = view.findViewById(R.id.img_profile); // ID ảnh tròn
-            imgContent = view.findViewById(R.id.img_content); // ID ảnh lớn
-            tvNewMatch = view.findViewById(R.id.text_new_match); // ** ID TextView "Nouveau Match !" **
-            // Ánh xạ thêm các nút Like, Chat nếu cần bắt sự kiện click ở đây
-            // ImageView imgLike = view.findViewById(R.id.img_like);
-            // ImageView imgChat = view.findViewById(R.id.img_chat);
+            imgProfile = view.findViewById(R.id.img_profile);
+            imgContent = view.findViewById(R.id.img_content);
+            imgChat = view.findViewById(R.id.img_chat);
         }
     }
 
 
-    public MatchListAdapter(Context context, List<MatchFeed> matchList) {
+    public MatchListAdapter(Context context, List<MessageItem> messageList, onclickinterface listener) {
         this.context = context;
-        this.matchList = matchList;
+        this.messageList = messageList;
+        this.listener = listener;
     }
 
     @NonNull // ** Thêm NonNull **
@@ -61,11 +61,9 @@ public class MatchListAdapter extends RecyclerView.Adapter<MatchListAdapter.MyVi
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
-        final MatchFeed item = matchList.get(position);
-        // --- Cập nhật dữ liệu ---
+        final MessageItem item = messageList.get(position);
         holder.name.setText(item.getName());
-        holder.date.setText(item.getDate()); // Ngày đã được format sẵn trong Match model
-        holder.location.setText(item.getLocation());
+
 
         // --- Hiển thị "Nouveau Match !" nếu cần ---
         if (holder.tvNewMatch != null) { // Kiểm tra null phòng trường hợp layout chưa có ID này
@@ -82,42 +80,21 @@ public class MatchListAdapter extends RecyclerView.Adapter<MatchListAdapter.MyVi
                     .circleCrop() // Cắt tròn
                     .into(holder.imgProfile);
 
-            // Load ảnh lớn (nếu ảnh giống nhau)
-            Glide.with(context)
-                    .load(item.getPictureUrl()) // ** Sử dụng getPictureUrl() **
-                    .placeholder(R.drawable.default_placeholder)
-                    .error(R.drawable.default_placeholder_error)
-                    .centerCrop() // Crop cho vừa
-                    .into(holder.imgContent);
-        }
+        Glide.with(context)
+                .load(item.getPicture())
+                .into(holder.imgContent);
 
-        // --- Thêm sự kiện click nếu cần ---
-        holder.itemView.setOnClickListener(v -> {
-            // Xử lý khi click vào toàn bộ item (ví dụ: mở profile)
-            Log.d("MatchListAdapter", "Clicked on match: " + item.getName());
-            // Intent intent = new Intent(context, ProfileDetailActivity.class);
-            // intent.putExtra("USER_ID", item.getId()); // Truyền ID
-            // context.startActivity(intent);
+        holder.imgChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onclicklistener((long) item.getId(),item.getName(), item.getPicture());
+            }
         });
-        // Ví dụ bắt sự kiện click nút chat
-        // holder.imgChat.setOnClickListener(v -> { ... open chat screen ... });
     }
 
     @Override
     public int getItemCount() {
-        return matchList == null ? 0 : matchList.size(); // Kiểm tra null
-    }
-
-    // ** Hàm để cập nhật dữ liệu cho Adapter **
-    public void updateData(List<MatchFeed> newMatchList) {
-        if (newMatchList != null) {
-            this.matchList.clear();
-            this.matchList.addAll(newMatchList);
-            notifyDataSetChanged(); // Báo cho RecyclerView cập nhật lại
-        } else {
-            this.matchList.clear();
-            notifyDataSetChanged();
-        }
+        return messageList.size();
     }
 
 }

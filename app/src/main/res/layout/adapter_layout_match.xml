@@ -57,7 +57,8 @@
             android:textSize="10sp"
             android:layout_marginTop="35dp"
             android:layout_marginEnd="20dp"
-            android:layout_alignParentEnd="true"/>
+            android:layout_alignParentEnd="true"
+            app:tint="@color/md_grey_400" />
 
         <RelativeLayout
             android:id="@+id/layout_image_container"
@@ -101,7 +102,8 @@
                 app:tint="@color/white"
                 android:padding="10dp"
                 android:background="@drawable/circle_green_background"
-                android:layout_marginEnd="20dp"/>
+                android:layout_marginEnd="20dp"
+                app:tint="@color/white" />
 
 
 
@@ -142,14 +144,6 @@
                 android:layout_marginBottom="10dp"/>
 
 
-            <TextView
-                android:id="@+id/text_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="7 dec. 2019"
-                android:textColor="@color/md_grey_400"
-                android:textSize="12sp"
-                android:layout_below="@id/text_location"/>
 
         </RelativeLayout>
     </RelativeLayout>

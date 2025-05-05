@@ -12,7 +12,7 @@
         android:orientation="vertical"
         android:gravity="center"
         android:background="@color/white"
-        tools:context=".fragments.ChatFragment">
+        tools:context=".fragments.MessageFragment">
 
 
         <RelativeLayout
@@ -30,26 +30,26 @@
                 android:layout_marginEnd="10dp"
                 android:src="@drawable/ic_search_pink_24dp"/>
 
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/edit_phone_number"
+            <EditText
+                android:id="@+id/find_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Rechercher un Match"
-                android:padding="10dp"
-                android:inputType="phone"
-                android:textSize="18sp"
                 android:layout_centerInParent="true"
+                android:layout_toEndOf="@id/img_search"
                 android:background="@drawable/text_input_line_selector"
-                android:layout_toEndOf="@id/img_search"/>
+                android:hint="Tìm kiếm tương hợp"
+                android:inputType="text"
+                android:padding="10dp"
+                android:textSize="18sp" />
         </RelativeLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Nouveaux Matchs"
-            android:textStyle="bold"
             android:layout_margin="20dp"
-            android:textColor="@color/colorPrimary"/>
+            android:text="Tương hợp mới"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold" />
 
 
 
@@ -70,8 +70,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Messages"
                 android:layout_marginEnd="5dp"
+                android:text="Tin nhắn"
                 android:textColor="@color/colorPrimary"
                 android:textStyle="bold" />
 

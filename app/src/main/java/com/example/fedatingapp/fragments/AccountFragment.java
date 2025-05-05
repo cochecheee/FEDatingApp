@@ -1,194 +1,421 @@
 package com.example.fedatingapp.fragments;
 
+import static android.app.Activity.RESULT_OK;
+
+
+import static androidx.core.content.ContextCompat.checkSelfPermission;
+
+import static com.google.gson.internal.$Gson$Types.arrayOf;
+
+import android.Manifest;
+import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
+import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.fedatingapp.R;
-import com.example.fedatingapp.activities.SettingsActivity;
+import com.example.fedatingapp.Service.UserService;
+import com.example.fedatingapp.WebSocket.WebSocketClient;
+import com.example.fedatingapp.activities.ProfileActivity;
+import com.example.fedatingapp.activities.SettingSearchActivity;
 import com.example.fedatingapp.adapters.SliderAdapter;
-import com.example.fedatingapp.databinding.FragmentAccountBinding;
+import com.example.fedatingapp.entities.Image;
+import com.example.fedatingapp.entities.SearchCriteria;
+import com.example.fedatingapp.entities.Users;
+import com.example.fedatingapp.models.ImgurResponse;
+import com.example.fedatingapp.models.Notification;
+import com.example.fedatingapp.utils.NotificationUtils;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.slider.RangeSlider;
+import com.google.android.material.slider.Slider;
+import com.google.android.material.textfield.TextInputEditText;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
-/**
- * A simple {@link Fragment} subclass.
- */
-public class AccountFragment extends Fragment {
 
-    private static final String TAG = "AccountFragment"; // Tag for logging
-    // Use ViewBinding
-    private FragmentAccountBinding binding;
-    View rootLayout;
-    private SliderView sliderView;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class AccountFragment extends Fragment implements WebSocketClient.Listener {
+
+    private View rootLayout;
+    private TextView username, userJob, userOld;
+    private LinearLayout setting, image, profile;
+    private final UserService userService = new UserService();
+    private Users users;
+    private List<Image> userImage;
+    private Long userId;
+    private CircleImageView circleImageView;
+    private Uri mUri;
+    public static final int MY_REQUEST_CODE = 100;
+    public static final String TAG = AccountFragment.class.getName();
 
     public AccountFragment() {
-        // Required empty public constructor
+
     }
 
+    // Factory method để truyền userId (nếu cần)
+    public static AccountFragment newInstance(Long userId) {
+        AccountFragment fragment = new AccountFragment();
+        Bundle args = new Bundle();
+        args.putLong("userId", userId);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            userId = getArguments().getLong("userId", 1L);
+        } else {
+            userId = 1L;
+        }
+
+
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentAccountBinding.inflate(inflater, container, false);
-        Log.d(TAG, "onCreateView: View inflated");
-        return binding.getRoot(); // Return the root view from binding
-        // Inflate the layout for this fragment
-//        rootLayout = inflater.inflate(R.layout.fragment_account, container, false);
-//
-//        sliderView = rootLayout.findViewById(R.id.slider_view);
-//
-//        final SliderAdapter adapter = new SliderAdapter(getActivity());
-//
-//        sliderView.setSliderAdapter(adapter);
-//
-//        sliderView.setIndicatorAnimation(IndicatorAnimationType.SLIDE); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
-//        sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
-//        sliderView.setAutoCycleDirection(SliderView.AUTO_CYCLE_DIRECTION_RIGHT);
-//        sliderView.startAutoCycle();
-//
-//        return rootLayout;
-    }
+        // Inflate layout
+        rootLayout = inflater.inflate(R.layout.fragment_account, container, false);
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        Log.d(TAG, "onViewCreated: Setting up views and listeners");
-        // Setup SliderView (using binding)
-        setupSlider();
-        // Setup Click Listeners
-        setupClickListeners();
-        // Load initial profile data (example)
-        loadProfileData();
-    }
-    private void setupSlider() {
-        if (binding == null) return; // Safety check
+        // Khởi tạo SliderView
+        SliderView sliderView = rootLayout.findViewById(R.id.slider_view);
+        final SliderAdapter adapter = new SliderAdapter(getActivity());
+        sliderView.setSliderAdapter(adapter);
+        sliderView.setIndicatorAnimation(IndicatorAnimationType.SLIDE);
+        sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
+        sliderView.setAutoCycleDirection(SliderView.AUTO_CYCLE_DIRECTION_RIGHT);
+        sliderView.startAutoCycle();
 
-        // Use getActivity() or requireContext() for context
-        final SliderAdapter adapter = new SliderAdapter(requireContext());
-        // this.sliderAdapter = adapter; // Store if needed
+        binding();
+        getUser();
 
-        binding.sliderView.setSliderAdapter(adapter);
-        binding.sliderView.setIndicatorAnimation(IndicatorAnimationType.SLIDE);
-        binding.sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
-        binding.sliderView.setAutoCycleDirection(SliderView.AUTO_CYCLE_DIRECTION_RIGHT);
-        binding.sliderView.startAutoCycle();
-        Log.d(TAG, "setupSlider: Slider configured");
-    }
+        checkCountImage();
 
-    private void setupClickListeners() {
-        if (binding == null) return; // Safety check
-
-        // Settings Button
-        binding.buttonSettingsContainer.setOnClickListener(v -> {
-            Log.d(TAG, "Settings button clicked");
-            Toast.makeText(getContext(), "Settings Clicked", Toast.LENGTH_SHORT).show();
-            // Navigate to SettingsActivity
-            Intent intent = new Intent(getActivity(), SettingsActivity.class);
-            startActivity(intent);
-        });
-
-        // Add Photo Button
-        binding.buttonAddPhotoContainer.setOnClickListener(v -> {
-            Log.d(TAG, "Add Photo button clicked");
-            Toast.makeText(getContext(), "Add Media Clicked", Toast.LENGTH_SHORT).show();
-            // TODO: Implement logic to open image/video picker
-            // openMediaPicker();
-        });
-
-        // Edit Profile Button
-        binding.buttonEditProfileContainer.setOnClickListener(v -> {
-            Log.d(TAG, "Edit Profile button clicked");
-            Toast.makeText(getContext(), "Edit Profile Clicked", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to EditProfileActivity
-            // Intent intent = new Intent(getActivity(), EditProfileActivity.class);
-            // startActivity(intent);
-        });
-
-        // Tinder Plus Card
-        binding.cardTinderPlus.setOnClickListener(v -> {
-            Log.d(TAG, "Tinder Plus card clicked");
-            Toast.makeText(getContext(), "Get Tinder Plus Clicked", Toast.LENGTH_SHORT).show();
-            // TODO: Implement logic for Tinder Plus purchase/info screen
-        });
-
-        // Optional: Click listener for profile image
-        binding.profileImage.setOnClickListener(v -> {
-            Log.d(TAG, "Profile image clicked");
-            Toast.makeText(getContext(), "Profile Image Clicked", Toast.LENGTH_SHORT).show();
-            // TODO: Maybe open a larger view of the image or allow changing it
-            // openMediaPicker(); // Could reuse the add media logic
-        });
-    }
-    private void loadProfileData() {
-        if (binding == null || getContext() == null) return; // Safety checks
-
-        // --- Placeholder Data ---
-        // TODO: Replace this with actual data fetching (API call, database, etc.)
-        String name = "Anya Forger";
-        int age = 6; // Or read minds? ;)
-        String job = "Student / Esper";
-        String school = "Eden Academy";
-        String imageUrl = "https://cdn.vox-cdn.com/thumbor/2Pa12DUFshuhBYDsO14aQZvn4aQ=/1400x1400/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/23453019/anya_spy_x_family_anime.jpg"; // Example URL
-
-        // --- Update UI Elements ---
-        binding.tvProfileNameAge.setText(String.format("%s, %d", name, age));
-        binding.tvProfileJob.setText(job);
-        binding.tvProfileSchool.setText(school);
-
-        // Load image using Glide (or Picasso)
-        Glide.with(this) // Use 'this' (Fragment context)
-                .load(imageUrl)
-                .placeholder(R.drawable.user_man) // Placeholder while loading
-                .error(R.drawable.user_man) // Image to show on error
-                .circleCrop() // Make it circular if the source isn't already
-                .into(binding.profileImage);
-        Log.d(TAG, "loadProfileData: Profile data loaded (placeholder)");
-    }
-
-    // --- Optional: Media Picker Logic ---
-    /*
-    private void openMediaPicker() {
-        // Use Intent.ACTION_PICK or ActivityResultLauncher to select image/video
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        // You might want to use ActivityResultLauncher for better handling
-        // resultLauncher.launch(intent);
-        Log.d(TAG, "openMediaPicker: Intent launched");
-    }
-    */
-    /*
-    // Example ActivityResultLauncher setup (register in Fragment's onCreate or onAttach)
-    ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(
-        new ActivityResultContracts.StartActivityForResult(),
-        result -> {
-            if (result.getResultCode() == Activity.RESULT_OK) {
-                Intent data = result.getData();
-                if (data != null && data.getData() != null) {
-                    Uri selectedMediaUri = data.getData();
-                    Log.d(TAG, "Media selected: " + selectedMediaUri.toString());
-                    // TODO: Upload the selected media or update the profile image
-                    // Glide.with(this).load(selectedMediaUri).circleCrop().into(binding.profileImage);
-                    // uploadMedia(selectedMediaUri);
-                }
+        setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDatingInfoPopup();
             }
         });
-    */
+
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CheckPermission();
+
+            }
+        });
+
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), ProfileActivity.class);
+                startActivity(intent);
+
+            }
+        });
+
+        return rootLayout;
+    }
+
+    private void showDatingInfoPopup() {
+        Intent intent = new Intent(getActivity(), SettingSearchActivity.class);
+        intent.putExtra("userId",userId);
+        startActivity(intent);
+    }
+
+
+    public static String[] storge_permissions = {
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            android.Manifest.permission.READ_EXTERNAL_STORAGE
+    };
+
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    public static String[] storge_permissions_33 = {
+            android.Manifest.permission.READ_MEDIA_IMAGES,
+            android.Manifest.permission.READ_MEDIA_AUDIO,
+            android.Manifest.permission.READ_MEDIA_VIDEO
+    };
+
+    // Viết hàm CheckPermission()
+    public static String[] permissions() {
+        String[] p;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            p = storge_permissions_33;
+        } else {
+            p = storge_permissions;
+        }
+        return p;
+    }
+
+    private void CheckPermission() {
+        ActivityCompat.requestPermissions(requireActivity(),
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                MY_REQUEST_CODE);
+        openGallery();
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openGallery();
+            }
+        }
+    }
+
+    private ActivityResultLauncher<Intent> mActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    Log.e(TAG, "onActivityResult");
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data == null) {
+                            return;
+                        }
+                        Uri uri = data.getData();
+                        mUri = uri;
+                        UploadImage();
+                    }
+                }
+            }
+    );
+
+    private void openGallery() {
+        Log.d("open gallerry", "CheckPermission: ");
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        mActivityResultLauncher.launch(Intent.createChooser(intent, "Select Picture"));
+    }
+    public void UploadImage() {
+        if (mUri != null) {
+            try {
+                // Tạo file tạm trong bộ nhớ cache
+                File tempFile = new File(getContext().getCacheDir(), "temp_image_" + System.currentTimeMillis() + ".jpg");
+
+                // Lấy InputStream từ Uri
+                InputStream inputStream = getContext().getContentResolver().openInputStream(mUri);
+                if (inputStream != null) {
+                    // Ghi InputStream vào file tạm
+                    FileOutputStream outputStream = new FileOutputStream(tempFile);
+                    byte[] buffer = new byte[1024];
+                    int bytesRead;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
+                    inputStream.close();
+                    outputStream.close();
+
+                    // Upload file tạm lên Imgur
+                    userService.uploadImageToImgur(tempFile, new Callback<ImgurResponse>() {
+                        @Override
+                        public void onResponse(Call<ImgurResponse> call, Response<ImgurResponse> response) {
+                            if (response.isSuccessful() && response.body() != null) {
+                                String imageUrl = response.body().data.link;
+
+                                // Tạo đối tượng Image
+                                Image newImage = new Image();
+                                newImage.setImage(imageUrl);
+                                newImage.setUserId(userId);
+
+                                // Lưu vào backend
+                                userService.addUserImage(newImage);
+
+                                Toast.makeText(getContext(), "Image uploaded thành công", Toast.LENGTH_SHORT).show();
+                                // Refresh images
+                                getUserImage();
+                                checkCountImage();
+                            } else {
+                                Toast.makeText(getContext(), "Upload image thất bại", Toast.LENGTH_SHORT).show();
+                                Log.e(TAG, "Upload failed: " + response.message());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ImgurResponse> call, Throwable t) {
+                            Toast.makeText(getContext(), "Error uploading image", Toast.LENGTH_SHORT).show();
+                            Log.e(TAG, "Upload error: " + t.getMessage());
+                        }
+                    });
+
+                    // Xóa file tạm sau khi dùng xong (tùy chọn)
+                    tempFile.deleteOnExit();
+                } else {
+                    throw new IOException("Không thể mở InputStream từ Uri");
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "Error preparing file: " + e.getMessage(), e);
+                Toast.makeText(getContext(), "Error preparing image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Log.e(TAG, "Unexpected error: " + e.getMessage(), e);
+                Toast.makeText(getContext(), "Unexpected error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(getContext(), "Please select an image first", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void checkCountImage()
+    {
+        userService.getAllUserImage(userId, new Callback<List<Image>>() {
+            @Override
+            public void onResponse(Call<List<Image>> call, Response<List<Image>> response) {
+                List<Image> images = new ArrayList<>();
+                if (response.isSuccessful())
+                {
+                    images = response.body();
+                }
+                if (images.size() >= 5)
+                {
+                    image.setOnClickListener(null);
+                    image.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Image>> call, Throwable throwable) {
+
+            }
+        });
+    }
+
+    private void binding() {
+        username = rootLayout.findViewById(R.id.userName);
+        userJob = rootLayout.findViewById(R.id.userJob);
+        userOld = rootLayout.findViewById(R.id.userOld);
+        setting = rootLayout.findViewById(R.id.btn_setting);
+        image = rootLayout.findViewById(R.id.btn_addImage);
+        profile = rootLayout.findViewById(R.id.btn_editProfile);
+        setting = rootLayout.findViewById(R.id.btn_setting);
+        image = rootLayout.findViewById(R.id.btn_addImage);
+        profile = rootLayout.findViewById(R.id.btn_editProfile);
+        circleImageView = rootLayout.findViewById(R.id.profile_image);
+    }
+
+    private void getUser() {
+        userService.getUserInfo(userId, new Callback<Users>() {
+            @Override
+            public void onResponse(@NonNull Call<Users> call, @NonNull Response<Users> response) {
+                if (response.isSuccessful()) {
+                    users = response.body();
+                    fillView();
+                } else {
+                    Log.d("AccountFragment", "GetUser failed: " + response.toString());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Users> call,@NonNull Throwable throwable) {
+                Log.d("AccountFragment", "GetUser error: " + throwable.getMessage());
+            }
+        });
+    }
+
+    private void fillView() {
+        if (users != null) {
+            username.setText(users.getName());
+            userJob.setText(users.getJob());
+            userOld.setText(String.valueOf(CountOld(
+                    users.getBirthday().getDate(),
+                    users.getBirthday().getMonth(),
+                    users.getBirthday().getYear()
+            )));
+        }
+        getUserImage();
+    }
+
+    private void getUserImage() {
+        userService.getAllUserImage(userId, new Callback<List<Image>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Image>> call,@NonNull Response<List<Image>> response) {
+                if (response.isSuccessful()) {
+                    userImage = response.body();
+                    if (userImage != null && !userImage.isEmpty()) {
+                        Random random = new Random();
+                        int position = random.nextInt(userImage.size());
+                        Log.d("AccountFragment", "onResponse: "+userImage.get(position).getImage());
+                        Glide.with(AccountFragment.this)
+                                .load(userImage.get(position).getImage())
+                                .into(circleImageView);
+                    }
+                } else {
+                    Log.d("AccountFragment", "GetUserImage failed: " + response.toString());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Image>> call,@NonNull Throwable throwable) {
+                Log.d("AccountFragment", "GetUserImage error: " + throwable.getMessage());
+            }
+        });
+    }
+
+    private int CountOld(int ngaySinh, int thangSinh, int namSinh) {
+
+        LocalDate currentDay = LocalDate.now();
+        Log.d("sinh nhat", "CountOld: "+ngaySinh+ thangSinh + namSinh);
+        LocalDate birthday = LocalDate.of(namSinh, thangSinh, ngaySinh);
+        Period old = Period.between(birthday, currentDay);
+        return old.getYears();
+    }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        // Clean up binding to avoid memory leaks
-        binding = null;
-        Log.d(TAG, "onDestroyView: Binding cleared");
+    public void onNotifyReceived(Notification notification) {
+        NotificationUtils.showPushNotification(getContext(),notification);
     }
 }

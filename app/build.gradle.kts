@@ -37,7 +37,10 @@ android {
 }
 
 dependencies {
-
+    implementation ("androidx.core:core:1.12.0")
+    implementation ("androidx.appcompat:appcompat:1.6.1")
+    implementation ("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -45,7 +48,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-
+    implementation ("androidx.core:core-ktx:1.16.0")
     implementation("androidx.core:core:1.13.0")
 
     // SliderView library

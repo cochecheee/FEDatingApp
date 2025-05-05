@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,8 +59,8 @@ public class FeedFragment extends Fragment {
     private Long currentUserId; // Lưu ID user hiện tại
 
 
-    public FeedFragment() {
-        // Required empty public constructor
+    public FeedFragment(Long userId) {
+        this.userId = userId;
     }
 
     @Override

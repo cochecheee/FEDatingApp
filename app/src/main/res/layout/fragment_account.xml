@@ -91,6 +91,7 @@
                         android:orientation="vertical"
                         android:gravity="center">
                         <LinearLayout
+                            android:id="@+id/btn_setting"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
                             android:gravity="center"
@@ -122,6 +123,7 @@
                         android:orientation="vertical"
                         android:gravity="center">
                         <LinearLayout
+                            android:id="@+id/btn_addImage"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
                             android:gravity="center"
@@ -155,6 +157,7 @@
                         android:orientation="vertical"
                         android:gravity="center">
                         <LinearLayout
+                            android:id="@+id/btn_editProfile"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
                             android:gravity="center"

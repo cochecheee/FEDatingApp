@@ -1,5 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Danh sách giới tính -->
+    <string-array name="gender_list">
+        <item>Nam</item>
+        <item>Nữ</item>
+        <item>Khác</item>
+    </string-array>
+
+    <!-- Danh sách xu hướng tính dục -->
+    <string-array name="sexual_orientation_list">
+        <item>Heterosexual</item>
+        <item>Homosexual</item>
+        <item>Bisexual</item>
+        <item>Khác</item>
+    </string-array>
+    <!-- Zodiac sign list -->
+    <string-array name="zodiac_sign_list">
+        <item>Aquarius</item>
+        <item>Pisces</item>
+        <item>Aries</item>
+        <item>Taurus</item>
+        <item>Gemini</item>
+        <item>Cancer</item>
+        <item>Leo</item>
+        <item>Virgo</item>
+        <item>Libra</item>
+        <item>Scorpio</item>
+        <item>Sagittarius</item>
+        <item>Capricorn</item>
+    </string-array>
+
+    <!-- Default age range -->
+    <array name="default_age_range">
+        <item>25</item>
+        <item>40</item>
+    </array>
+
+    <!-- MBTI Personality Types -->
+    <string-array name="mbti_types">
+        <item>INTJ</item>
+        <item>INTP</item>
+        <item>ENTJ</item>
+        <item>ENTP</item>
+        <item>INFJ</item>
+        <item>INFP</item>
+        <item>ENFJ</item>
+        <item>ENFP</item>
+        <item>ISTJ</item>
+        <item>ISFJ</item>
+        <item>ESTJ</item>
+        <item>ESFJ</item>
+        <item>ISTP</item>
+        <item>ISFP</item>
+        <item>ESTP</item>
+        <item>ESFP</item>
+    </string-array>
+
+    <!-- Common Interest Tags -->
+    <string-array name="common_interests">
+        <item>Travel</item>
+        <item>Cooking</item>
+        <item>Fitness</item>
+        <item>Reading</item>
+        <item>Movies</item>
+        <item>Music</item>
+        <item>Art</item>
+        <item>Photography</item>
+        <item>Hiking</item>
+        <item>Gaming</item>
+        <item>Dance</item>
+        <item>Food</item>
+        <item>Outdoors</item>
+        <item>Sports</item>
+        <item>Tech</item>
+        <item>Fashion</item>
+        <item>Pets</item>
+        <item>Coffee</item>
+        <item>Wine</item>
+        <item>Yoga</item>
+    </string-array>
+
+
     <string-array name="dating_purposes">
         <item>Long-term relationship</item>
         <item>Casual dating</item>
