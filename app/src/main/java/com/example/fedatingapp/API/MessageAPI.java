@@ -17,14 +17,14 @@ public interface MessageAPI {
 
     // GET /api/message/getLast - Lấy tin nhắn cuối cùng giữa 2 user
     @Headers({"Accept: application/json"})
-    @GET("/api/message/getListMatch")
+    @GET("/message/getListMatch")
     Call<List<MessageItem>> getListMatch(
             @Header("Authorization") String authToken,
             @Query("user1") Long user1
     );
 
     @Headers({"Accept: application/json"})
-    @GET("/api/message/getMessages")
+    @GET("/message/getMessages")
     Call<List<Message>> getMessages(
             @Header("Authorization") String authToken,
             @Query("user1") Long user1,

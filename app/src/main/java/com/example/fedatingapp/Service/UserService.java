@@ -67,6 +67,27 @@ public class UserService {
             }
         });
     }
+    public void getUserInfo2(Callback<Users> callback) {
+        Call<Users> call = userAPI.getUserInfo2(token);
+        call.enqueue(new Callback<Users>() {
+            @Override
+            public void onResponse(Call<Users> call, Response<Users> response) {
+                if (response.isSuccessful()) {
+                    Log.d("Oke", "Truy van thanh cong" + response.toString() + response.body());
+                    callback.onResponse(call, Response.success(response.body()));
+                } else {
+                    Log.d("Oke", "Truy van that bai " + response.body());
+                    callback.onResponse(call, response);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Users> call, Throwable t) {
+                Log.d("Fail", "Truy van that bai" + t.toString());
+                callback.onFailure(call, t);
+            }
+        });
+    }
 
     public void UpdateUserInfo(Users userInfo)    {
         Call<Void> call = userAPI.UpdateUserInfo(token,userInfo);

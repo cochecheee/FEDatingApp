@@ -3,32 +3,17 @@ package com.example.fedatingapp.fragments;
 import static android.app.Activity.RESULT_OK;
 
 
-import static androidx.core.content.ContextCompat.checkSelfPermission;
-
-import static com.google.gson.internal.$Gson$Types.arrayOf;
-
 import android.Manifest;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,21 +32,14 @@ import com.example.fedatingapp.R;
 import com.example.fedatingapp.Service.UserService;
 import com.example.fedatingapp.WebSocket.WebSocketClient;
 import com.example.fedatingapp.activities.ProfileActivity;
-import com.example.fedatingapp.activities.SettingSearchActivity;
+import com.example.fedatingapp.activities.SettingsActivity;
 import com.example.fedatingapp.adapters.SliderAdapter;
 import com.example.fedatingapp.entities.Image;
-import com.example.fedatingapp.entities.SearchCriteria;
 import com.example.fedatingapp.entities.Users;
 import com.example.fedatingapp.models.ImgurResponse;
 import com.example.fedatingapp.models.Notification;
 import com.example.fedatingapp.utils.NotificationUtils;
 import com.example.fedatingapp.utils.TokenManager;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
-import com.google.android.material.slider.RangeSlider;
-import com.google.android.material.slider.Slider;
-import com.google.android.material.textfield.TextInputEditText;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
@@ -74,13 +52,9 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -165,6 +139,7 @@ public class AccountFragment extends Fragment implements WebSocketClient.Listene
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), ProfileActivity.class);
+                intent.putExtra("userId",userId);
                 startActivity(intent);
 
             }
@@ -174,7 +149,7 @@ public class AccountFragment extends Fragment implements WebSocketClient.Listene
     }
 
     private void showDatingInfoPopup() {
-        Intent intent = new Intent(getActivity(), SettingSearchActivity.class);
+        Intent intent = new Intent(getActivity(), SettingsActivity.class);
         intent.putExtra("userId",userId);
         startActivity(intent);
     }
@@ -372,11 +347,17 @@ public class AccountFragment extends Fragment implements WebSocketClient.Listene
         if (users != null) {
             username.setText(users.getName());
             userJob.setText(users.getJob());
-            userOld.setText(String.valueOf(CountOld(
-                    users.getBirthday().getDate(),
-                    users.getBirthday().getMonth(),
-                    users.getBirthday().getYear()
-            )));
+            if (users.getBirthday() != null)
+            {
+                userOld.setText(String.valueOf(CountOld(
+                        users.getBirthday().getDate(),
+                        users.getBirthday().getMonth(),
+                        users.getBirthday().getYear()
+                )));
+            }
+            else {
+                userOld.setText("");
+            }
         }
         getUserImage();
     }

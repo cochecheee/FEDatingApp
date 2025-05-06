@@ -55,7 +55,7 @@ public class ProfileActivity extends AppCompatActivity implements ImageAdapter.O
         setContentView(R.layout.update_profile);
         tokenManager = new TokenManager(getApplicationContext());
         userService = new UserService("Bearer " + tokenManager.getAccessToken());
-        userId = getIntent().getLongExtra("userId", 2L);
+        userId = getIntent().getLongExtra("userId", getUserId());
 
         binding();
         getUserImages();
@@ -79,6 +79,25 @@ public class ProfileActivity extends AppCompatActivity implements ImageAdapter.O
             );
             datePickerDialog.show();
         });
+    }
+    private Long getUserId(){
+        final long[] getUserId = new long[1];
+        userService.getUserInfo2(new Callback<Users>() {
+            @Override
+            public void onResponse(Call<Users> call, Response<Users> response) {
+                if (response.isSuccessful())
+                {
+                    getUserId[0] = response.body().getId();
+                    Log.d("profile", "getUserId: tren" +response.body().getId());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Users> call, Throwable throwable) {
+
+            }
+        });
+        return getUserId[0];
     }
     private void binding(){
         // Khởi tạo các view

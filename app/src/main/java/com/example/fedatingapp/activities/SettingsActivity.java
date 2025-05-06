@@ -1,5 +1,6 @@
 package com.example.fedatingapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -42,7 +43,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         // Initialize ApiService
         apiService = RetrofitClient.getApiService();
-
+        Intent intent = getIntent();
+        currentUserId = intent.getLongExtra("userId", 1L);
         // --- TODO: Get the actual user ID ---
         // Replace '1L' with the real ID, maybe from SharedPreferences or Intent extras
         // currentUserId = getLoggedInUserId();

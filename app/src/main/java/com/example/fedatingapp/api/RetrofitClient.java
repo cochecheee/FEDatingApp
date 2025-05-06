@@ -3,6 +3,8 @@ package com.example.fedatingapp.api;
 import android.content.Context;
 
 import com.example.fedatingapp.utils.AuthInterceptor;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mindorks.placeholderview.BuildConfig;
 
 import java.util.concurrent.TimeUnit;
@@ -18,7 +20,7 @@ public class RetrofitClient {
     private static ApiService apiService = null;
     private static OkHttpClient okHttpClient = null; // Lưu trữ OkHttpClient để tái sử dụng
     private static final String BASE_URL = "http://192.168.0.139:8080/api/";
-
+    static Gson gson = new GsonBuilder().setDateFormat("yyyy MM dd").create();
     public static Retrofit getRetrofit() {
 //        OkHttpClient client = new OkHttpClient.Builder()
 //                .addInterceptor(chain -> {
@@ -32,7 +34,7 @@ public class RetrofitClient {
         if(retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
         }
         return retrofit;
@@ -74,7 +76,7 @@ public class RetrofitClient {
                     retrofit = new Retrofit.Builder()
                             .baseUrl(BASE_URL)
                             .client(okHttpClient) // ** Sử dụng OkHttpClient đã có Interceptor **
-                            .addConverterFactory(GsonConverterFactory.create()) // Sử dụng Gson để parse JSON
+                            .addConverterFactory(GsonConverterFactory.create(gson)) // Sử dụng Gson để parse JSON
                             .build();
                 }
             }

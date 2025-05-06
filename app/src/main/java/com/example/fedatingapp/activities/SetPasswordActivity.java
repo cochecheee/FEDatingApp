@@ -117,7 +117,7 @@ public class SetPasswordActivity extends AppCompatActivity {
                                 // ==================
 
                                 // Chuyển sang màn hình chính
-                                Intent intent = new Intent(SetPasswordActivity.this, MainActivity.class);
+                                Intent intent = new Intent(SetPasswordActivity.this, ProfileActivity.class);
                                 // Xóa hết các activity cũ (Login, Register, Verify) khỏi stack
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);

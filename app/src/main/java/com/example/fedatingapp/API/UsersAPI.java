@@ -20,6 +20,9 @@ public interface UsersAPI {
     @POST("profile/get")
     Call<Users> getUserInfo(@Header("Authorization") String authToken,@Query("userId") Long userId);
 
+    @Headers({"Accept: application/json"})
+    @POST("profile/getUser")
+    Call<Users> getUserInfo2(@Header("Authorization") String authToken);
 
     @Headers({"Accept: application/json"})
     @POST("profile/updateProfile")
@@ -49,4 +52,5 @@ public interface UsersAPI {
     @Headers({"Accept: application/json"})
     @POST("profile/updateSearch")
     Call<Void> updateSearch(@Header("Authorization") String authToken,@Body SearchCriteria searchCriteria);
+
 }
