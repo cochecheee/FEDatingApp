@@ -60,7 +60,7 @@ import retrofit2.Response;
 
 public class ChatActivity extends AppCompatActivity implements WebSocketClient.MessageListener {
     private static final String CHANNEL_ID = "notify_channel";
-    private MessageService messageService = new MessageService();
+    private MessageService messageService = new MessageService(this);
     private WebSocketManager webSocketManager;
     private BoxChatBinding binding;
     private ChatAdapter messageAdapter;
@@ -73,7 +73,7 @@ public class ChatActivity extends AppCompatActivity implements WebSocketClient.M
     private String receiverImage;
     private boolean isLoading = false;
     private int offset = 0;
-    private UserService userService = new UserService();
+    private UserService userService = new UserService(this);
     private Uri mUri;
     public static final int MY_REQUEST_CODE = 100;
     public static final String TAG = ChatActivity.class.getName();
@@ -83,7 +83,7 @@ public class ChatActivity extends AppCompatActivity implements WebSocketClient.M
         super.onCreate(savedInstanceState);
         binding = BoxChatBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        webSocketManager = WebSocketManager.getInstance();
+        webSocketManager = WebSocketManager.getInstance(this);
         webSocketManager.setMessageListener(this::onMessageReceived);
         // Lấy dữ liệu từ Intent
         currentUserId = getIntent().getLongExtra("CURRENT_USER_ID", 0L);

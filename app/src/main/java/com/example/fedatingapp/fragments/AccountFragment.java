@@ -89,7 +89,7 @@ public class AccountFragment extends Fragment implements WebSocketClient.Listene
     private View rootLayout;
     private TextView username, userJob, userOld;
     private LinearLayout setting, image, profile;
-    private final UserService userService = new UserService();
+    private final UserService userService = new UserService(getContext());
     private Users users;
     private List<Image> userImage;
     private Long userId;
@@ -335,9 +335,9 @@ public class AccountFragment extends Fragment implements WebSocketClient.Listene
     }
 
     private void binding() {
-        username = rootLayout.findViewById(R.id.userName);
-        userJob = rootLayout.findViewById(R.id.userJob);
-        userOld = rootLayout.findViewById(R.id.userOld);
+        username = rootLayout.findViewById(R.id.tvProfileNameAge);
+        userJob = rootLayout.findViewById(R.id.tvProfileJob);
+        userOld = rootLayout.findViewById(R.id.tvProfileSchool);
         setting = rootLayout.findViewById(R.id.btn_setting);
         image = rootLayout.findViewById(R.id.btn_addImage);
         profile = rootLayout.findViewById(R.id.btn_editProfile);

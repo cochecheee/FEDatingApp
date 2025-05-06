@@ -12,11 +12,11 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.fedatingapp.R;
+import com.example.fedatingapp.api.ApiResponse;
 import com.example.fedatingapp.api.ApiService;
+import com.example.fedatingapp.api.AuthResponse;
 import com.example.fedatingapp.api.RetrofitClient;
-import com.example.fedatingapp.api.request.LoginRequest;
-import com.example.fedatingapp.api.response.ApiResponse;
-import com.example.fedatingapp.api.response.AuthResponse;
+
 import com.example.fedatingapp.utils.TokenManager;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;

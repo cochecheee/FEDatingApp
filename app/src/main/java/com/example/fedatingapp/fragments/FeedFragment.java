@@ -2,7 +2,6 @@ package com.example.fedatingapp.fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,14 +19,11 @@ import android.widget.Toast;
 
 import com.example.fedatingapp.R;
 import com.example.fedatingapp.activities.LoginActivity;
-import com.example.fedatingapp.activities.MainActivity;
 import com.example.fedatingapp.adapters.MatchListAdapter;
+import com.example.fedatingapp.api.ApiResponse;
 import com.example.fedatingapp.api.ApiService;
 import com.example.fedatingapp.api.RetrofitClient;
-import com.example.fedatingapp.api.response.ApiResponse;
-import com.example.fedatingapp.models.Match;
 import com.example.fedatingapp.models.MatchFeed;
-import com.example.fedatingapp.models.Profile;
 import com.example.fedatingapp.utils.TokenManager;
 
 import java.text.SimpleDateFormat;
@@ -36,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 import java.util.TimeZone;
 
 import retrofit2.Call;
@@ -56,7 +50,7 @@ public class FeedFragment extends Fragment {
     private ApiService apiService;
     private TokenManager tokenManager;
     private Context mContext;
-    private Long currentUserId; // Lưu ID user hiện tại
+    private Long userId; // Lưu ID user hiện tại
 
 
     public FeedFragment(Long userId) {

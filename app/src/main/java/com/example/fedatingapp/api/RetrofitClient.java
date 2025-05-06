@@ -17,7 +17,7 @@ public class RetrofitClient {
     private static Retrofit retrofit = null;
     private static ApiService apiService = null;
     private static OkHttpClient okHttpClient = null; // Lưu trữ OkHttpClient để tái sử dụng
-    private static final String BASE_URL = "http://192.168.100.225:8080/api/";
+    private static final String BASE_URL = "http:// 192.168.0.139:8080/api/";
 
     public static Retrofit getRetrofit() {
 //        OkHttpClient client = new OkHttpClient.Builder()

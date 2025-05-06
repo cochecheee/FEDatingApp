@@ -1,5 +1,6 @@
 package com.example.fedatingapp.Service;
 
+import android.content.Context;
 import android.util.Log;
 
 import retrofit2.Call;
@@ -8,10 +9,14 @@ import retrofit2.Response;
 import com.example.fedatingapp.API.ReportAPI;
 import com.example.fedatingapp.Retrofit.RetrofitClient;
 import com.example.fedatingapp.entities.Reports;
-import com.example.fedatingapp.utils.Token;
+import com.example.fedatingapp.utils.TokenManager;
 
 public class ReportService {
-    private final ReportAPI reportAPI = RetrofitClient.getRetrofit(new Token().getToken()).create(ReportAPI.class);
+    private Context context;
+    public ReportService(Context context){
+        this.context = context;
+    }
+    private final ReportAPI reportAPI = RetrofitClient.getRetrofit(new TokenManager(context).getAccessToken()).create(ReportAPI.class);
 
     // Report a user
     public void reportUser(Reports report, Callback<Void> callback) {

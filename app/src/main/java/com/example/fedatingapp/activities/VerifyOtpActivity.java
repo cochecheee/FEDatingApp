@@ -8,14 +8,11 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.fedatingapp.R;
+import com.example.fedatingapp.api.ApiResponse;
 import com.example.fedatingapp.api.ApiService;
 import com.example.fedatingapp.api.RetrofitClient;
-import com.example.fedatingapp.api.response.ApiResponse;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;

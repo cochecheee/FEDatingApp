@@ -34,8 +34,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ExploreFragment extends Fragment implements WebSocketClient.Listener {
-    private SearchCardService searchCardService = new SearchCardService();
-    private UserService userService = new UserService();
+    private SearchCardService searchCardService = new SearchCardService(getContext());
+    private UserService userService = new UserService(getContext());
     private ExploreBinding binding;
     private ExploreViewModel viewModel;
     private ExploreCardAdapter exploreAdapter;

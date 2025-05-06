@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        webSocketManager = WebSocketManager.getInstance();
+        webSocketManager = WebSocketManager.getInstance(this);
         webSocketManager.initialize(userId, this,this);
         mContext = this;
 

@@ -12,7 +12,6 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <application
         android:allowBackup="true"
-        android:usesCleartextTraffic="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_logo"
@@ -43,18 +42,18 @@
         <activity
             android:name=".activities.LoginActivity"
             android:exported="false" />
-        <activity
-            android:name=".activities.AlternativeLoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.EmailVerificationActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.PhoneVerificationActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.StartActivity"
-            android:exported="false" />
+<!--        <activity-->
+<!--            android:name=".activities.AlternativeLoginActivity"-->
+<!--            android:exported="false" />-->
+<!--        <activity-->
+<!--            android:name=".activities.EmailVerificationActivity"-->
+<!--            android:exported="false" />-->
+<!--        <activity-->
+<!--            android:name=".activities.PhoneVerificationActivity"-->
+<!--            android:exported="false" />-->
+<!--        <activity-->
+<!--            android:name=".activities.StartActivity"-->
+<!--            android:exported="false" />-->
         <activity
             android:name=".activities.SplashScreenActivity"
             android:exported="true">
@@ -83,6 +82,8 @@
             android:windowSoftInputMode="adjustResize|stateVisible">
 
         </activity>
+
+
     </application>
 
 </manifest>

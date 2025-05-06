@@ -1,8 +1,10 @@
 package com.example.fedatingapp.WebSocket;
 
+import android.content.Context;
 import android.util.Log;
 
 public class WebSocketManager {
+    private Context context;
     private static final String TAG = "WebSocketManager";
     private static WebSocketManager instance;
     private WebSocketClient client;
@@ -10,14 +12,16 @@ public class WebSocketManager {
     private WebSocketClient.MessageListener messageListener;
     private WebSocketClient.Listener listener;
     // Private constructor
-    private WebSocketManager() {
+    private WebSocketManager(Context context) {
         // Khởi tạo rỗng
+        this.context = context;
     }
 
+
     // Singleton pattern
-    public static synchronized WebSocketManager getInstance() {
+    public static synchronized WebSocketManager getInstance(Context context) {
         if (instance == null) {
-            instance = new WebSocketManager();
+            instance = new WebSocketManager(context);
         }
         return instance;
     }
@@ -31,7 +35,7 @@ public class WebSocketManager {
             client.disconnect(); // Ngắt kết nối cũ nếu có
         }
 
-        client = new WebSocketClient(currentUserId);
+        client = new WebSocketClient(currentUserId,context);
         client.connect();
         Log.d(TAG, "WebSocketClient đã được khởi tạo với userId: " + currentUserId);
     }

@@ -48,7 +48,7 @@ import retrofit2.Response;
 public class MessageFragment extends Fragment implements MessageListAdapter.OnItemClickListener, LikeAdapter.onclickinterface
 , WebSocketClient.MessageListener {
     private static final String CHANNEL_ID = "notify_channel";
-    MessageService messageService = new MessageService();
+    MessageService messageService = new MessageService(getContext());
     WebSocketManager webSocketManager;
     View rootLayout;
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -70,7 +70,7 @@ public class MessageFragment extends Fragment implements MessageListAdapter.OnIt
         rootLayout = inflater.inflate(R.layout.fragment_chat, container, false);
 
         RecyclerView recyclerView = rootLayout.findViewById(R.id.recycler_view_messages);
-        webSocketManager = WebSocketManager.getInstance();
+        webSocketManager = WebSocketManager.getInstance(getContext());
         webSocketManager.setMessageListener(this);
         messageList = new ArrayList<>();
         message2List = new ArrayList<>();

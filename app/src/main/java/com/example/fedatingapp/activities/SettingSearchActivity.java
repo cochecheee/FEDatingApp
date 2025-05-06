@@ -28,7 +28,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SettingSearchActivity extends AppCompatActivity {
-    private UserService userService = new UserService();
+    private UserService userService = new UserService(this);
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

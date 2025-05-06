@@ -1,4 +1,4 @@
-package com.example.fedatingapp.api.response;
+package com.example.fedatingapp.api;
 
 public class AuthResponse {
     public String getToken() {

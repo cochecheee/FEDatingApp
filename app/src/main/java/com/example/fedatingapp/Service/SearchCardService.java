@@ -1,5 +1,6 @@
 package com.example.fedatingapp.Service;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.util.List;
@@ -10,10 +11,14 @@ import retrofit2.Response;
 import com.example.fedatingapp.API.SearchCardAPI;
 import com.example.fedatingapp.Retrofit.RetrofitClient;
 import com.example.fedatingapp.entities.Users;
-import com.example.fedatingapp.utils.Token;
+import com.example.fedatingapp.utils.TokenManager;
 
 public class SearchCardService {
-    private final SearchCardAPI searchCardAPI = RetrofitClient.getRetrofit(new Token().getToken()).create(SearchCardAPI.class);
+    private Context context;
+    public SearchCardService(Context context){
+        this.context = context;
+    }
+    private final SearchCardAPI searchCardAPI = RetrofitClient.getRetrofit(new TokenManager(context).getAccessToken()).create(SearchCardAPI.class);
 
     // Tìm user theo Sexual Orientation
     public void findBySexualOrientation(String sexualOrientation, Callback<List<Users>> callback) {

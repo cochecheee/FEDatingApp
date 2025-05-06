@@ -1,21 +1,25 @@
 package com.example.fedatingapp.Service;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.util.List;
-import java.util.Optional;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import com.example.fedatingapp.API.MessageAPI;
+import com.example.fedatingapp.api.MessageAPI;
 import com.example.fedatingapp.Retrofit.RetrofitClient;
 import com.example.fedatingapp.entities.Message;
 import com.example.fedatingapp.models.MessageItem;
-import com.example.fedatingapp.utils.Token;
+import com.example.fedatingapp.utils.TokenManager;
 
 public class MessageService {
-    private final MessageAPI messageAPI = RetrofitClient.getRetrofit(new Token().getToken()).create(MessageAPI.class);
+    private Context context;
+    public MessageService(Context context){
+        this.context = context;
+    }
+    private final MessageAPI messageAPI = RetrofitClient.getRetrofit(new TokenManager(context).getAccessToken()).create(MessageAPI.class);
 
     // Lấy tin nhắn cuối cùng giữa 2 user
     public void getListMatch (Long user1, Callback<List<MessageItem>> callback) {

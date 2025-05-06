@@ -1,5 +1,6 @@
 package com.example.fedatingapp.Service;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.util.List;
@@ -10,10 +11,14 @@ import retrofit2.Response;
 import com.example.fedatingapp.API.BlockAPI;
 import com.example.fedatingapp.Retrofit.RetrofitClient;
 import com.example.fedatingapp.entities.MatchList;
-import com.example.fedatingapp.utils.Token;
+import com.example.fedatingapp.utils.TokenManager;
 
 public class BlockService {
-    private final BlockAPI blockAPI = RetrofitClient.getRetrofit(new Token().getToken()).create(BlockAPI.class);
+    private Context context;
+    public BlockService(Context context){
+        this.context = context;
+    }
+    private final BlockAPI blockAPI = RetrofitClient.getRetrofit(new TokenManager(context).getAccessToken()).create(BlockAPI.class);
 
     // Block a user
     public void blockUser(MatchList blockUser, Callback<Void> callback) {

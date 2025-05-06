@@ -1,17 +1,17 @@
 package com.example.fedatingapp.WebSocket;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
 import com.example.fedatingapp.entities.Message;
 import com.example.fedatingapp.models.Notification;
-import com.example.fedatingapp.utils.Token;
+import com.example.fedatingapp.utils.TokenManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -22,6 +22,7 @@ import okhttp3.WebSocketListener;
 
 
 public class WebSocketClient {
+    private Context context;
     private static final String TAG = "WebSocketClient";
     private Long currentUserId;
     private WebSocket webSocket;
@@ -35,11 +36,12 @@ public class WebSocketClient {
         void onNotifyReceived(Notification notification);
     }
 
-    public WebSocketClient(Long currentUserId) {
+    public WebSocketClient(Long currentUserId,Context context) {
         this.currentUserId = currentUserId;
         this.client = new OkHttpClient.Builder()
                 .readTimeout(0, TimeUnit.MILLISECONDS)
                 .build();
+        this.context = context;
     }
 
     public void setMessageListener(MessageListener listener)
@@ -61,8 +63,8 @@ public class WebSocketClient {
 
     public void connect() {
         Request request = new Request.Builder()
-                .url("ws://192.168.1.42:8080/chat")
-                .addHeader("Authorization", "Bearer " + new Token().getToken())
+                .url("ws:// 192.168.0.139:8080/chat")
+                .addHeader("Authorization", "Bearer " + new TokenManager(context).getAccessToken())
                 .build();
 
         webSocket = client.newWebSocket(request, new WebSocketListener() {
@@ -70,7 +72,7 @@ public class WebSocketClient {
             public void onOpen(WebSocket webSocket, Response response) {
                 Log.d(TAG, "Kết nối thành công");
                 // Gửi CONNECT frame
-                String connectFrame = "CONNECT\naccept-version:1.2\nhost:192.168.1.42\n\n\0";
+                String connectFrame = "CONNECT\naccept-version:1.2\nhost: 192.168.0.139\n\n\0";
                 webSocket.send(connectFrame);
                 Log.d(TAG, "Đã gửi CONNECT frame: " + connectFrame);
             }

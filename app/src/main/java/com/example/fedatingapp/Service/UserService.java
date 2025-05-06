@@ -1,5 +1,6 @@
 package com.example.fedatingapp.Service;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.io.File;
@@ -14,21 +15,20 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import com.example.fedatingapp.API.ImgurAPI;
+import com.example.fedatingapp.api.ImgurAPI;
 import com.example.fedatingapp.API.UsersAPI;
 import com.example.fedatingapp.Retrofit.RetrofitClient;
 import com.example.fedatingapp.entities.Image;
 import com.example.fedatingapp.entities.SearchCriteria;
 import com.example.fedatingapp.entities.Users;
 import com.example.fedatingapp.models.ImgurResponse;
-import com.example.fedatingapp.utils.Token;
+import com.example.fedatingapp.utils.TokenManager;
 
 public class UserService {
 
-    private final ImgurAPI imgurApi;
-    private static final String IMGUR_CLIENT_ID = "b79cf480c808337";
-
-    public UserService() {
+    private Context context;
+    public UserService(Context context){
+        this.context = context;
         // Tạo Retrofit instance cho Imgur
         Retrofit imgurRetrofit = new Retrofit.Builder()
                 .baseUrl("https://api.imgur.com/")
@@ -36,8 +36,11 @@ public class UserService {
                 .build();
         imgurApi = imgurRetrofit.create(ImgurAPI.class);
     }
+    private final ImgurAPI imgurApi;
+    private static final String IMGUR_CLIENT_ID = "b79cf480c808337";
 
-    private final UsersAPI userAPI = RetrofitClient.getRetrofit(new Token().getToken()).create(UsersAPI.class);
+
+    private final UsersAPI userAPI = RetrofitClient.getRetrofit(new TokenManager(context).getAccessToken()).create(UsersAPI.class);
 
     public void getUserInfo(Long userId, Callback<Users> callback) {
 

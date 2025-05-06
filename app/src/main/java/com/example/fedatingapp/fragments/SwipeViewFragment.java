@@ -16,9 +16,9 @@ import androidx.fragment.app.Fragment;
 
 import com.example.fedatingapp.R;
 
+import com.example.fedatingapp.api.ApiResponse;
 import com.example.fedatingapp.api.ApiService;
 import com.example.fedatingapp.api.RetrofitClient;
-import com.example.fedatingapp.api.response.ApiResponse;
 import com.example.fedatingapp.models.Profile;
 import com.example.fedatingapp.models.TinderCard;
 import com.example.fedatingapp.utils.TokenManager;

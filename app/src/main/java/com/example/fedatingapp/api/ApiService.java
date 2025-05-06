@@ -1,7 +1,6 @@
 package com.example.fedatingapp.api;
 
-import com.example.fedatingapp.api.response.ApiResponse;
-import com.example.fedatingapp.api.response.AuthResponse;
+import com.example.fedatingapp.api.AuthResponse;
 import com.example.fedatingapp.models.MatchFeed;
 import com.example.fedatingapp.models.Profile;
 import com.example.fedatingapp.models.UserSettings;

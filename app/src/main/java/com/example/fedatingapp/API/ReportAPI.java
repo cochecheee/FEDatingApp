@@ -1,4 +1,4 @@
-package com.example.fedatingapp.API;
+package com.example.fedatingapp.api;
 
 import com.example.fedatingapp.entities.Reports;
 

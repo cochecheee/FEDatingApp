@@ -35,7 +35,7 @@ import retrofit2.Response;
 
 public class ProfileActivity extends AppCompatActivity implements ImageAdapter.OnImageDeleteListener{
 
-    private UserService userService = new UserService();
+    private UserService userService = new UserService(this);
     private Long userId;
     private Users user;
     private List<Image> userImages = new ArrayList<>();

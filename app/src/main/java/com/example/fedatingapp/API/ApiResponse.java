@@ -1,4 +1,4 @@
-package com.example.fedatingapp.api.response;
+package com.example.fedatingapp.api;
 
 import com.google.gson.annotations.SerializedName;
 
