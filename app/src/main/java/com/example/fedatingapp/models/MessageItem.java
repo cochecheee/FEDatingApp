@@ -2,18 +2,18 @@ package com.example.fedatingapp.models;
 
 public class MessageItem {
 
-    private int id;
+    private int senderId;
     private String name;
     private String content;
     private int count;
-    private int picture;
+    private String picture;
 
 
     public MessageItem() {
     }
 
-    public MessageItem(int id, String name, String content, int count, int picture) {
-        this.id = id;
+    public MessageItem(int id, String name, String content, int count, String picture) {
+        this.senderId = id;
         this.name = name;
         this.content = content;
         this.count = count;
@@ -21,7 +21,7 @@ public class MessageItem {
     }
 
     public int getId() {
-        return id;
+        return senderId;
     }
 
     public String getName() {
@@ -36,12 +36,12 @@ public class MessageItem {
         return count;
     }
 
-    public int getPicture() {
+    public String getPicture() {
         return picture;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.senderId = id;
     }
 
     public void setName(String name) {
@@ -56,7 +56,7 @@ public class MessageItem {
         this.count = count;
     }
 
-    public void setPicture(int id) {
-        this.id = id;
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 }

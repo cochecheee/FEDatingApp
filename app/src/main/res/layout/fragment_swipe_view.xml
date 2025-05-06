@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/whiteGray">
+    android:background="@color/whiteGray"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
         android:gravity="center"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true">
+        android:orientation="horizontal">
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -26,13 +25,13 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_margin="8dp"
+                android:backgroundTint="@android:color/white"
                 android:clickable="true"
                 android:focusable="true"
-                android:backgroundTint="@android:color/white"
+                app:borderWidth="0dp"
                 app:fabSize="mini"
                 app:rippleColor="@null"
-                app:borderWidth="0dp"
-                app:srcCompat="@drawable/reverse"/>
+                app:srcCompat="@drawable/reverse" />
 
         </RelativeLayout>
 
@@ -47,13 +46,13 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_margin="8dp"
+                android:backgroundTint="@android:color/white"
                 android:clickable="true"
                 android:focusable="true"
-                android:backgroundTint="@android:color/white"
+                app:borderWidth="0dp"
                 app:fabSize="normal"
                 app:rippleColor="@null"
-                app:borderWidth="0dp"
-                app:srcCompat="@drawable/skip"/>
+                app:srcCompat="@drawable/skip" />
 
         </RelativeLayout>
 
@@ -68,13 +67,13 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_margin="8dp"
+                android:backgroundTint="@android:color/white"
                 android:clickable="true"
                 android:focusable="true"
-                android:backgroundTint="@android:color/white"
+                app:borderWidth="0dp"
                 app:fabSize="mini"
                 app:rippleColor="@null"
-                app:borderWidth="0dp"
-                app:srcCompat="@drawable/ic_star_turquoise_24dp"/>
+                app:srcCompat="@drawable/ic_star_turquoise_24dp" />
 
         </RelativeLayout>
 
@@ -89,13 +88,13 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_margin="8dp"
+                android:backgroundTint="@android:color/white"
                 android:clickable="true"
                 android:focusable="true"
-                android:backgroundTint="@android:color/white"
+                app:borderWidth="0dp"
                 app:fabSize="normal"
                 app:rippleColor="@null"
-                app:borderWidth="0dp"
-                app:srcCompat="@drawable/ic_like_24dp"/>
+                app:srcCompat="@drawable/ic_like_24dp" />
 
         </RelativeLayout>
 
@@ -110,13 +109,13 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_margin="8dp"
+                android:backgroundTint="@android:color/white"
                 android:clickable="true"
                 android:focusable="true"
-                android:backgroundTint="@android:color/white"
+                app:borderWidth="0dp"
                 app:fabSize="mini"
                 app:rippleColor="@null"
-                app:borderWidth="0dp"
-                app:srcCompat="@drawable/bolt"/>
+                app:srcCompat="@drawable/bolt" />
 
         </RelativeLayout>
 
@@ -127,6 +126,6 @@
         android:id="@+id/swipeView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="75dp"/>
+        android:layout_marginBottom="75dp" />
 
 </RelativeLayout>

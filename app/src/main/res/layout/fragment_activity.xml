@@ -64,11 +64,10 @@
                 android:id="@+id/text_feed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Fil d'actualité"
-                android:textStyle="bold"
-                android:textSize="16sp"
+                android:text="Match List"
                 android:textColor="@color/light_gray"
-                android:layout_marginEnd="5dp"/>
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <RelativeLayout
                 android:id="@+id/layout_count_feed"

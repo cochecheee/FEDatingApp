@@ -5,20 +5,12 @@ import com.google.gson.annotations.SerializedName;
 
 public class Profile {
 
-    @SerializedName("name")
-    @Expose
+    private Long id;
     private String name;
 
-    @SerializedName("url")
-    @Expose
     private String imageUrl;
 
-    @SerializedName("age")
-    @Expose
     private Integer age;
-
-    @SerializedName("location")
-    @Expose
     private String location;
 
     public String getName() {
@@ -51,5 +43,9 @@ public class Profile {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public Long getId() {
+        return id;
     }
 }
