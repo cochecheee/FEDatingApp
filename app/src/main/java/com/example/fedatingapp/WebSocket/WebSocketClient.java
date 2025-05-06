@@ -63,7 +63,7 @@ public class WebSocketClient {
 
     public void connect() {
         Request request = new Request.Builder()
-                .url("ws:// 192.168.0.139:8080/chat")
+                .url("ws://192.168.0.139:8080/chat")
                 .addHeader("Authorization", "Bearer " + new TokenManager(context).getAccessToken())
                 .build();
 
@@ -72,7 +72,7 @@ public class WebSocketClient {
             public void onOpen(WebSocket webSocket, Response response) {
                 Log.d(TAG, "Kết nối thành công");
                 // Gửi CONNECT frame
-                String connectFrame = "CONNECT\naccept-version:1.2\nhost: 192.168.0.139\n\n\0";
+                String connectFrame = "CONNECT\naccept-version:1.2\nhost:192.168.0.139\n\n\0";
                 webSocket.send(connectFrame);
                 Log.d(TAG, "Đã gửi CONNECT frame: " + connectFrame);
             }

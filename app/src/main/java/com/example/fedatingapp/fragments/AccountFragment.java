@@ -55,6 +55,7 @@ import com.example.fedatingapp.entities.Users;
 import com.example.fedatingapp.models.ImgurResponse;
 import com.example.fedatingapp.models.Notification;
 import com.example.fedatingapp.utils.NotificationUtils;
+import com.example.fedatingapp.utils.TokenManager;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -89,7 +90,8 @@ public class AccountFragment extends Fragment implements WebSocketClient.Listene
     private View rootLayout;
     private TextView username, userJob, userOld;
     private LinearLayout setting, image, profile;
-    private final UserService userService = new UserService(getContext());
+    private UserService userService ;
+    private TokenManager tokenManager;
     private Users users;
     private List<Image> userImage;
     private Long userId;
@@ -119,7 +121,8 @@ public class AccountFragment extends Fragment implements WebSocketClient.Listene
         } else {
             userId = 1L;
         }
-
+        tokenManager = new TokenManager(getActivity());
+        userService = new UserService("Bearer " + tokenManager.getAccessToken());
 
     }
 
@@ -343,7 +346,6 @@ public class AccountFragment extends Fragment implements WebSocketClient.Listene
         profile = rootLayout.findViewById(R.id.btn_editProfile);
         setting = rootLayout.findViewById(R.id.btn_setting);
         image = rootLayout.findViewById(R.id.btn_addImage);
-        profile = rootLayout.findViewById(R.id.btn_editProfile);
         circleImageView = rootLayout.findViewById(R.id.profile_image);
     }
 

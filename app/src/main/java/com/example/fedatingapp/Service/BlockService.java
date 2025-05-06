@@ -8,21 +8,22 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import com.example.fedatingapp.API.BlockAPI;
-import com.example.fedatingapp.Retrofit.RetrofitClient;
+import com.example.fedatingapp.api.BlockAPI;
+import com.example.fedatingapp.api.RetrofitClient;
 import com.example.fedatingapp.entities.MatchList;
 import com.example.fedatingapp.utils.TokenManager;
 
 public class BlockService {
-    private Context context;
-    public BlockService(Context context){
-        this.context = context;
+    private String token = "";
+    public BlockService(String token){
+        this.token = token;
+        Log.d("BlockService", "BlockService: " + token);
     }
-    private final BlockAPI blockAPI = RetrofitClient.getRetrofit(new TokenManager(context).getAccessToken()).create(BlockAPI.class);
+    private final BlockAPI blockAPI = RetrofitClient.getRetrofit().create(BlockAPI.class);
 
     // Block a user
     public void blockUser(MatchList blockUser, Callback<Void> callback) {
-        Call<Void> call = blockAPI.blockUser(blockUser);
+        Call<Void> call = blockAPI.blockUser(token,blockUser);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -45,7 +46,7 @@ public class BlockService {
 
     // Get all blocked users
     public void getAllBlockUser(Long userId, Callback<List<MatchList>> callback) {
-        Call<List<MatchList>> call = blockAPI.getAllBlockUser(userId);
+        Call<List<MatchList>> call = blockAPI.getAllBlockUser(token,userId);
         call.enqueue(new Callback<List<MatchList>>() {
             @Override
             public void onResponse(Call<List<MatchList>> call, Response<List<MatchList>> response) {
@@ -68,7 +69,7 @@ public class BlockService {
 
     // Unblock a user
     public void unBlockUser(MatchList unBlockUser, Callback<Void> callback) {
-        Call<Void> call = blockAPI.unBlockUser(unBlockUser);
+        Call<Void> call = blockAPI.unBlockUser(token,unBlockUser);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {

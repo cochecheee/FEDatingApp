@@ -11,7 +11,8 @@ public class TokenManager {
     private SharedPreferences prefs;
     private SharedPreferences.Editor editor;
 
-    public TokenManager(Context context) {
+    public TokenManager(Context context)
+    {
         prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = prefs.edit();
     }

@@ -6,21 +6,22 @@ import android.util.Log;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import com.example.fedatingapp.API.ReportAPI;
-import com.example.fedatingapp.Retrofit.RetrofitClient;
+import com.example.fedatingapp.api.ReportAPI;
+import com.example.fedatingapp.api.RetrofitClient;
 import com.example.fedatingapp.entities.Reports;
 import com.example.fedatingapp.utils.TokenManager;
 
 public class ReportService {
-    private Context context;
-    public ReportService(Context context){
-        this.context = context;
+    private String token = "";
+    public ReportService(String token){
+        this.token = token;
+        Log.d("ReportService", "ReportService: " + token);
     }
-    private final ReportAPI reportAPI = RetrofitClient.getRetrofit(new TokenManager(context).getAccessToken()).create(ReportAPI.class);
+    private final ReportAPI reportAPI = RetrofitClient.getRetrofit().create(ReportAPI.class);
 
     // Report a user
     public void reportUser(Reports report, Callback<Void> callback) {
-        Call<Void> call = reportAPI.reportUser(report);
+        Call<Void> call = reportAPI.reportUser(token,report);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {

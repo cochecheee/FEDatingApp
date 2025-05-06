@@ -23,6 +23,7 @@ import com.example.fedatingapp.Service.UserService;
 import com.example.fedatingapp.adapters.ImageAdapter;
 import com.example.fedatingapp.entities.Image;
 import com.example.fedatingapp.entities.Users;
+import com.example.fedatingapp.utils.TokenManager;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -35,7 +36,8 @@ import retrofit2.Response;
 
 public class ProfileActivity extends AppCompatActivity implements ImageAdapter.OnImageDeleteListener{
 
-    private UserService userService = new UserService(this);
+    private UserService userService;
+    private TokenManager tokenManager;
     private Long userId;
     private Users user;
     private List<Image> userImages = new ArrayList<>();
@@ -51,12 +53,11 @@ public class ProfileActivity extends AppCompatActivity implements ImageAdapter.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.update_profile);
-
+        tokenManager = new TokenManager(getApplicationContext());
+        userService = new UserService("Bearer " + tokenManager.getAccessToken());
         userId = getIntent().getLongExtra("userId", 2L);
 
         binding();
-
-
         getUserImages();
         getUserInfo();
 

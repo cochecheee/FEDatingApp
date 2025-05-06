@@ -9,21 +9,22 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import com.example.fedatingapp.api.MessageAPI;
-import com.example.fedatingapp.Retrofit.RetrofitClient;
+import com.example.fedatingapp.api.RetrofitClient;
 import com.example.fedatingapp.entities.Message;
 import com.example.fedatingapp.models.MessageItem;
 import com.example.fedatingapp.utils.TokenManager;
 
 public class MessageService {
-    private Context context;
-    public MessageService(Context context){
-        this.context = context;
+    private String token = "";
+    public MessageService(String token){
+        this.token = token;
+        Log.d("MessageService", "MessageService: " + token);
     }
-    private final MessageAPI messageAPI = RetrofitClient.getRetrofit(new TokenManager(context).getAccessToken()).create(MessageAPI.class);
+    private final MessageAPI messageAPI = RetrofitClient.getRetrofit().create(MessageAPI.class);
 
     // Lấy tin nhắn cuối cùng giữa 2 user
     public void getListMatch (Long user1, Callback<List<MessageItem>> callback) {
-        Call<List<MessageItem>> call = messageAPI.getListMatch(user1);
+        Call<List<MessageItem>> call = messageAPI.getListMatch(token,user1);
         call.enqueue(new Callback<List<MessageItem>>() {
             @Override
             public void onResponse(Call<List<MessageItem>> call, Response<List<MessageItem>> response) {
@@ -44,7 +45,7 @@ public class MessageService {
     }
 
     public void getMessages(Long user1, Long user2, int limit, int offset, Callback<List<Message>> callback) {
-        Call<List<Message>> call = messageAPI.getMessages(user1, user2, limit, offset);
+        Call<List<Message>> call = messageAPI.getMessages(token,user1, user2, limit, offset);
         call.enqueue(new Callback<List<Message>>() {
             @Override
             public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {

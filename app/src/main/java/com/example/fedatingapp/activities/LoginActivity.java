@@ -2,6 +2,7 @@ package com.example.fedatingapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -81,7 +82,6 @@ public class LoginActivity extends AppCompatActivity {
                         // Đăng nhập thành công
                         AuthResponse authData = apiResponse.getData();
                         Toast.makeText(LoginActivity.this, apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
-
                         // === LƯU TOKEN ===
                         tokenManager.saveTokens(authData.getToken());
                         // ==================

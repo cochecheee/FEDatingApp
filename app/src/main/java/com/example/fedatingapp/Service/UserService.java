@@ -2,6 +2,7 @@ package com.example.fedatingapp.Service;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.List;
@@ -16,8 +17,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import com.example.fedatingapp.api.ImgurAPI;
-import com.example.fedatingapp.API.UsersAPI;
-import com.example.fedatingapp.Retrofit.RetrofitClient;
+import com.example.fedatingapp.api.RetrofitClient;
+import com.example.fedatingapp.api.UsersAPI;
 import com.example.fedatingapp.entities.Image;
 import com.example.fedatingapp.entities.SearchCriteria;
 import com.example.fedatingapp.entities.Users;
@@ -26,9 +27,13 @@ import com.example.fedatingapp.utils.TokenManager;
 
 public class UserService {
 
-    private Context context;
-    public UserService(Context context){
-        this.context = context;
+    private String token = "";
+    private final ImgurAPI imgurApi;
+    private static final String IMGUR_CLIENT_ID = "b79cf480c808337";
+
+    public UserService(String token){
+        this.token = token;
+        Log.d("UserService", "UserService: " + this.token);
         // Tạo Retrofit instance cho Imgur
         Retrofit imgurRetrofit = new Retrofit.Builder()
                 .baseUrl("https://api.imgur.com/")
@@ -36,15 +41,13 @@ public class UserService {
                 .build();
         imgurApi = imgurRetrofit.create(ImgurAPI.class);
     }
-    private final ImgurAPI imgurApi;
-    private static final String IMGUR_CLIENT_ID = "b79cf480c808337";
 
 
-    private final UsersAPI userAPI = RetrofitClient.getRetrofit(new TokenManager(context).getAccessToken()).create(UsersAPI.class);
+    private final UsersAPI userAPI = RetrofitClient.getRetrofit().create(UsersAPI.class);
 
     public void getUserInfo(Long userId, Callback<Users> callback) {
-
-        Call<Users> call = userAPI.getUserInfo(userId);
+        Log.d("UserService", "Ham UserService: " + this.token);
+        Call<Users> call = userAPI.getUserInfo(token,userId);
         call.enqueue(new Callback<Users>() {
             @Override
             public void onResponse(Call<Users> call, Response<Users> response) {
@@ -52,7 +55,7 @@ public class UserService {
                     Log.d("Oke", "Truy van thanh cong" + response.toString() + response.body());
                     callback.onResponse(call, Response.success(response.body()));
                 } else {
-                    Log.d("Oke", "Truy van that bai" + response.toString());
+                    Log.d("Oke", "Truy van that bai " + token);
                     callback.onResponse(call, response);
                 }
             }
@@ -66,7 +69,7 @@ public class UserService {
     }
 
     public void UpdateUserInfo(Users userInfo)    {
-        Call<Void> call = userAPI.UpdateUserInfo(userInfo);
+        Call<Void> call = userAPI.UpdateUserInfo(token,userInfo);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -88,7 +91,7 @@ public class UserService {
     }
 
     public void getAllUserImage(Long userid, Callback<List<Image>> callback){
-        Call<List<Image>> call = userAPI.getAllImageProfile(userid);
+        Call<List<Image>> call = userAPI.getAllImageProfile(token,userid);
         call.enqueue(new Callback<List<Image>>() {
             @Override
             public void onResponse(Call<List<Image>> call, Response<List<Image>> response) {
@@ -110,7 +113,7 @@ public class UserService {
     }
 
     public void addUserImage(Image image){
-        Call<Void> call = userAPI.addImageProfile(image);
+        Call<Void> call = userAPI.addImageProfile(token,image);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -132,7 +135,7 @@ public class UserService {
     }
 
     public void delUserImage(Image image){
-        Call<Void> call = userAPI.delImageProfile(image);
+        Call<Void> call = userAPI.delImageProfile(token,image);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -189,7 +192,7 @@ public class UserService {
     }
 
     public void getSearch(Long userid, Callback<SearchCriteria> callback){
-        Call<SearchCriteria> call = userAPI.getSearch(userid);
+        Call<SearchCriteria> call = userAPI.getSearch(token,userid);
         call.enqueue(new Callback<SearchCriteria>() {
             @Override
             public void onResponse(Call<SearchCriteria> call, Response<SearchCriteria> response) {
@@ -209,7 +212,7 @@ public class UserService {
 
     public void updateSearch(SearchCriteria searchCriteria)
     {
-        Call<Void> call = userAPI.updateSearch(searchCriteria);
+        Call<Void> call = userAPI.updateSearch(token,searchCriteria);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {

@@ -25,6 +25,7 @@ import com.example.fedatingapp.models.ExploreViewModel;
 import com.example.fedatingapp.models.GridSpacingItemDecoration;
 import com.example.fedatingapp.models.Notification;
 import com.example.fedatingapp.utils.NotificationUtils;
+import com.example.fedatingapp.utils.TokenManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +35,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ExploreFragment extends Fragment implements WebSocketClient.Listener {
-    private SearchCardService searchCardService = new SearchCardService(getContext());
-    private UserService userService = new UserService(getContext());
+    private SearchCardService searchCardService;
+    private TokenManager tokenManager;
+    private UserService userService;
     private ExploreBinding binding;
     private ExploreViewModel viewModel;
     private ExploreCardAdapter exploreAdapter;
@@ -58,7 +60,9 @@ public class ExploreFragment extends Fragment implements WebSocketClient.Listene
 
         // Khởi tạo ViewModel
         viewModel = new ViewModelProvider(this).get(ExploreViewModel.class);
-
+        tokenManager = new TokenManager(getActivity());
+        userService = new UserService("Bearer " + tokenManager.getAccessToken());
+        searchCardService = new SearchCardService("Bearer " + tokenManager.getAccessToken());
         setupRecyclerView();
         setupBannerClickListener();
         setupMainBanner();

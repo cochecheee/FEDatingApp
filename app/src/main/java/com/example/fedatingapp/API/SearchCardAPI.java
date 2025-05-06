@@ -7,6 +7,8 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
 
@@ -17,9 +19,10 @@ public interface SearchCardAPI {
     Call<List<Users>> findBySexualOrientation(@Field("SexualOrientation") String sexualOrientation);
 
     // POST /searchCard/find/interests - Tìm theo Interests
+    @Headers({"Accept: application/json"})
     @FormUrlEncoded
     @POST("/searchCard/find/interests")
-    Call<List<Users>> findByInterests(@Field("interests") String interests);
+    Call<List<Users>> findByInterests(@Header("Authorization") String authToken, @Field("interests") String interests);
 
     // POST /searchCard/find/zodiacSign - Tìm theo Zodiac Sign
     @FormUrlEncoded

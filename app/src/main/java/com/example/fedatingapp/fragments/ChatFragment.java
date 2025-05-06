@@ -33,6 +33,7 @@ import com.example.fedatingapp.entities.Message;
 import com.example.fedatingapp.models.MessageItem;
 import com.example.fedatingapp.models.Notification;
 import com.example.fedatingapp.utils.NotificationUtils;
+import com.example.fedatingapp.utils.TokenManager;
 import com.example.fedatingapp.widgets.BounceScrollView;
 
 import java.util.ArrayList;
@@ -48,7 +49,8 @@ import retrofit2.Response;
 public class ChatFragment extends Fragment implements MessageListAdapter.OnItemClickListener, LikeAdapter.onclickinterface
         , WebSocketClient.MessageListener {
     private static final String CHANNEL_ID = "notify_channel";
-    MessageService messageService = new MessageService(getContext());
+    MessageService messageService;
+    private TokenManager tokenManager;
     WebSocketManager webSocketManager;
     View rootLayout;
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -70,7 +72,9 @@ public class ChatFragment extends Fragment implements MessageListAdapter.OnItemC
         rootLayout = inflater.inflate(R.layout.fragment_chat, container, false);
 
         RecyclerView recyclerView = rootLayout.findViewById(R.id.recycler_view_messages);
-        webSocketManager = WebSocketManager.getInstance(getContext());
+        tokenManager = new TokenManager(getActivity());
+        messageService = new MessageService("Bearer " + tokenManager.getAccessToken());
+        webSocketManager = WebSocketManager.getInstance(getActivity());
         webSocketManager.setMessageListener(this);
         messageList = new ArrayList<>();
         message2List = new ArrayList<>();

@@ -8,17 +8,19 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import com.example.fedatingapp.API.SearchCardAPI;
-import com.example.fedatingapp.Retrofit.RetrofitClient;
+
+import com.example.fedatingapp.api.RetrofitClient;
+import com.example.fedatingapp.api.SearchCardAPI;
 import com.example.fedatingapp.entities.Users;
 import com.example.fedatingapp.utils.TokenManager;
 
 public class SearchCardService {
-    private Context context;
-    public SearchCardService(Context context){
-        this.context = context;
+    private String token = "";
+    public SearchCardService(String token){
+        this.token = token;
+        Log.d("SearchCardService", "SearchCardService: " + token);
     }
-    private final SearchCardAPI searchCardAPI = RetrofitClient.getRetrofit(new TokenManager(context).getAccessToken()).create(SearchCardAPI.class);
+    private final SearchCardAPI searchCardAPI = RetrofitClient.getRetrofit().create(SearchCardAPI.class);
 
     // Tìm user theo Sexual Orientation
     public void findBySexualOrientation(String sexualOrientation, Callback<List<Users>> callback) {
@@ -45,7 +47,7 @@ public class SearchCardService {
 
     // Tìm user theo Interests
     public void findByInterests(String interests, Callback<List<Users>> callback) {
-        Call<List<Users>> call = searchCardAPI.findByInterests(interests);
+        Call<List<Users>> call = searchCardAPI.findByInterests(token,interests);
         call.enqueue(new Callback<List<Users>>() {
             @Override
             public void onResponse(Call<List<Users>> call, Response<List<Users>> response) {

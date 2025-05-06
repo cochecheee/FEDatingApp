@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.fedatingapp.R;
 import com.example.fedatingapp.Service.UserService;
 import com.example.fedatingapp.entities.SearchCriteria;
+import com.example.fedatingapp.utils.TokenManager;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.slider.RangeSlider;
 import com.google.android.material.slider.Slider;
@@ -28,12 +29,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SettingSearchActivity extends AppCompatActivity {
-    private UserService userService = new UserService(this);
+    private UserService userService;
+    private TokenManager tokenManager;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setting_search);
-
+        tokenManager = new TokenManager(this);
+        userService = new UserService("Bearer " + tokenManager.getAccessToken());
         // Find UI elements
         TextInputEditText etDatingPurpose = findViewById(R.id.et_dating_purpose);
         TextInputEditText etMinAge = findViewById(R.id.et_min_age);
