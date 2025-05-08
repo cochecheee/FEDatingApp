@@ -66,70 +66,189 @@ public class ExploreViewModel extends ViewModel {
         }
     }
 
-    // Hàm tạo dữ liệu mẫu
+    /**
+     * Tạo dữ liệu mẫu cho các danh mục khám phá dựa trên mảng common_interests
+     * @return Danh sách các ExploreCategory
+     */
     private List<ExploreCategory> generateSampleData() {
         List<ExploreCategory> data = new ArrayList<>();
 
+        // Travel
         data.add(new ExploreCategory(
                 1,
-                "Du lịch",
+                "Travel",
                 "Những người thích du lịch khám phá",
                 "https://vr360.com.vn/uploads/images/5-cach-quang-ba-du-lich.jpg",
                 true
         ));
 
+        // Cooking
         data.add(new ExploreCategory(
                 2,
-                "Âm nhạc",
-                "Kết nối qua âm nhạc yêu thích",
-                "https://cdn.nhathuoclongchau.com.vn/unsafe/800x0/https://cms-prod.s3-sgn09.fptcloud.com/am_nhac_la_gi_nhung_loi_ich_cua_am_nhac_trong_cuoc_song_1_049dffc6ba.png",
-                false
-        ));
-
-        data.add(new ExploreCategory(
-                3,
-                "Thể thao",
-                "Tìm bạn đồng hành luyện tập",
-                "https://katatech.net/uploaded/tin-tuc/mon-the-thao-dot-calo-nhieu-nhat-1.webp",
-                true
-        ));
-
-        data.add(new ExploreCategory(
-                4,
-                "Nấu ăn",
-                "Cùng khám phá ẩm thực",
+                "Cooking",
+                "Cùng khám phá ẩm thực và công thức nấu ăn",
                 "https://media-cdn-v2.laodong.vn/Storage/NewsPortal/2021/10/17/964726/Nau-An.jpg",
                 false
         ));
 
+        // Fitness
         data.add(new ExploreCategory(
-                5,
-                "Book",
-                "Tìm người cùng sở thích đọc sách",
+                3,
+                "Fitness",
+                "Tìm bạn đồng hành luyện tập gym và fitness",
+                "",
+                true
+        ));
+
+        // Reading
+        data.add(new ExploreCategory(
+                4,
+                "Reading",
+                "Tìm người cùng sở thích đọc sách và trao đổi tri thức",
                 "https://kenh14cdn.com/203336854389633024/2021/1/3/photo-1-16096337476961612322578.jpg",
                 false
         ));
 
+        // Movies
         data.add(new ExploreCategory(
-                6,
-                "Thú cưng",
-                "Dành cho người yêu thú cưng",
-                "https://bestcargo.vn/wp-content/uploads/2022/07/Hinh-anh-van-chuyen-thu-cung-bang-may-bay.jpg",
+                5,
+                "Movies",
+                "Kết nối với những người đam mê điện ảnh",
+                "",
                 true
         ));
 
+        // Music
         data.add(new ExploreCategory(
-                7,
-                "Công nghệ",
-                "Kết nối với người đam mê công nghệ",
-                "https://blog.topcv.vn/wp-content/uploads/2020/09/cong-nghe-thong-tin-la-gi-tn.jpg",
+                6,
+                "Music",
+                "Kết nối qua âm nhạc yêu thích",
+                "",
                 false
         ));
 
+        // Art
+        data.add(new ExploreCategory(
+                7,
+                "Art",
+                "Những người yêu thích hội họa và nghệ thuật",
+                "",
+                true
+        ));
+
+        // Photography
         data.add(new ExploreCategory(
                 8,
-                "Yoga & Thiền",
-                "Tìm bạn cùng tập luyện",
+                "Photography",
+                "Tìm bạn cùng đam mê chụp ảnh và khám phá",
+                "",
+                false
+        ));
+
+        // Hiking
+        data.add(new ExploreCategory(
+                9,
+                "Hiking",
+                "Kết nối với những người đam mê trekking và leo núi",
+                "",
+                true
+        ));
+
+        // Gaming
+        data.add(new ExploreCategory(
+                10,
+                "Gaming",
+                "Tìm đồng đội và bạn chơi game",
+                "",
+                false
+        ));
+
+        // Dance
+        data.add(new ExploreCategory(
+                11,
+                "Dance",
+                "Tìm bạn cùng đam mê vũ đạo",
+                "",
+                true
+        ));
+
+        // Food
+        data.add(new ExploreCategory(
+                12,
+                "Food",
+                "Kết nối với những người yêu thích ẩm thực",
+                "",
+                false
+        ));
+
+        // Outdoors
+        data.add(new ExploreCategory(
+                13,
+                "Outdoors",
+                "Tìm bạn cùng đam mê các hoạt động ngoài trời",
+                "",
+                true
+        ));
+
+        // Sports
+        data.add(new ExploreCategory(
+                14,
+                "Sports",
+                "Tìm bạn đồng hành luyện tập thể thao",
+                "https://katatech.net/uploaded/tin-tuc/mon-the-thao-dot-calo-nhieu-nhat-1.webp",
+                false
+        ));
+
+        // Tech
+        data.add(new ExploreCategory(
+                15,
+                "Tech",
+                "Kết nối với người đam mê công nghệ",
+                "https://blog.topcv.vn/wp-content/uploads/2020/09/cong-nghe-thong-tin-la-gi-tn.jpg",
+                true
+        ));
+
+        // Fashion
+        data.add(new ExploreCategory(
+                16,
+                "Fashion",
+                "Tìm bạn cùng đam mê thời trang và phong cách",
+                "",
+                false
+        ));
+
+        // Pets
+        data.add(new ExploreCategory(
+                17,
+                "Pets",
+                "Dành cho người yêu thú cưng",
+                "",
+                true
+        ));
+
+        // Coffee
+        data.add(new ExploreCategory(
+                18,
+                "Coffee",
+                "Dành cho những người yêu thích cà phê",
+                "",
+                false
+        ));
+
+        // Wine
+        data.add(new ExploreCategory(
+                19,
+                "Wine",
+                "Kết nối với những người sành rượu vang",
+                "",
+                true
+        ));
+
+        // Yoga
+        data.add(new ExploreCategory(
+                20,
+                "Yoga",
+                "Tìm bạn cùng tập luyện yoga và thiền",
                 "https://www.saigondance.vn/wp-content/uploads/2018/08/hinh-anh-tap-yoga.jpg",
                 false
         ));

@@ -209,7 +209,7 @@ public class ProfileActivity extends AppCompatActivity implements ImageAdapter.O
 
             // Gọi API để lưu thông tin
             userService.UpdateUserInfo( user);
-            Toast.makeText(this, "Cập nhật thông tin thannh công.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Cập nhật thông tin thanh công.", Toast.LENGTH_SHORT).show();
         }
     }
 

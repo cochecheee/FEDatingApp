@@ -3,7 +3,6 @@ package com.example.fedatingapp.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,11 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ScrollView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.example.fedatingapp.R;
 import com.example.fedatingapp.Service.MessageService;
 import com.example.fedatingapp.WebSocket.WebSocketClient;
@@ -31,10 +26,7 @@ import com.example.fedatingapp.adapters.LikeAdapter;
 import com.example.fedatingapp.adapters.MessageListAdapter;
 import com.example.fedatingapp.entities.Message;
 import com.example.fedatingapp.models.MessageItem;
-import com.example.fedatingapp.models.Notification;
-import com.example.fedatingapp.utils.NotificationUtils;
 import com.example.fedatingapp.utils.TokenManager;
-import com.example.fedatingapp.widgets.BounceScrollView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,8 +47,9 @@ public class MessageFragment extends Fragment implements MessageListAdapter.OnIt
     View rootLayout;
     private static final String TAG = MainActivity.class.getSimpleName();
     private List<MessageItem> messageList;
-    private List<MessageItem> message2List;
+    private List<MessageItem> likeList;
     private MessageListAdapter mAdapter;
+    private LikeAdapter contactAdapter;
     private Long curentUserId;
     private boolean isLoading = false;
     private EditText findName ;
@@ -76,7 +69,7 @@ public class MessageFragment extends Fragment implements MessageListAdapter.OnIt
         webSocketManager = WebSocketManager.getInstance(getActivity());
         webSocketManager.setMessageListener(this);
         messageList = new ArrayList<>();
-        message2List = new ArrayList<>();
+        likeList = new ArrayList<>();
 
         mAdapter = new MessageListAdapter(getContext(), messageList,this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
@@ -86,9 +79,9 @@ public class MessageFragment extends Fragment implements MessageListAdapter.OnIt
         recyclerView.setAdapter(mAdapter);
 
         prepareMessageList();
-        prepareMessageList2();
+        prepareLikeList();
 
-        LikeAdapter contactAdapter = new LikeAdapter(getContext(), message2List,this);
+        contactAdapter = new LikeAdapter(getContext(), likeList,this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         RecyclerView recyclerViewContact =  rootLayout.findViewById(R.id.recycler_view_likes);
         recyclerViewContact.setLayoutManager(layoutManager);
@@ -121,7 +114,7 @@ public class MessageFragment extends Fragment implements MessageListAdapter.OnIt
     {
         List<MessageItem> filteredList = new ArrayList<>();
         if (text.isEmpty()) {
-            prepareMessageList2();
+            prepareLikeList();
         } else {
             // Filter the list based on search text
             String searchQuery = text.toLowerCase().trim();
@@ -131,8 +124,8 @@ public class MessageFragment extends Fragment implements MessageListAdapter.OnIt
                 }
             }
         }
-        message2List.clear();
-        message2List.addAll(filteredList);
+        likeList.clear();
+        likeList.addAll(filteredList);
         mAdapter.notifyDataSetChanged();
     }
     private void prepareMessageList(){
@@ -146,6 +139,9 @@ public class MessageFragment extends Fragment implements MessageListAdapter.OnIt
                     mAdapter.notifyDataSetChanged();
 
                 }
+                else {
+                    Log.d("ChatFragment", "onFailure: "+ response.body());
+                }
             }
 
             @Override
@@ -155,15 +151,18 @@ public class MessageFragment extends Fragment implements MessageListAdapter.OnIt
         });
     }
 
-    private void prepareMessageList2(){
+    private void prepareLikeList(){
         messageService.getListMatch(curentUserId, new Callback<List<MessageItem>>() {
             @Override
             public void onResponse(Call<List<MessageItem>> call, Response<List<MessageItem>> response) {
                 if (response.isSuccessful() && !response.body().isEmpty())
                 {
-                    message2List.clear();
-                    message2List.addAll(response.body());
-                    mAdapter.notifyDataSetChanged();
+                    likeList.clear();
+                    likeList.addAll(response.body());
+                    contactAdapter.notifyDataSetChanged();
+                }
+                else {
+                    Log.d("ChatFragment", "onFailure: "+ response.body());
                 }
             }
             @Override
@@ -196,12 +195,6 @@ public class MessageFragment extends Fragment implements MessageListAdapter.OnIt
 
     @Override
     public void onMessageReceived(Message message) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle("Tin nhan moi")
-                .setContentText(message.getMessageContent())
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-        builder.build();
-        prepareMessageList();
+
     }
 }

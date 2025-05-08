@@ -103,9 +103,12 @@ public class ExploreFragment extends Fragment implements WebSocketClient.Listene
                 {
                     Users user = response.body();
                     binding.textView9.setText(user.getSexualOrientation());
-                    if (user.getSexualOrientation().equals("Bisex"))
+                    if (user.getSexualOrientation() == null)
                     {
-
+                        binding.textView9.setText("Chưa cập nhật");
+                    }
+                    else {
+                        binding.textView9.setText(user.getSexualOrientation());
                     }
                 }
             }
@@ -128,7 +131,13 @@ public class ExploreFragment extends Fragment implements WebSocketClient.Listene
                 searchCardService.findByInterests(category.getTitle(), new Callback<List<Users>>() {
                     @Override
                     public void onResponse(Call<List<Users>> call, Response<List<Users>> response) {
-                        Toast.makeText(getContext(), "oke" + response.body().size(), Toast.LENGTH_SHORT).show();
+                        if (response.isSuccessful() && response.body() != null)
+                        {
+
+                        }
+                        else {
+                            Toast.makeText(getContext(), "fail khong duoc" , Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
@@ -166,6 +175,6 @@ public class ExploreFragment extends Fragment implements WebSocketClient.Listene
 
     @Override
     public void onNotifyReceived(Notification notification) {
-        NotificationUtils.showPushNotification(getContext(),notification);
+
     }
 }

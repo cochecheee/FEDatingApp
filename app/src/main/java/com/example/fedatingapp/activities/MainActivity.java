@@ -9,13 +9,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.fedatingapp.R;
 import com.example.fedatingapp.Service.UserService;
 import com.example.fedatingapp.WebSocket.WebSocketClient;
 import com.example.fedatingapp.WebSocket.WebSocketManager;
-import com.example.fedatingapp.adapters.ViewPagerAdapter;
 import com.example.fedatingapp.entities.Message;
 import com.example.fedatingapp.entities.Users;
 import com.example.fedatingapp.fragments.AccountFragment;
@@ -23,11 +23,8 @@ import com.example.fedatingapp.fragments.ActivityFragment;
 import com.example.fedatingapp.fragments.ExploreFragment;
 import com.example.fedatingapp.fragments.SwipeViewFragment;
 import com.example.fedatingapp.models.Notification;
-import com.example.fedatingapp.utils.NotificationUtils;
 import com.example.fedatingapp.utils.TokenManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,11 +33,12 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, WebSocketClient.Listener, WebSocketClient.MessageListener {
 
     private Context mContext;
-    private ViewPager viewPager;
     private WebSocketManager webSocketManager;
     private TokenManager tokenManager;
     private UserService userService;
     private static long userId;
+    private BottomNavigationView bottomNavigationView;
+    private int currentFragmentId = -1; // Track current fragment
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,11 +48,15 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         mContext = this;
         tokenManager = new TokenManager(this);
         userService = new UserService("Bearer " + tokenManager.getAccessToken());
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(this);
 
         getUserId(() -> {
             webSocketManager = WebSocketManager.getInstance(getApplicationContext());
             webSocketManager.initialize(userId, this, this);
-            setupViewPagerAndNavigation();
+
+            // Load initial fragment
+            bottomNavigationView.setSelectedItemId(R.id.account);
         });
     }
 
@@ -80,35 +82,40 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         });
     }
 
-    private void setupViewPagerAndNavigation() {
-        BottomNavigationView bnv = findViewById(R.id.bottom_navigation);
-
-        ArrayList<Fragment> fragList = new ArrayList<>();
-        fragList.add(AccountFragment.newInstance(userId));
-        fragList.add(new SwipeViewFragment());
-        fragList.add(new ActivityFragment(userId));
-        fragList.add(new ExploreFragment(userId));
-
-        ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(fragList, getSupportFragmentManager());
-        viewPager = findViewById(R.id.view_pager);
-        viewPager.setAdapter(pagerAdapter);
-        viewPager.setOffscreenPageLimit(3);
-        bnv.setOnNavigationItemSelectedListener(this);
-    }
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         int itemId = menuItem.getItemId();
+
+        // Always create a new fragment, even if the same tab is selected
         if (itemId == R.id.account) {
-            viewPager.setCurrentItem(0);
+            loadFragment(AccountFragment.newInstance(userId));
+            currentFragmentId = R.id.account;
         } else if (itemId == R.id.fire) {
-            viewPager.setCurrentItem(1);
+            loadFragment(new SwipeViewFragment());
+            currentFragmentId = R.id.fire;
         } else if (itemId == R.id.chat) {
-            viewPager.setCurrentItem(2);
+            loadFragment(new ActivityFragment(userId));
+            currentFragmentId = R.id.chat;
         } else if (itemId == R.id.explore) {
-            viewPager.setCurrentItem(3);
+            loadFragment(new ExploreFragment(userId));
+            currentFragmentId = R.id.explore;
         }
+
         return true;
+    }
+
+    private void loadFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        // Clear back stack if needed
+        if (fragmentManager.getBackStackEntryCount() > 0) {
+            FragmentManager.BackStackEntry first = fragmentManager.getBackStackEntryAt(0);
+            fragmentManager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+
+        transaction.replace(R.id.fragment_container, fragment);
+        transaction.commit();
     }
 
     @Override

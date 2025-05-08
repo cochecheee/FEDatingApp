@@ -63,8 +63,6 @@ public class LikeAdapter extends RecyclerView.Adapter<LikeAdapter.ContactViewHol
         }
     }
 
-
-
     @Override
     public void onBindViewHolder(LikeAdapter.ContactViewHolder holder, final int position) {
         final MessageItem item = likeList.get(position);
