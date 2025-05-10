@@ -1,6 +1,7 @@
 package com.example.fedatingapp.api;
 
 import com.example.fedatingapp.api.AuthResponse;
+import com.example.fedatingapp.entities.Users;
 import com.example.fedatingapp.models.MatchFeed;
 import com.example.fedatingapp.models.Profile;
 import com.example.fedatingapp.models.UserSettings;
@@ -140,6 +141,12 @@ public interface ApiService {
     @PUT("users/me/settings")
     Call<ApiResponse<Void>> saveSettings(
             @Body UserSettings settings,
+            @Header("Authorization") String authToken
+    );
+
+    @Headers({"Accept: application/json"})
+    @PUT("users/my-likers")
+    Call<ApiResponse<List<Users>>> myLike(
             @Header("Authorization") String authToken
     );
 
