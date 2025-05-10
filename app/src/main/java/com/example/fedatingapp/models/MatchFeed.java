@@ -1,7 +1,7 @@
 package com.example.fedatingapp.models;
 
 public class MatchFeed {
-    // ID này có thể là ID của MatchList hoặc ID của người dùng kia, tùy cách bạn muốn xử lý click
+    // ID của người dùng kia,
     private String id; // Sử dụng String để linh hoạt
     private String name;
     private String pictureUrl; // ** Đổi tên từ picture để rõ ràng là URL **

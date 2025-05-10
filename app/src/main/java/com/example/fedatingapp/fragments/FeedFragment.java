@@ -40,7 +40,7 @@ import retrofit2.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FeedFragment extends Fragment {
+public class FeedFragment extends Fragment implements MatchListAdapter.clickInterface{
     View rootLayout;
     private static final String TAG = "FeedFragment"; // Hoặc MatchFragment
     //    private List<Match> matchList;
@@ -66,29 +66,13 @@ public class FeedFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-//        rootLayout = inflater.inflate(R.layout.fragment_feed, container, false);
-//
-//
-//        RecyclerView recyclerView = rootLayout.findViewById(R.id.recycler_view_matchs);
-//        matchList = new ArrayList<>();
-//        mAdapter = new MatchListAdapter(getContext(), matchList);
-//
-//        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-//        recyclerView.setLayoutManager(mLayoutManager);
-//        recyclerView.setItemAnimator(new DefaultItemAnimator());
-//        //recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-//        recyclerView.setAdapter(mAdapter);
-//
-//        prepareMatchList();
-//
-//        return rootLayout;
+
         rootLayout = inflater.inflate(R.layout.fragment_feed, container, false); // ** Layout chứa RecyclerView **
 
         recyclerView = rootLayout.findViewById(R.id.recycler_view_matchs); // ** ID RecyclerView **
 
         matchList = new ArrayList<>();
-        mAdapter = new MatchListAdapter(mContext, matchList); // ** Truyền mContext đã lấy **
+        mAdapter = new MatchListAdapter(mContext, matchList,this); // ** Truyền mContext đã lấy **
 
         if (mContext != null) {
             apiService = RetrofitClient.getApiService(mContext);
@@ -253,5 +237,96 @@ public class FeedFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mContext = null; // Giải phóng context
+    }
+
+    @Override
+    public void likeClick(Long matchUserId) {
+        if (apiService == null || tokenManager == null || mContext == null) {
+            showErrorView("Lỗi tải dữ liệu.");
+            return;
+        }
+
+        // ** Lấy token (Nếu không dùng Interceptor) **
+        String accessToken = tokenManager.getAccessToken();
+        if (accessToken == null || accessToken.isEmpty()) {
+            showErrorView("Vui lòng đăng nhập lại.");
+            navigateToLogin(); // Ví dụ
+            return;
+        }
+        String bearerToken = "Bearer " + accessToken;
+
+        showLoading(true);
+        apiService.likeUser(matchUserId,bearerToken).enqueue(new Callback<ApiResponse<String>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<String>> call, Response<ApiResponse<String>> response) {
+                showLoading(false);
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "onResponse: " + response.body());
+
+                    // Xóa phần tử có matchUserId khỏi matchList
+                    for (int i = 0; i < matchList.size(); i++) {
+                        if (matchList.get(i).getId().equals(matchUserId+"")) {
+                            matchList.remove(i);
+                            mAdapter.notifyItemRemoved(i); // Thông báo adapter về việc xóa
+                            break; // Thoát vòng lặp sau khi xóa
+                        }
+                    }
+                } else {
+                    showErrorView("Lỗi khi gửi yêu cầu like.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<String>> call, Throwable throwable) {
+                showLoading(false);
+                showErrorView("Lỗi kết nối: " + throwable.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void disLikeClick(Long disLikeUserId) {
+        if (apiService == null || tokenManager == null || mContext == null) {
+            Log.e(TAG, "Cannot fetch matches: Prerequisites missing.");
+            showErrorView("Lỗi tải dữ liệu.");
+            return;
+        }
+
+        // ** Lấy token (Nếu không dùng Interceptor) **
+        String accessToken = tokenManager.getAccessToken();
+        if (accessToken == null || accessToken.isEmpty()) {
+            showErrorView("Vui lòng đăng nhập lại.");
+            navigateToLogin(); // Ví dụ
+            return;
+        }
+        String bearerToken = "Bearer " + accessToken;
+
+        showLoading(true);
+        apiService.dislikeUser(disLikeUserId,bearerToken).enqueue(new Callback<ApiResponse<String>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<String>> call, Response<ApiResponse<String>> response) {
+                showLoading(false);
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "onResponse: " + response.body());
+
+                    // Xóa phần tử có matchUserId khỏi matchList
+                    for (int i = 0; i < matchList.size(); i++) {
+                        if (matchList.get(i).getId().equals(disLikeUserId+"")) {
+                            matchList.remove(i);
+                            mAdapter.notifyItemRemoved(i); // Thông báo adapter về việc xóa
+                            break; // Thoát vòng lặp sau khi xóa
+                        }
+                    }
+                } else {
+                    showErrorView("Lỗi khi gửi yêu cầu dislike.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<String>> call, Throwable throwable) {
+                showLoading(false);
+                showErrorView("Lỗi kết nối: " + throwable.getMessage());
+            }
+        });
     }
 }

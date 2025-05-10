@@ -143,12 +143,5 @@ public interface ApiService {
             @Body UserSettings settings,
             @Header("Authorization") String authToken
     );
-
-    @Headers({"Accept: application/json"})
-    @PUT("users/my-likers")
-    Call<ApiResponse<List<Users>>> myLike(
-            @Header("Authorization") String authToken
-    );
-
     //DELETE
 }

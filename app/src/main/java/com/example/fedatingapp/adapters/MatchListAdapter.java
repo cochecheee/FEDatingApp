@@ -23,10 +23,14 @@ public class MatchListAdapter extends RecyclerView.Adapter<MatchListAdapter.MyVi
     private Context context;
     //    private List<Match> matchList;
     private List<MatchFeed> matchList;
-
+    private clickInterface clickInterface;
+    public interface clickInterface{
+        void likeClick(Long matchUserId);
+        void disLikeClick(Long disLikeUserId);
+    }
     class MyViewHolder extends RecyclerView.ViewHolder {
 //        TextView name, date, location;
-        ////        ImageView imgProfile, imgContent;
+        ImageView imgLike, imgDislike;
         TextView name, date, location, tvNewMatch; // Thêm tvNewMatch
         ImageView imgContent; // Ảnh lớn
         CircleImageView imgProfile; // Ảnh profile tròn
@@ -40,15 +44,16 @@ public class MatchListAdapter extends RecyclerView.Adapter<MatchListAdapter.MyVi
             imgContent = view.findViewById(R.id.img_content); // ID ảnh lớn
             tvNewMatch = view.findViewById(R.id.text_new_match); // ** ID TextView "Nouveau Match !" **
             // Ánh xạ thêm các nút Like, Chat nếu cần bắt sự kiện click ở đây
-            // ImageView imgLike = view.findViewById(R.id.img_like);
-            // ImageView imgChat = view.findViewById(R.id.img_chat);
+            imgLike = view.findViewById(R.id.img_like);
+            imgDislike = view.findViewById(R.id.img_dislike);
         }
     }
 
 
-    public MatchListAdapter(Context context, List<MatchFeed> matchList) {
+    public MatchListAdapter(Context context, List<MatchFeed> matchList, clickInterface clickInterface) {
         this.context = context;
         this.matchList = matchList;
+        this.clickInterface = clickInterface;
     }
 
     @NonNull // ** Thêm NonNull **
@@ -99,8 +104,12 @@ public class MatchListAdapter extends RecyclerView.Adapter<MatchListAdapter.MyVi
             // intent.putExtra("USER_ID", item.getId()); // Truyền ID
             // context.startActivity(intent);
         });
-        // Ví dụ bắt sự kiện click nút chat
-        // holder.imgChat.setOnClickListener(v -> { ... open chat screen ... });
+        holder.imgLike.setOnClickListener(v ->{
+            clickInterface.likeClick(Long.parseLong(item.getId()));
+        });
+        holder.imgDislike.setOnClickListener(v ->{
+            clickInterface.disLikeClick(Long.parseLong(item.getId()));
+        });
     }
 
     @Override

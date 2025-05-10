@@ -1,5 +1,6 @@
 package com.example.fedatingapp.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,7 @@ import com.example.fedatingapp.models.Notification;
 import com.example.fedatingapp.utils.NotificationUtils;
 import com.example.fedatingapp.utils.TokenManager;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -133,7 +135,9 @@ public class ExploreFragment extends Fragment implements WebSocketClient.Listene
                     public void onResponse(Call<List<Users>> call, Response<List<Users>> response) {
                         if (response.isSuccessful() && response.body() != null)
                         {
-
+                            Intent intent = new Intent(getContext(),SwipeViewFragment.class);
+                            intent.putExtra("listProfile", (Serializable) response.body());
+                            startActivity(intent);
                         }
                         else {
                             Toast.makeText(getContext(), "fail khong duoc" , Toast.LENGTH_SHORT).show();
