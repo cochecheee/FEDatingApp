@@ -122,4 +122,18 @@
     <string name="error_password_mismatch">Mật khẩu không khớp</string>
 
 
+    <string name="profile">Profile</string>
+    <string name="back">Quay lại</string>
+    <string name="share">Chia sẻ</string>
+    <string name="more_info">Thông tin thêm</string>
+    <string name="location">Vị trí</string>
+    <string name="dislike">Không thích</string>
+    <string name="like">Thích</string>
+    <string name="super_like">Siêu thích</string>
+    <string name="about_me">Về tôi</string>
+    <string name="job">Công việc</string>
+    <string name="education">Học vấn</string>
+    <string name="living_at">Sống tại</string>
+    <string name="interests">Sở thích</string>
+
 </resources>

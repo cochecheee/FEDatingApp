@@ -129,6 +129,11 @@ public interface ApiService {
     Call<ApiResponse<String>> dislikeUser(@Path("id") Long userId,
                                           @Header("Authorization") String authToken);
 
+    @Headers({"Accept: application/json"})
+    @GET("users/{id}/profile")
+    Call<Users> profile(@Path("id") Long userId,
+                                          @Header("Authorization") String authToken);
+
     //----------------------------------PUT
     /**
      * Lưu cài đặt người dùng.

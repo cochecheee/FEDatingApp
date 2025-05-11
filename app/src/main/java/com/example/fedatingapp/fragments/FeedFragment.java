@@ -280,6 +280,7 @@ public class FeedFragment extends Fragment implements MatchListAdapter.clickInte
             public void onFailure(Call<ApiResponse<String>> call, Throwable throwable) {
                 showLoading(false);
                 showErrorView("Lỗi kết nối: " + throwable.getMessage());
+                Log.d("loi ne tr", "onFailure: "+ throwable.getMessage());
             }
         });
     }
