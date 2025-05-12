@@ -194,7 +194,7 @@ public class ProfileActivity extends AppCompatActivity implements ImageAdapter.O
             int day = Integer.parseInt(parts[0]);
             int month = Integer.parseInt(parts[1]);
             int year = Integer.parseInt(parts[2]);
-
+            Toast.makeText(this, "sinh nhat" + day + " " + month + " " + year, Toast.LENGTH_SHORT).show();
             user.setBirthday(new Date(year,month,day));
             user.setBiography(editTextBiography.getText().toString());
             user.setHeight(Float.parseFloat(editTextHeight.getText().toString().isEmpty() ? "0" : editTextHeight.getText().toString()));
