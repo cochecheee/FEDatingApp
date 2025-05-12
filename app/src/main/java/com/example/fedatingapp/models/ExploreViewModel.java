@@ -96,7 +96,7 @@ public class ExploreViewModel extends ViewModel {
                 3,
                 "Fitness",
                 "Tìm bạn đồng hành luyện tập gym và fitness",
-                "",
+                "https://www.rrc.ca/well-being/wp-content/uploads/sites/96/2025/01/sport-fitness-box1.jpg",
                 true
         ));
 
@@ -114,7 +114,7 @@ public class ExploreViewModel extends ViewModel {
                 5,
                 "Movies",
                 "Kết nối với những người đam mê điện ảnh",
-                "",
+                "https://lumiere-a.akamaihd.net/v1/images/p_studio_elio_payoff_poster_v1_b71992a8.jpeg",
                 true
         ));
 
@@ -123,7 +123,7 @@ public class ExploreViewModel extends ViewModel {
                 6,
                 "Music",
                 "Kết nối qua âm nhạc yêu thích",
-                "",
+                "https://daily.jstor.org/wp-content/uploads/2023/01/good_times_with_bad_music_1050x700.jpg",
                 false
         ));
 
@@ -132,7 +132,7 @@ public class ExploreViewModel extends ViewModel {
                 7,
                 "Art",
                 "Những người yêu thích hội họa và nghệ thuật",
-                "",
+                "https://mastermedia.vn/wp-content/uploads/2023/05/art-va-design-1.jpg",
                 true
         ));
 
@@ -141,7 +141,7 @@ public class ExploreViewModel extends ViewModel {
                 8,
                 "Photography",
                 "Tìm bạn cùng đam mê chụp ảnh và khám phá",
-                "",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT6qjYGkQv7lsrht3oSTaYAJhGXLYJKtkscHA&s",
                 false
         ));
 
@@ -150,7 +150,7 @@ public class ExploreViewModel extends ViewModel {
                 9,
                 "Hiking",
                 "Kết nối với những người đam mê trekking và leo núi",
-                "",
+                "https://vj-prod-website-cms.s3.ap-southeast-1.amazonaws.com/1518801341-1703731145719.jpg",
                 true
         ));
 
@@ -159,7 +159,7 @@ public class ExploreViewModel extends ViewModel {
                 10,
                 "Gaming",
                 "Tìm đồng đội và bạn chơi game",
-                "",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCvub9PV_Ee6Wxl4PRzfsJnUQ0NPqNWVyfsw&s",
                 false
         ));
 
@@ -168,7 +168,7 @@ public class ExploreViewModel extends ViewModel {
                 11,
                 "Dance",
                 "Tìm bạn cùng đam mê vũ đạo",
-                "",
+                "https://upload.wikimedia.org/wikipedia/commons/3/38/Two_dancers.jpg",
                 true
         ));
 
@@ -177,7 +177,7 @@ public class ExploreViewModel extends ViewModel {
                 12,
                 "Food",
                 "Kết nối với những người yêu thích ẩm thực",
-                "",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrm45IT7TPDizgfnHZXQPDqLqTyIxJBt0D4Q&s",
                 false
         ));
 
@@ -186,7 +186,7 @@ public class ExploreViewModel extends ViewModel {
                 13,
                 "Outdoors",
                 "Tìm bạn cùng đam mê các hoạt động ngoài trời",
-                "",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAhmr3g1QBvM9ZGm8whbxInmKParuZqEY6xw&s",
                 true
         ));
 
@@ -213,7 +213,7 @@ public class ExploreViewModel extends ViewModel {
                 16,
                 "Fashion",
                 "Tìm bạn cùng đam mê thời trang và phong cách",
-                "",
+                "https://file.hstatic.net/200000503583/article/high-fashion-la-gi-21_15eb1f9733ae4344977098b5bdcaf03f_2048x2048.jpg",
                 false
         ));
 
@@ -222,7 +222,7 @@ public class ExploreViewModel extends ViewModel {
                 17,
                 "Pets",
                 "Dành cho người yêu thú cưng",
-                "",
+                "https://files.nationalasthma.org.au/images/iStock-1445196818.jpg",
                 true
         ));
 
@@ -231,7 +231,7 @@ public class ExploreViewModel extends ViewModel {
                 18,
                 "Coffee",
                 "Dành cho những người yêu thích cà phê",
-                "",
+                "https://www.nescafe.com/nz/sites/default/files/2023-09/NESCAF%C3%89%20Cappuccino.jpg",
                 false
         ));
 
@@ -240,7 +240,7 @@ public class ExploreViewModel extends ViewModel {
                 19,
                 "Wine",
                 "Kết nối với những người sành rượu vang",
-                "",
+                "https://funix.edu.vn/wp-content/uploads/2022/05/C%C3%A1ch-c%C3%A0i-%C4%91%E1%BA%B7t-Wine-tr%C3%AAn-Ubuntu-%C4%91%E1%BB%83-ch%E1%BA%A1y-ph%E1%BA%A7n-m%E1%BB%81m-Windows.jpg",
                 true
         ));
 
