@@ -19,18 +19,9 @@ public class RetrofitClient {
     private static Retrofit retrofit = null;
     private static ApiService apiService = null;
     private static OkHttpClient okHttpClient = null; // Lưu trữ OkHttpClient để tái sử dụng
-    private static final String BASE_URL = "http://192.168.0.139:8080/api/";
+    private static final String BASE_URL = "http://192.168.1.233:8080/api/";
     static Gson gson = new GsonBuilder().setDateFormat("yyyy MM dd").create();
     public static Retrofit getRetrofit() {
-//        OkHttpClient client = new OkHttpClient.Builder()
-//                .addInterceptor(chain -> {
-//                    Request newRequest = chain.request().newBuilder()
-//                            .addHeader("Authorization", "Bearer " + authToken)
-//                            .build();
-//                    return chain.proceed(newRequest);
-//                })
-//                .build();
-
         if(retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
