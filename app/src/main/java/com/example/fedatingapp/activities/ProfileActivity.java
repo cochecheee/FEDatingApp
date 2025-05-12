@@ -2,12 +2,14 @@ package com.example.fedatingapp.activities;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,26 +44,26 @@ public class ProfileActivity extends AppCompatActivity implements ImageAdapter.O
     private Users user;
     private List<Image> userImages = new ArrayList<>();
 
+    private ImageButton imbtn_thoat;
     private RecyclerView recyclerViewImages;
     private EditText editTextHoten, editTextPhone,  editTextBiography;
     private EditText editTextHeight, editTextWeight, editTextPersonalityType, editTextInterests, editTextAddress, editTextJob;
     private Spinner spinnerGender, spinnerSexualOrientation, spinnerZodiacSign;
     private Button btnSave;
     private TextView editTextBirthday;
-
+    private  boolean isNew = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.update_profile);
         tokenManager = new TokenManager(getApplicationContext());
         userService = new UserService("Bearer " + tokenManager.getAccessToken());
-        userId = getIntent().getLongExtra("userId", getUserId());
+        userId = getIntent().getLongExtra("userId",0L);
 
-        binding();
         getUserImages();
         getUserInfo();
-
-
+        binding();
+        imbtn_thoat.setOnClickListener(v -> openMainActivity());
         btnSave.setOnClickListener(v -> saveUserInfo());
         editTextBirthday.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
@@ -80,24 +82,41 @@ public class ProfileActivity extends AppCompatActivity implements ImageAdapter.O
             datePickerDialog.show();
         });
     }
-    private Long getUserId(){
-        final long[] getUserId = new long[1];
+    private void openMainActivity(){
+        if (isNew){
+            Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+            // Xóa các activity cũ khỏi stack để không back lại màn hình login
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        }
+        else
+        {
+            finish();
+        }
+    }
+    private void getUserId(Runnable callback) {
+        isNew = true;
         userService.getUserInfo2(new Callback<Users>() {
             @Override
             public void onResponse(Call<Users> call, Response<Users> response) {
-                if (response.isSuccessful())
-                {
-                    getUserId[0] = response.body().getId();
-                    Log.d("profile", "getUserId: tren" +response.body().getId());
+                if (response.isSuccessful() && response.body() != null) {
+                    userId = response.body().getId();
+                    user = new Users();
+                    user.setId(userId);
+                    Log.d("profile", "getUserId: " + userId);
+                    callback.run(); // Trigger the callback to proceed with saveUserInfo
+                } else {
+                    Log.e("profile", "Failed to get user ID: " + response.message());
+                    Toast.makeText(ProfileActivity.this, "Failed to load user ID", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Users> call, Throwable throwable) {
-
+                Log.e("profile", "Error fetching user ID", throwable);
+                Toast.makeText(ProfileActivity.this, "Error fetching user ID", Toast.LENGTH_SHORT).show();
             }
         });
-        return getUserId[0];
     }
     private void binding(){
         // Khởi tạo các view
@@ -116,7 +135,7 @@ public class ProfileActivity extends AppCompatActivity implements ImageAdapter.O
         editTextAddress = findViewById(R.id.editTextAddress);
         editTextJob = findViewById(R.id.editTextJob);
         btnSave = findViewById(R.id.btnSave);
-
+        imbtn_thoat = findViewById(R.id.btnBack);
     }
 
     private void getUserInfo() {
@@ -127,13 +146,17 @@ public class ProfileActivity extends AppCompatActivity implements ImageAdapter.O
                 if (response.isSuccessful()) {
                     user = response.body();
                     if (user != null) {
-                        int year = user.getBirthday().getYear();
-                        int month = user.getBirthday().getMonth();
+                        if (user.getBirthday() != null){
+                            int year = user.getBirthday().getYear();
+                            int month = user.getBirthday().getMonth();
+                            int date = user.getBirthday().getDate();
+                            editTextBirthday.setText(date + "/" +
+                                    month + "/" + year);
+                        }
                         // Hiển thị thông tin người dùng
                         editTextHoten.setText(user.getName());
                         editTextPhone.setText(user.getPhone());
-                        editTextBirthday.setText(user.getBirthday().getDate() + "/" +
-                                month + "/" + year);
+
                         editTextBiography.setText(user.getBiography());
                         editTextHeight.setText(String.valueOf(user.getHeight()));
                         editTextWeight.setText(String.valueOf(user.getWeight()));
@@ -185,8 +208,28 @@ public class ProfileActivity extends AppCompatActivity implements ImageAdapter.O
     }
 
     private void saveUserInfo() {
-        // Cập nhật thông tin người dùng
-        if (user != null) {
+        if (userId == 0) {
+            getUserId(() -> {
+                // This callback runs after userId and user are set
+                updateUserInfo();
+            });
+        } else {
+            if (user == null) {
+                user = new Users();
+                user.setId(userId);
+            }
+            updateUserInfo();
+        }
+    }
+
+    private void updateUserInfo() {
+        if (user == null) {
+            Log.e("ProfileActivity", "User object is null");
+            Toast.makeText(this, "Error: User data not loaded", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
             user.setName(editTextHoten.getText().toString());
             user.setPhone(editTextPhone.getText().toString());
             String[] parts = editTextBirthday.getText().toString().split("/");
@@ -194,8 +237,8 @@ public class ProfileActivity extends AppCompatActivity implements ImageAdapter.O
             int day = Integer.parseInt(parts[0]);
             int month = Integer.parseInt(parts[1]);
             int year = Integer.parseInt(parts[2]);
-            Toast.makeText(this, "sinh nhat" + day + " " + month + " " + year, Toast.LENGTH_SHORT).show();
-            user.setBirthday(new Date(year,month,day));
+            Toast.makeText(this, "sinh nhat " + day + " " + month + " " + year + " userId " + userId, Toast.LENGTH_SHORT).show();
+            user.setBirthday(new Date(year, month, day));
             user.setBiography(editTextBiography.getText().toString());
             user.setHeight(Float.parseFloat(editTextHeight.getText().toString().isEmpty() ? "0" : editTextHeight.getText().toString()));
             user.setWeight(Integer.parseInt(editTextWeight.getText().toString().isEmpty() ? "0" : editTextWeight.getText().toString()));
@@ -208,8 +251,11 @@ public class ProfileActivity extends AppCompatActivity implements ImageAdapter.O
             user.setZodiacSign(spinnerZodiacSign.getSelectedItem().toString());
 
             // Gọi API để lưu thông tin
-            userService.UpdateUserInfo( user);
-            Toast.makeText(this, "Cập nhật thông tin thanh công.", Toast.LENGTH_SHORT).show();
+            userService.UpdateUserInfo(user);
+            Toast.makeText(this, "Cập nhật thông tin thành công.", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Log.e("ProfileActivity", "Error updating user info", e);
+            Toast.makeText(this, "Error updating user info", Toast.LENGTH_SHORT).show();
         }
     }
 

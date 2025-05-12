@@ -35,9 +35,11 @@ public class UserProfileActivity extends AppCompatActivity {
     private BlockService blockService;
     private ImageButton btnBack;
     private ImageView imgProfile;
-    private TextView tvNameAge, tvJob, tvLocation, tvDistance, tvAboutMe, tvZodiac, tvEducation, tvLookingFor;
+    private TextView tvNameAge, tvJob, tvLocation, tvAboutMe, tvZodiac, tvEducation, tvLookingFor;
     private Button btnBlock;
     String bearerToken;
+    Long userId;
+    String image;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +51,6 @@ public class UserProfileActivity extends AppCompatActivity {
         tvNameAge = findViewById(R.id.tvNameAge);
         tvJob = findViewById(R.id.tvJob);
         tvLocation = findViewById(R.id.tvLocation);
-        tvDistance = findViewById(R.id.tvDistance);
         tvAboutMe = findViewById(R.id.tvAboutMe);
         tvZodiac = findViewById(R.id.tvZodiac);
         tvEducation = findViewById(R.id.tvEducation);
@@ -57,7 +58,11 @@ public class UserProfileActivity extends AppCompatActivity {
         btnBlock = findViewById(R.id.btnBlock);
 
         Intent intent = getIntent();
-        Long userId = intent.getLongExtra("UserId", 5L);
+        userId = intent.getLongExtra("receiverUserId", 5L);
+        image = intent.getStringExtra("receiverImage");
+
+
+
         tokenManager = new TokenManager(this);
         apiService = RetrofitClient.getApiService(this);
         if (apiService == null || tokenManager == null) { // ** Thêm kiểm tra tokenManager **
@@ -73,6 +78,8 @@ public class UserProfileActivity extends AppCompatActivity {
         }
         bearerToken = "Bearer " + accessToken;
         blockService = new BlockService(bearerToken);
+
+        Glide.with(this).load(image).into(imgProfile);
 
         LoadUserInfo(userId);
         // Xử lý sự kiện
@@ -111,7 +118,7 @@ public class UserProfileActivity extends AppCompatActivity {
                     tvNameAge.setText(user.getName());
                     tvJob.setText(user.getJob());
                     tvLocation.setText(user.getAddress());
-                    tvDistance.setText(user.getAddress());
+
                     tvAboutMe.setText(user.getBiography());
                     tvZodiac.setText("Cung hoàng đạo: " + user.getZodiacSign());
                     tvEducation.setText(user.getPersonalityType());

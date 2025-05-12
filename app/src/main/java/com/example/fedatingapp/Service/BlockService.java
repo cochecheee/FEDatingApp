@@ -89,4 +89,21 @@ public class BlockService {
             }
         });
     }
+
+    public void unMatch(Long userId, Callback<Void> callback)
+    {
+        Call<Void> call = blockAPI.unMatch(token, userId);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                callback.onResponse(call, Response.success(response.body()));
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable throwable) {
+                callback.onFailure(call, throwable);
+            }
+        });
+    }
+
 }
