@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -35,9 +36,11 @@ import com.example.fedatingapp.fragments.ExploreFragment;
 import com.example.fedatingapp.fragments.SwipeViewFragment;
 import com.example.fedatingapp.models.Notification;
 import com.example.fedatingapp.utils.TokenManager;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.Priority;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import retrofit2.Call;
@@ -56,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     // Location
     private FusedLocationProviderClient fusedLocationClient;
-    private boolean isLocationUpdateInProgress = false;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     // Services & Utils
     private ApiService apiService;
 
@@ -72,8 +75,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        fetchLocationAndUpdateServer();
 
         getUserId(() -> {
             webSocketManager = WebSocketManager.getInstance(getApplicationContext());
@@ -82,6 +83,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             // Load initial fragment
             bottomNavigationView.setSelectedItemId(R.id.account);
         });
+
+        // Khởi tạo FusedLocationProviderClient
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        // Kiểm tra và yêu cầu quyền
+        checkLocationPermission();
     }
 
     private void getUserId(Runnable onUserIdFetched) {
@@ -158,38 +164,63 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         // Handle message
     }
 
-    // LOCATION
-    private final ActivityResultLauncher<String> requestLocationPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted) {
-                    Log.d(TAG, "Location permission GRANTED after request.");
-                    fetchLocationAndUpdateServer();
-                } else {
-                    Log.w(TAG, "Location permission DENIED after request.");
-                    if (mContext != null)
-                        Toast.makeText(mContext, "Không thể tìm người xung quanh nếu không có quyền vị trí.", Toast.LENGTH_LONG).show();
-                }
-            });
-    private void checkLocationPermissionAndProceed() {
-        if (mContext == null) return;
-        if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "Location permission already granted.");
-            fetchLocationAndUpdateServer();
-        } else if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
-            new AlertDialog.Builder(mContext)
-                    .setTitle("Cần quyền vị trí")
-                    .setMessage("Ứng dụng cần vị trí để tìm người xung quanh.")
-                    .setPositiveButton("OK", (dialog, which) -> requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION))
-                    .setNegativeButton("Hủy", (dialog, which) -> Log.d(TAG, "Không thể tìm nếu không có quyền vị trí."))
-                    .show();
+    private void checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Yêu cầu quyền
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST_CODE);
         } else {
-            requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+            // Quyền đã được cấp, lấy vị trí
+            getLastLocation();
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Quyền được cấp, lấy vị trí
+                getLastLocation();
+            } else {
+                Toast.makeText(this, "Quyền truy cập vị trí bị từ chối", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void getLastLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            if (location != null) {
+                                double latitude = location.getLatitude();
+                                double longitude = location.getLongitude();
+                                Toast.makeText(MainActivity.this,
+                                        "toa do " + latitude, Toast.LENGTH_SHORT).show();
+                                updateUserLocationOnServer(latitude,longitude);
+                            } else {
+                                Toast.makeText(MainActivity.this,
+                                        "Không thể lấy vị trí", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    })
+                    .addOnFailureListener(this, new OnFailureListener() {
+                        @Override
+                        public void onFailure(Exception e) {
+                            Toast.makeText(MainActivity.this,
+                                    "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
+    }
     private void updateUserLocationOnServer(double latitude, double longitude) {
         if (apiService == null || mContext == null) return;
-        Log.d(TAG, "Updating user location on server: Lat=" + latitude + ", Lon=" + longitude);
+        Log.d(TAG, "Updating user location on server: Lat=" + latitude + ", Long=" + longitude);
 
         // ** LẤY TOKEN VÀ TẠO BEARER TOKEN **
         String accessToken = tokenManager.getAccessToken();
@@ -215,31 +246,5 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 Log.e(TAG, "Network error updating location", t);
             }
         });
-    }
-    @SuppressLint("MissingPermission")
-    private void fetchLocationAndUpdateServer() {
-        if (fusedLocationClient == null || mContext == null || isLocationUpdateInProgress)
-            return;
-
-        isLocationUpdateInProgress = true;
-        Log.d(TAG, "Requesting current location...");
-
-        fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
-                .addOnSuccessListener(location -> {
-                    isLocationUpdateInProgress = false;
-
-                    if (location != null) {
-                        Log.i(TAG, "Location fetched: Lat=" + location.getLatitude() + ", Lon=" + location.getLongitude());
-                        updateUserLocationOnServer(location.getLatitude(), location.getLongitude());
-                    } else {
-                        Log.w(TAG, "Failed to get location (location is null). Fetching cards with potentially old location.");
-                        Toast.makeText(mContext, "Không lấy được vị trí mới.", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    isLocationUpdateInProgress = false;
-                    Log.e(TAG, "Error getting current location", e);
-                    Toast.makeText(mContext, "Lỗi lấy vị trí.", Toast.LENGTH_SHORT).show();
-                });
     }
 }

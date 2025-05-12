@@ -51,7 +51,6 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation ("androidx.core:core-ktx:1.16.0")
     implementation("androidx.core:core:1.13.0")
-    implementation ("com.google.android:flexbox:2.0.1")
     // SliderView library
     implementation("com.github.smarteist:Android-Image-Slider:1.4.0")
     // Shape of View
@@ -68,7 +67,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     // Retrofit Gson
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
-
+    implementation ("com.google.android.gms:play-services-location:21.3.0")
     // OkHttp3
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 }

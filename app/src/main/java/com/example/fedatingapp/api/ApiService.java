@@ -155,7 +155,7 @@ public interface ApiService {
      * @param longitude Kinh độ.
      */
     @Headers({"Accept: application/json"}) // Content-Type không cần thiết vì không có body
-    @PUT("api/v1/users/me/location") // Endpoint backend
+    @PUT("users/me/settings/location") // Endpoint backend
     Call<ApiResponse> updateUserLocation( // Hoặc Call<ApiResponse<Void>> nếu backend trả về ApiResponse
                                    @Query("lat") double latitude,   // ** Dùng @Query **
                                    @Query("long") double longitude,  // ** Dùng @Query **
