@@ -148,5 +148,19 @@ public interface ApiService {
             @Body UserSettings settings,
             @Header("Authorization") String authToken
     );
+    /**
+     * Cập nhật vị trí hiện tại của người dùng.
+     * PUT /api/v1/users/me/location?lat=xx.xxx&long=yy.yyy
+     * @param latitude Vĩ độ.
+     * @param longitude Kinh độ.
+     */
+    @Headers({"Accept: application/json"}) // Content-Type không cần thiết vì không có body
+    @PUT("api/v1/users/me/location") // Endpoint backend
+    Call<ApiResponse> updateUserLocation( // Hoặc Call<ApiResponse<Void>> nếu backend trả về ApiResponse
+                                   @Query("lat") double latitude,   // ** Dùng @Query **
+                                   @Query("long") double longitude,  // ** Dùng @Query **
+                                   // Không cần token nếu dùng Interceptor
+                                   @Header("Authorization") String authToken // Chỉ thêm nếu không dùng Interceptor
+    );
     //DELETE
 }

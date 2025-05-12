@@ -188,35 +188,6 @@ public class SwipeViewFragment extends Fragment {
             showEmptyView("Đã hết thẻ để xem.");
         }
     }
-
-    /**
-     * Hàm xử lý khi người dùng vuốt thẻ bằng cử chỉ tay (gesture).
-     * Được gọi từ bên trong các phương thức @SwipeIn/@SwipeOut của TinderCard ẩn danh.
-     * Chỉ gọi API và cập nhật dữ liệu, không trigger swipe UI.
-     * @param action Loại hành động ("like", "pass").
-     * @param targetUserId ID của người dùng trên thẻ vừa được vuốt.
-     */
-    private void handleGestureSwipe(String action, Long targetUserId) {
-        if (mContext == null || apiService == null || tokenManager == null) {
-            Log.e(TAG,"Cannot handle gesture swipe: Prerequisites missing.");
-            return;
-        }
-        if (targetUserId == null) {
-            Log.e(TAG, "Cannot handle gesture swipe: targetUserId is null.");
-            removeCardFromListById(null); // Cố gắng dọn dẹp list nếu có thể
-            checkIfEmptyAfterSwipe();
-            return;
-        }
-
-        // ** Gọi API swipe **
-        sendSwipeApiCall(action, targetUserId);
-
-        // ** Xóa thẻ tương ứng khỏi danh sách dữ liệu **
-        removeCardFromListById(targetUserId);
-
-        // ** Kiểm tra trạng thái rỗng **
-        checkIfEmptyAfterSwipe();
-    }
     /**
      * Hàm helper để xóa một thẻ khỏi danh sách currentDisplayedCards dựa trên ID.
      * @param userIdToRemove ID của người dùng cần xóa.
