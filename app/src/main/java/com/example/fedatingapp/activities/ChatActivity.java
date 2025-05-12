@@ -14,9 +14,11 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -33,6 +35,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.fedatingapp.R;
+import com.example.fedatingapp.Service.BlockService;
 import com.example.fedatingapp.Service.MessageService;
 import com.example.fedatingapp.Service.UserService;
 import com.example.fedatingapp.WebSocket.WebSocketClient;
@@ -62,6 +65,7 @@ import retrofit2.Response;
 public class ChatActivity extends AppCompatActivity implements WebSocketClient.MessageListener {
     private static final String CHANNEL_ID = "notify_channel";
     private MessageService messageService;
+    private BlockService blockService;
     private TokenManager tokenManager;
     private WebSocketManager webSocketManager;
     private BoxChatBinding binding;
@@ -88,6 +92,7 @@ public class ChatActivity extends AppCompatActivity implements WebSocketClient.M
         tokenManager = new TokenManager(getApplicationContext());
         userService = new UserService("Bearer " + tokenManager.getAccessToken());
         messageService = new MessageService("Bearer " + tokenManager.getAccessToken());
+        blockService = new BlockService("Bearer " + tokenManager.getAccessToken());
         webSocketManager = WebSocketManager.getInstance(getApplicationContext());
         webSocketManager.setMessageListener(this::onMessageReceived);
         // Lấy dữ liệu từ Intent
@@ -188,7 +193,7 @@ public class ChatActivity extends AppCompatActivity implements WebSocketClient.M
         binding.btnVideoCall.setOnClickListener(v -> makeVideoCall());
         binding.btnMore.setOnClickListener(v -> showMoreOptions());
         binding.btnAttachment.setOnClickListener(v -> attachFiles());
-
+        binding.profileImage.setOnClickListener(v -> openUserProfile());
         binding.etMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -253,7 +258,13 @@ public class ChatActivity extends AppCompatActivity implements WebSocketClient.M
 
     }
 
-
+    private void openUserProfile()
+    {
+        Intent intent = new Intent(getApplicationContext(), UserProfileActivity.class);
+        intent.putExtra("receiverUserId" , receiverUserId);
+        intent.putExtra("receiverImage", receiverImage);
+        startActivity(intent);
+    }
 
     private void makeVoiceCall() {
         Toast.makeText(this, "Gọi thoại với " + receiverName, Toast.LENGTH_SHORT).show();
@@ -266,8 +277,38 @@ public class ChatActivity extends AppCompatActivity implements WebSocketClient.M
     }
 
     private void showMoreOptions() {
-        // TODO: Hiển thị menu tùy chọn khác
-        Toast.makeText(this, "Tùy chọn khác", Toast.LENGTH_SHORT).show();
+        PopupMenu popupMenu = new PopupMenu(this,binding.btnMore);
+        popupMenu.getMenuInflater().inflate(R.menu.chat_menu_block,popupMenu.getMenu());
+//bắt sự kiện
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.btnUnMatch) {
+                    blockService.unMatch(receiverUserId, new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if (response.isSuccessful())
+                            {
+                                Toast.makeText(ChatActivity.this, "Chặn người dùng "+receiverUserId, Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                            else
+                            {
+                                Toast.makeText(ChatActivity.this, "Chặn người dùng "+response.body(), Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable throwable) {
+                            Toast.makeText(ChatActivity.this, "Hệ thống đang gặp sự cố, mời quay lại sau", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                return false;
+            }
+        });
+        popupMenu.show();
     }
 
     private void attachFiles() {

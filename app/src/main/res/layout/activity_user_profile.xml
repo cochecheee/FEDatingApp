@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="Thông tin cá nhân"
-            android:textColor="@color/white"
+            android:textColor="@color/colorPrimary"
             android:textSize="20sp"
             android:textStyle="bold" />
     </RelativeLayout>
@@ -107,18 +107,6 @@
                     android:textColor="@color/text_secondary"
                     android:textSize="16sp" />
 
-                <!-- Khoảng cách -->
-                <TextView
-                    android:id="@+id/tvDistance"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:drawableStart="@android:drawable/ic_menu_compass"
-                    android:drawablePadding="8dp"
-                    android:drawableTint="@color/accent"
-                    android:text="Cách 5 km"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="16sp" />
             </LinearLayout>
 
             <!-- Phần giới thiệu -->
