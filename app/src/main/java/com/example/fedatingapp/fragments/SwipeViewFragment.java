@@ -1,6 +1,7 @@
 package com.example.fedatingapp.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.fedatingapp.R;
 
+import com.example.fedatingapp.activities.UserProfileActivity;
 import com.example.fedatingapp.api.ApiResponse;
 import com.example.fedatingapp.api.ApiService;
 import com.example.fedatingapp.api.RetrofitClient;
@@ -149,10 +151,32 @@ public class SwipeViewFragment extends Fragment {
 
         fabBoost.setOnClickListener(v -> {
             animateFab(fabBoost);
+            openUserProfileActivity();
             if (mContext != null) Toast.makeText(mContext, "Boost!", Toast.LENGTH_SHORT).show();
         });
     }
 
+    private void openUserProfileActivity(){
+        if (mContext == null || apiService == null) {
+            Log.e(TAG, "Context or ApiService is null in performSwipeAction");
+            return;
+        }
+
+        if (!currentDisplayedCards.isEmpty()) {
+            Profile topCardProfile = currentDisplayedCards.get(0); // Lấy dữ liệu thẻ trên cùng
+            Long targetUserId = topCardProfile.getId(); // ** Cần có getId() trong Profile **
+            String image = topCardProfile.getImageUrl();
+
+            Intent intent = new Intent(getContext(), UserProfileActivity.class);
+            intent.putExtra("receiverUserId" , targetUserId);
+            intent.putExtra("receiverImage", image);
+            startActivity(intent);
+
+        } else {
+            if (mContext != null)
+                Toast.makeText(mContext, "Đã hết thẻ.", Toast.LENGTH_SHORT).show();
+        }
+    }
     /**
      * Hàm xử lý TẬP TRUNG cho các hành động swipe (từ nút bấm).
      * Nó sẽ gọi API và sau đó kích hoạt hiệu ứng swipe trên UI.

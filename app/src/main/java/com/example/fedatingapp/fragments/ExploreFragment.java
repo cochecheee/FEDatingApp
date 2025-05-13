@@ -149,7 +149,7 @@ public class ExploreFragment extends Fragment implements WebSocketClient.Listene
                             // Thay thế Fragment
                             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                             transaction.replace(R.id.fragment_container, swipeFragment);
-                            transaction.addToBackStack(null);
+
                             transaction.commit();
                         }
                         else {

@@ -158,16 +158,9 @@ public class AccountFragment extends Fragment implements WebSocketClient.Listene
         ActivityCompat.requestPermissions(requireActivity(),
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                 MY_REQUEST_CODE);
+        openGallery();
     }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openGallery();
-            }
-        }
-    }
+
     private void openGallery() {
         Log.d("open gallerry", "CheckPermission: ");
         Intent intent = new Intent();
