@@ -8,15 +8,11 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.fedatingapp.R;
 import com.example.fedatingapp.api.ApiResponse;
 import com.example.fedatingapp.api.ApiService;
 import com.example.fedatingapp.api.RetrofitClient;
-import com.example.fedatingapp.api.request.RequestResetPasswordRequest;
 import com.example.fedatingapp.databinding.ActivityForgotPasswordBinding;
 
 import retrofit2.Call;
@@ -39,7 +35,11 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         // Nếu dùng ImageView làm nút back:
-        binding.imageViewBack.setOnClickListener(v -> onBackPressed());
+        binding.imageViewBack.setOnClickListener(v -> {
+            Intent intent = new Intent(ForgotPasswordActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        });
         // Khởi tạo ApiService
         apiService = RetrofitClient.getApiService();
         // Thiết lập Listener cho nút gửi
@@ -60,10 +60,10 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         } else {
             binding.textInputLayoutIdentifier.setError(null); // Xóa lỗi nếu đã nhập
         }
-        RequestResetPasswordRequest requestDto = new RequestResetPasswordRequest(identifier);
+//        RequestResetPasswordRequest requestDto = new RequestResetPasswordRequest(identifier);
         Log.d(TAG, "Requesting password reset OTP for: " + identifier);
 
-        apiService.requestPasswordResetOtp(requestDto).enqueue(new Callback<ApiResponse<Void>>() {
+        apiService.requestPasswordResetOtp(identifier).enqueue(new Callback<ApiResponse<Void>>() {
             @Override
             public void onResponse(Call<ApiResponse<Void>> call, Response<ApiResponse<Void>> response) {
                 if (response.isSuccessful() && response.body() != null) {
