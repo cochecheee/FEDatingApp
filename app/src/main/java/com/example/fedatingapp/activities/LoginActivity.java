@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -29,6 +30,8 @@ import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
     // Khai bao
+    private TextView textViewRegister;
+    private TextView textViewForgotPassword;
     private TextInputLayout textInputLayoutEmail;
     private TextInputEditText editTextEmail;
     private TextInputLayout textInputLayoutPassword;
@@ -51,10 +54,27 @@ public class LoginActivity extends AppCompatActivity {
         textInputLayoutPassword = findViewById(R.id.textInputLayoutPassword);
         editTextPassword = findViewById(R.id.editTextPassword);
         buttonLoginEmailPassword = findViewById(R.id.buttonLoginEmailPassword);
+        textViewRegister = findViewById(R.id.textViewRegister);
+        textViewForgotPassword = findViewById(R.id.textViewForgotPassword);
 
         buttonLoginEmailPassword.setOnClickListener(v -> {
             loginUser();
         });
+
+        textViewRegister.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
+        textViewForgotPassword.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+            startActivity(intent);
+            finish();
+        });
+    }
+
+    private void logout() {
 
     }
 

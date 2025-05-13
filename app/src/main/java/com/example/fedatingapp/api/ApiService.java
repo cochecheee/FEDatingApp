@@ -1,6 +1,8 @@
 package com.example.fedatingapp.api;
 
 import com.example.fedatingapp.api.AuthResponse;
+import com.example.fedatingapp.api.request.RequestResetPasswordRequest;
+import com.example.fedatingapp.api.request.ResetPasswordRequest;
 import com.example.fedatingapp.entities.Users;
 import com.example.fedatingapp.models.MatchFeed;
 import com.example.fedatingapp.models.Profile;
@@ -133,6 +135,22 @@ public interface ApiService {
     @GET("users/{id}/profile")
     Call<Users> profile(@Path("id") Long userId,
                                           @Header("Authorization") String authToken);
+
+    /**
+     * Yêu cầu gửi OTP đặt lại mật khẩu.
+     * POST /api/v1/auth/password/request-reset-otp (Giả sử đường dẫn này)
+     */
+    @Headers({"Accept: application/json", "Content-Type: application/json"})
+    @POST("auth/password/request-reset-otp")
+    Call<ApiResponse<Void>> requestPasswordResetOtp(@Body RequestResetPasswordRequest requestDto);
+
+    /**
+     * Đặt lại mật khẩu bằng OTP.
+     * POST /api/v1/auth/password/reset (Giả sử đường dẫn này)
+     */
+    @Headers({"Accept: application/json", "Content-Type: application/json"})
+    @POST("auth/password/reset")
+    Call<ApiResponse<Object>> resetPassword(@Body ResetPasswordRequest requestDto);
 
     //----------------------------------PUT
     /**

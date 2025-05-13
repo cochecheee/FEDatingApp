@@ -123,32 +123,28 @@
         app:strokeWidth="1dp"
         app:cornerRadius="25dp"/>
 
-    <!-- Nút Đăng nhập bằng Facebook -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/buttonLoginFacebook"
-        style="@style/Widget.MaterialComponents.Button.Icon"
-        android:layout_width="0dp"
+    <!-- Link "Chưa có tài khoản?" -->
+    <TextView
+        android:id="@+id/textViewRegister"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:paddingVertical="12dp"
-        android:text="@string/login_with_facebook"
-        android:textColor="@android:color/white"
-        android:backgroundTint="#1877F2"
-        app:icon="@drawable/ic_facebook_logo"
-        app:iconGravity="textStart"
-        app:iconPadding="16dp"
-        app:iconTint="@android:color/white"
+        android:layout_marginBottom="4dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:minHeight="48dp"
+        android:text="Chưa có tài khoản? Tạo ngay một cái"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLoginGoogle"
-        app:cornerRadius="25dp"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- Link "Gặp sự cố khi đăng nhập?" -->
     <TextView
         android:id="@+id/textViewForgotPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="40dp"
         android:clickable="true"
         android:focusable="true"
         android:minHeight="48dp"
@@ -158,8 +154,6 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLoginFacebook"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
