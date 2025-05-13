@@ -109,39 +109,6 @@ public class WebSocketClient {
                         Log.e(TAG, "Lỗi parsing JSON: " + e.getMessage());
                     }
                 }
-
-                if (text.contains("NOTIFY")) {
-                    try {
-                        // Tìm và phân tích phần JSON sau NOTIFY
-                        int notifyIndex = text.indexOf("NOTIFY\n\n");
-                        if (notifyIndex != -1) {
-                            String jsonString = text.substring(notifyIndex + "NOTIFY\n\n".length()).trim();
-                            // Loại bỏ ký tự null terminator và ký tự thừa
-                            jsonString = jsonString.replace("\0", "").replaceAll("[^\\x20-\\x7E\\n\\r\\t]*", "");
-                            Log.d(TAG, "Extracted NOTIFY JSON: " + jsonString);
-
-                            try {
-                                JSONObject json = new JSONObject(jsonString);
-                                Notification notification = new Notification(
-                                        json.getString("notifyContent"),
-                                        json.getString("notifyType")
-                                );
-                                new Handler(Looper.getMainLooper()).post(() -> {
-                                    if (listenerNotification != null) {
-                                        listenerNotification.onNotifyReceived(notification);
-                                    } else {
-                                        Log.w(TAG, "NotificationListener là null");
-                                    }
-                                });
-                            } catch (JSONException e) {
-                                Log.e(TAG, "Lỗi phân tích JSON thông báo: " + e.getMessage());
-                            }
-                        }
-                        return; // Đã xử lý tin nhắn NOTIFY, thoát phương thức
-                    } catch (Exception e) {
-                        Log.e(TAG, "Lỗi xử lý thông báo NOTIFY: " + e.getMessage());
-                    }
-                }
             }
             @Override
             public void onFailure(WebSocket webSocket, Throwable t, Response response) {
