@@ -19,6 +19,7 @@ import com.example.fedatingapp.R;
 import com.example.fedatingapp.api.ApiResponse;
 import com.example.fedatingapp.api.ApiService;
 import com.example.fedatingapp.api.RetrofitClient;
+import com.example.fedatingapp.entities.Users;
 import com.example.fedatingapp.models.Profile;
 import com.example.fedatingapp.models.TinderCard;
 import com.example.fedatingapp.utils.TokenManager;
@@ -47,7 +48,7 @@ public class SwipeViewFragment extends Fragment {
     private Context mContext;
     private ApiService apiService;
     private TokenManager tokenManager; // ** Khai báo TokenManager **
-
+    private List<Profile> profileList = new ArrayList<>();
     // ** Danh sách lưu trữ Profile thẻ đang hiển thị **
     private List<Profile> currentDisplayedCards = new ArrayList<>();
 
@@ -75,6 +76,15 @@ public class SwipeViewFragment extends Fragment {
             tokenManager = new TokenManager(mContext); // ** Khởi tạo TokenManager **
         } else {
             Log.e(TAG, "Context is null in onCreateView.");
+        }
+
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            List<Profile> listProfile = (List<Profile>) bundle.getSerializable("listProfile");
+            if (listProfile != null) {
+                profileList = listProfile;
+                Log.d("SwipeViewFragment", "Nhận được dữ liệu: " + listProfile.toString());
+            }
         }
 
         setupSwipeView();
@@ -237,7 +247,8 @@ public class SwipeViewFragment extends Fragment {
         showLoading(true);
         if (mSwipeView != null) mSwipeView.removeAllViews();
         currentDisplayedCards.clear();
-
+        currentDisplayedCards.addAll(profileList);
+        profileList.clear();
         // ** Gọi API dùng ApiService và Callback đúng kiểu **
 //        apiService.getDiscoveryCards("Bearer " + authToken).enqueue(new Callback<ApiResponse<List<Profile>>>() {
         apiService.getDiscoveryCards(bearerToken).enqueue(new Callback<ApiResponse<List<Profile>>>() {
@@ -253,6 +264,7 @@ public class SwipeViewFragment extends Fragment {
                     if (fetchedCards.isEmpty()) {
                         showEmptyView("Không tìm thấy ai phù hợp.");
                     } else {
+
                         currentDisplayedCards.addAll(fetchedCards); // Thêm vào danh sách của Fragment
                         for (Profile profile : currentDisplayedCards) { // Duyệt qua danh sách mới
                             if (profile != null && profile.getId() != null && mSwipeView != null) {
@@ -318,7 +330,7 @@ public class SwipeViewFragment extends Fragment {
             case "skip": // Có thể dùng "pass" hoặc "skip" cho dislike
                 // Gọi API dislikeUser
                 Log.w(TAG, "Dislike API call not implemented yet."); // Thông báo nếu chưa có
-//                apiCall = apiService.likeUser(targetUserId); // Không cần truyền token nếu dùng Interceptor
+                apiCall = apiService.likeUser(targetUserId,bearerToken); // Không cần truyền token nếu dùng Interceptor
                 break;
             case "superlike":
                 // Gọi API superlikeUser (nếu có endpoint riêng)
@@ -326,7 +338,7 @@ public class SwipeViewFragment extends Fragment {
                 // Hoặc nếu superlike cũng là một dạng "like" đặc biệt gửi qua API khác
                 Log.w(TAG, "Superlike API call not implemented yet."); // Thông báo nếu chưa có
                 // Tạm thời coi như like thường để ví dụ
-//                apiCall = apiService.likeUser(targetUserId); // ** THAY BẰNG API SUPERLIKE KHI CÓ **
+                apiCall = apiService.likeUser(targetUserId,bearerToken); // ** THAY BẰNG API SUPERLIKE KHI CÓ **
                 break;
             default:
                 Log.e(TAG, "Unknown swipe action: " + action);

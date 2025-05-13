@@ -100,23 +100,23 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     // Lỗi HTTP (4xx, 5xx)
                     String errorMessage = "Đăng nhập thất bại. Vui lòng thử lại.";
-                    if (response.errorBody() != null) {
-                        try {
-                            // Cố gắng parse lỗi từ server nếu có
-                            // Bạn cần điều chỉnh cách parse này tùy thuộc cấu trúc lỗi API trả về
-                            // Ví dụ đơn giản là đọc chuỗi lỗi:
-                            errorMessage = response.errorBody().string();
-                            // Hoặc parse thành ApiResponse nếu lỗi cũng dùng cấu trúc đó
-                            // Gson gson = new Gson();
-                            // Type type = new TypeToken<ApiResponse<Object>>() {}.getType();
-                            // ApiResponse<Object> errorResponse = gson.fromJson(response.errorBody().charStream(), type);
-                            // if (errorResponse != null && errorResponse.getMessage() != null) {
-                            //    errorMessage = errorResponse.getMessage();
-                            // }
-                        } catch (Exception e) {
-                            // e.printStackTrace();
-                        }
-                    }
+//                    if (response.errorBody() != null) {
+//                        try {
+//                            // Cố gắng parse lỗi từ server nếu có
+//                            // Bạn cần điều chỉnh cách parse này tùy thuộc cấu trúc lỗi API trả về
+//                            // Ví dụ đơn giản là đọc chuỗi lỗi:
+//                            errorMessage = response.errorBody().string();
+//                            // Hoặc parse thành ApiResponse nếu lỗi cũng dùng cấu trúc đó
+//                            // Gson gson = new Gson();
+//                            // Type type = new TypeToken<ApiResponse<Object>>() {}.getType();
+//                            // ApiResponse<Object> errorResponse = gson.fromJson(response.errorBody().charStream(), type);
+//                            // if (errorResponse != null && errorResponse.getMessage() != null) {
+//                            //    errorMessage = errorResponse.getMessage();
+//                            // }
+//                        } catch (Exception e) {
+//                            // e.printStackTrace();
+//                        }
+//                    }
                     Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_LONG).show();
                 }
             }

@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,6 +22,7 @@ import com.example.fedatingapp.Service.UserService;
 import com.example.fedatingapp.WebSocket.WebSocketClient;
 import com.example.fedatingapp.adapters.ExploreCardAdapter;
 import com.example.fedatingapp.databinding.ExploreBinding;
+import com.example.fedatingapp.entities.Profile;
 import com.example.fedatingapp.entities.Users;
 import com.example.fedatingapp.models.ExploreViewModel;
 import com.example.fedatingapp.models.GridSpacingItemDecoration;
@@ -130,23 +132,34 @@ public class ExploreFragment extends Fragment implements WebSocketClient.Listene
         // Quan sát dữ liệu danh mục
         viewModel.getCategories().observe(getViewLifecycleOwner(), categories -> {
             exploreAdapter = new ExploreCardAdapter(categories, category -> {
-                searchCardService.findByInterests(category.getTitle(), new Callback<List<Users>>() {
+                searchCardService.findByInterests(category.getTitle(), new Callback<List<Profile>>() {
                     @Override
-                    public void onResponse(Call<List<Users>> call, Response<List<Users>> response) {
+                    public void onResponse(Call<List<Profile>> call, Response<List<Profile>> response) {
                         if (response.isSuccessful() && response.body() != null)
                         {
-                            Intent intent = new Intent(getContext(),SwipeViewFragment.class);
-                            intent.putExtra("listProfile", (Serializable) response.body());
-                            startActivity(intent);
+                            SwipeViewFragment swipeFragment = new SwipeViewFragment();
+
+                            // Tạo Bundle để truyền dữ liệu
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("listProfile", (Serializable) response.body());
+
+                            // Gắn Bundle vào Fragment
+                            swipeFragment.setArguments(bundle);
+
+                            // Thay thế Fragment
+                            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                            transaction.replace(R.id.fragment_container, swipeFragment);
+                            transaction.addToBackStack(null);
+                            transaction.commit();
                         }
                         else {
-                            Toast.makeText(getContext(), "fail khong duoc" , Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Khong tim thay "+category.getTitle() , Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<List<Users>> call, Throwable throwable) {
-                        Toast.makeText(getContext(), "fail" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                    public void onFailure(Call<List<Profile>> call, Throwable throwable) {
+                        Toast.makeText(getContext(), "Khong tim thay" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             });
