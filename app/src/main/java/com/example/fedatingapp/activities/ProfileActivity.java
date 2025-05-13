@@ -232,12 +232,34 @@ public class ProfileActivity extends AppCompatActivity implements ImageAdapter.O
         try {
             user.setName(editTextHoten.getText().toString());
             user.setPhone(editTextPhone.getText().toString());
-            String[] parts = editTextBirthday.getText().toString().split("/");
+//            String[] parts = editTextBirthday.getText().toString().split("/");
+//
+//            int day = Integer.parseInt(parts[0]);
+//            int month = Integer.parseInt(parts[1]);
+//            int year = Integer.parseInt(parts[2]);
+//            user.setBirthday(new Date(year, month, day));
+            String birthdayText = editTextBirthday.getText().toString();
+            if (!birthdayText.isEmpty()) {
+                String[] parts = birthdayText.split("/");
+                if (parts.length == 3) {
+                    int day = Integer.parseInt(parts[0]);
+                    int month = Integer.parseInt(parts[1]); // Month is 1-indexed from EditText
+                    int year = Integer.parseInt(parts[2]);
 
-            int day = Integer.parseInt(parts[0]);
-            int month = Integer.parseInt(parts[1]);
-            int year = Integer.parseInt(parts[2]);
-            user.setBirthday(new Date(year, month, day));
+                    // Use Calendar to create the Date object correctly
+                    Calendar calendar = Calendar.getInstance();
+                    // Calendar month is 0-indexed, so subtract 1
+                    calendar.set(year, month - 1, day);
+                    user.setBirthday(calendar.getTime()); // Get the Date object from the Calendar
+                } else {
+                    Log.e("ProfileActivity", "Invalid birthday format: " + birthdayText);
+                    Toast.makeText(this, "Invalid birthday format", Toast.LENGTH_SHORT).show();
+                    // Optionally, skip setting birthday or handle error
+                    user.setBirthday(null); // Don't save invalid date
+                }
+            } else {
+                user.setBirthday(null); // Handle empty birthday field
+            }
             user.setBiography(editTextBiography.getText().toString());
             user.setHeight(Float.parseFloat(editTextHeight.getText().toString().isEmpty() ? "0" : editTextHeight.getText().toString()));
             user.setWeight(Integer.parseInt(editTextWeight.getText().toString().isEmpty() ? "0" : editTextWeight.getText().toString()));

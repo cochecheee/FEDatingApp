@@ -190,7 +190,6 @@ public class ResetPasswordActivity extends AppCompatActivity {
                 Toast.makeText(ResetPasswordActivity.this, "Lỗi mạng. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     // Hàm điều hướng về màn hình Login

@@ -74,10 +74,6 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void logout() {
-
-    }
-
     private void loginUser() {
         // Xóa lỗi cũ (nếu có)
         textInputLayoutEmail.setError(null);
@@ -86,11 +82,6 @@ public class LoginActivity extends AppCompatActivity {
         // Validate input cơ bản
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
-
-        // Có thể thêm validate độ dài mật khẩu nếu muốn
-
-        // Tạo đối tượng request
-//        LoginRequest loginRequest = new LoginRequest(email, password);
 
         // Gọi API
         apiService.loginByEmail(email,password).enqueue(new Callback<ApiResponse<AuthResponse>>() {
@@ -108,7 +99,6 @@ public class LoginActivity extends AppCompatActivity {
 
                         // Chuyển sang màn hình chính
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        // Xóa các activity cũ khỏi stack để không back lại màn hình login
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                         finish(); // Kết thúc LoginActivity
