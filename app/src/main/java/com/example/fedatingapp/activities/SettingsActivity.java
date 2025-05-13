@@ -55,6 +55,12 @@ public class SettingsActivity extends AppCompatActivity {
         setupButtonClickListeners();
 
         fetchUserSettings(); // Load existing settings when the activity starts
+
+        binding.buttonLogout.setOnClickListener(v -> {
+            Intent intent1 = new Intent(SettingsActivity.this, LoginActivity.class);
+            startActivity(intent1);
+            finish();
+        });
     }
 
     private void loadSpinnerData() {

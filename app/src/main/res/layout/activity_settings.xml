@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#FFFFFF"
     android:paddingStart="20dp"
     android:paddingEnd="20dp"
@@ -22,7 +23,7 @@
             android:background="?android:attr/selectableItemBackground"
             android:src="@drawable/ic_back"
             android:contentDescription="Back"
-            android:tint="#E94057"
+            app:tint="#E94057"
             android:layout_marginBottom="16dp" />
 
         <!-- Dating Purpose -->
@@ -189,6 +190,17 @@
             android:layout_height="48dp"
             android:backgroundTint="#E94057"
             android:text="Save Settings"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:layout_marginTop="24dp" />
+
+        <!-- Logout Button -->
+        <Button
+            android:id="@+id/button_logout"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:backgroundTint="#E94057"
+            android:text="Logout"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:layout_marginTop="24dp" />
