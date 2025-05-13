@@ -11,6 +11,7 @@ import retrofit2.Response;
 
 import com.example.fedatingapp.api.RetrofitClient;
 import com.example.fedatingapp.api.SearchCardAPI;
+import com.example.fedatingapp.entities.Profile;
 import com.example.fedatingapp.entities.Users;
 import com.example.fedatingapp.utils.TokenManager;
 
@@ -46,11 +47,11 @@ public class SearchCardService {
     }
 
     // Tìm user theo Interests
-    public void findByInterests(String interests, Callback<List<Users>> callback) {
-        Call<List<Users>> call = searchCardAPI.findByInterests(token,interests);
-        call.enqueue(new Callback<List<Users>>() {
+    public void findByInterests(String interests, Callback<List<Profile>> callback) {
+        Call<List<Profile>> call = searchCardAPI.findByInterests(token,interests);
+        call.enqueue(new Callback<List<Profile>>() {
             @Override
-            public void onResponse(Call<List<Users>> call, Response<List<Users>> response) {
+            public void onResponse(Call<List<Profile>> call, Response<List<Profile>> response) {
                 if (response.isSuccessful()) {
                     Log.d("SearchCardService", "Tìm theo Interests thành công: " + response.body().size() + " users");
                     callback.onResponse(call, Response.success(response.body()));
@@ -61,7 +62,7 @@ public class SearchCardService {
             }
 
             @Override
-            public void onFailure(Call<List<Users>> call, Throwable t) {
+            public void onFailure(Call<List<Profile>> call, Throwable t) {
                 Log.e("SearchCardService", "Error: " + t.getMessage());
                 callback.onFailure(call, t);
             }

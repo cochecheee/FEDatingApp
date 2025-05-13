@@ -126,7 +126,7 @@ public class MessageFragment extends Fragment implements MessageListAdapter.OnIt
         }
         likeList.clear();
         likeList.addAll(filteredList);
-        mAdapter.notifyDataSetChanged();
+        contactAdapter.notifyDataSetChanged();
     }
     private void prepareMessageList(){
         messageService.getListMatch(curentUserId, new Callback<List<MessageItem>>() {

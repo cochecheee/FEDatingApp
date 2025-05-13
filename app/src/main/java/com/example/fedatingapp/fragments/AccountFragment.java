@@ -154,44 +154,19 @@ public class AccountFragment extends Fragment implements WebSocketClient.Listene
         startActivity(intent);
     }
 
-
-    public static String[] storge_permissions = {
-            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            android.Manifest.permission.READ_EXTERNAL_STORAGE
-    };
-
-    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-    public static String[] storge_permissions_33 = {
-            android.Manifest.permission.READ_MEDIA_IMAGES,
-            android.Manifest.permission.READ_MEDIA_AUDIO,
-            android.Manifest.permission.READ_MEDIA_VIDEO
-    };
-
-    // Viết hàm CheckPermission()
-    public static String[] permissions() {
-        String[] p;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            p = storge_permissions_33;
-        } else {
-            p = storge_permissions;
-        }
-        return p;
-    }
-
     private void CheckPermission() {
         ActivityCompat.requestPermissions(requireActivity(),
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                 MY_REQUEST_CODE);
         openGallery();
     }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openGallery();
-            }
-        }
+
+    private void openGallery() {
+        Log.d("open gallerry", "CheckPermission: ");
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        mActivityResultLauncher.launch(Intent.createChooser(intent, "Select Picture"));
     }
 
     private ActivityResultLauncher<Intent> mActivityResultLauncher = registerForActivityResult(
@@ -213,13 +188,6 @@ public class AccountFragment extends Fragment implements WebSocketClient.Listene
             }
     );
 
-    private void openGallery() {
-        Log.d("open gallerry", "CheckPermission: ");
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        mActivityResultLauncher.launch(Intent.createChooser(intent, "Select Picture"));
-    }
     public void UploadImage() {
         if (mUri != null) {
             try {
