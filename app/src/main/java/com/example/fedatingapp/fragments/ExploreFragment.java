@@ -129,7 +129,7 @@ public class ExploreFragment extends Fragment implements WebSocketClient.Listene
     }
 
     private void observeViewModel() {
-        // Quan sát dữ liệu danh mục
+
         viewModel.getCategories().observe(getViewLifecycleOwner(), categories -> {
             exploreAdapter = new ExploreCardAdapter(categories, category -> {
                 searchCardService.findByInterests(category.getTitle(), new Callback<List<Profile>>() {

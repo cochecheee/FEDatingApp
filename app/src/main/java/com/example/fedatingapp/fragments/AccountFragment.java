@@ -25,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -155,11 +156,28 @@ public class AccountFragment extends Fragment implements WebSocketClient.Listene
     }
 
     private void CheckPermission() {
-        ActivityCompat.requestPermissions(requireActivity(),
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                MY_REQUEST_CODE);
-        openGallery();
+        // Kiểm tra xem quyền READ_EXTERNAL_STORAGE đã được cấp chưa
+        if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED) {
+            // Trường hợp đã cấp quyền: mở thư viện ảnh ngay lập tức
+            openGallery();
+        } else {
+            // Trường hợp chưa cấp quyền: yêu cầu quyền
+            ActivityCompat.requestPermissions(requireActivity(),
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    MY_REQUEST_CODE);
+        }
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openGallery();
+            }
+        }
+    }
+
 
     private void openGallery() {
         Log.d("open gallerry", "CheckPermission: ");
