@@ -147,8 +147,8 @@ public class ProfileActivity extends AppCompatActivity implements ImageAdapter.O
                     user = response.body();
                     if (user != null) {
                         if (user.getBirthday() != null){
-                            int year = user.getBirthday().getYear();
-                            int month = user.getBirthday().getMonth();
+                            int year = user.getBirthday().getYear()+1900;
+                            int month = user.getBirthday().getMonth()+1;
                             int date = user.getBirthday().getDate();
                             editTextBirthday.setText(date + "/" +
                                     month + "/" + year);
@@ -249,7 +249,7 @@ public class ProfileActivity extends AppCompatActivity implements ImageAdapter.O
                     // Use Calendar to create the Date object correctly
                     Calendar calendar = Calendar.getInstance();
                     // Calendar month is 0-indexed, so subtract 1
-                    calendar.set(year, month - 1, day);
+                    calendar.set(year, month, day);
                     user.setBirthday(calendar.getTime()); // Get the Date object from the Calendar
                 } else {
                     Log.e("ProfileActivity", "Invalid birthday format: " + birthdayText);

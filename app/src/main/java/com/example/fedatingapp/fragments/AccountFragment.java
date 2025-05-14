@@ -319,8 +319,8 @@ public class AccountFragment extends Fragment implements WebSocketClient.Listene
             {
                 userOld.setText(String.valueOf(CountOld(
                         users.getBirthday().getDate(),
-                        users.getBirthday().getMonth(),
-                        users.getBirthday().getYear()
+                        users.getBirthday().getMonth()+1,
+                        users.getBirthday().getYear()+1900
                 )));
             }
             else {

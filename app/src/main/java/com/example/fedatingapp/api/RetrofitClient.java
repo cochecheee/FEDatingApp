@@ -19,7 +19,7 @@ public class RetrofitClient {
     private static Retrofit retrofit = null;
     private static ApiService apiService = null;
     private static OkHttpClient okHttpClient = null; // Lưu trữ OkHttpClient để tái sử dụng
-    private static final String BASE_URL = "http://192.168.1.247:8080/api/";
+    private static final String BASE_URL = "http://192.168.0.139:8080/api/";
     static Gson gson = new GsonBuilder().setDateFormat("yyyy MM dd").create();
     public static Retrofit getRetrofit() {
         if(retrofit == null) {
