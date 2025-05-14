@@ -22,7 +22,7 @@ import com.example.fedatingapp.Service.UserService;
 import com.example.fedatingapp.WebSocket.WebSocketClient;
 import com.example.fedatingapp.adapters.ExploreCardAdapter;
 import com.example.fedatingapp.databinding.ExploreBinding;
-import com.example.fedatingapp.entities.Profile;
+import com.example.fedatingapp.models.Profile;
 import com.example.fedatingapp.entities.Users;
 import com.example.fedatingapp.models.ExploreViewModel;
 import com.example.fedatingapp.models.GridSpacingItemDecoration;

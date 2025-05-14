@@ -9,7 +9,7 @@ public class Profile {
     @Expose
     private String name;
 
-    @SerializedName("url")
+    @SerializedName("imageUrl")
     @Expose
     private String imageUrl;
 

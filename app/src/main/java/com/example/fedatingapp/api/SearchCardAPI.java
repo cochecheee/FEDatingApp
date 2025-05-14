@@ -1,7 +1,7 @@
 package com.example.fedatingapp.api;
 
-import com.example.fedatingapp.entities.Profile;
 import com.example.fedatingapp.entities.Users;
+import com.example.fedatingapp.models.Profile;
 
 import java.util.List;
 

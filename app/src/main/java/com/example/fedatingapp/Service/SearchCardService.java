@@ -11,7 +11,7 @@ import retrofit2.Response;
 
 import com.example.fedatingapp.api.RetrofitClient;
 import com.example.fedatingapp.api.SearchCardAPI;
-import com.example.fedatingapp.entities.Profile;
+import com.example.fedatingapp.models.Profile;
 import com.example.fedatingapp.entities.Users;
 import com.example.fedatingapp.utils.TokenManager;
 

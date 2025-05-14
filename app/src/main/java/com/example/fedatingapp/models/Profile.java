@@ -4,13 +4,22 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Profile {
-
+    @SerializedName("id")
     private Long id;
+    @SerializedName("name")
+    @Expose
     private String name;
 
+    @SerializedName("imageUrl")
+    @Expose
     private String imageUrl;
 
+    @SerializedName("age")
+    @Expose
     private Integer age;
+
+    @SerializedName("location")
+    @Expose
     private String location;
 
     public String getName() {
